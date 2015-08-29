@@ -36,6 +36,8 @@
 
 #define F_OK 0
 
+#define _SC_CLK_TCK 2
+
 __BEGIN_DECLS
 
 typedef unsigned long useconds_t;
@@ -57,5 +59,11 @@ int close (int);
  * Please refer to the POSIX standard for details.
  */
 size_t read(int, void *, size_t);
+
+/**
+ * @brief
+ * Only supports getting _SC_CLK_TCK
+ */
+long sysconf(int name);
 
 __END_DECLS
