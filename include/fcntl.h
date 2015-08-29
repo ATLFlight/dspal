@@ -45,6 +45,7 @@
  */
 
 #include <sys/cdefs.h>
+#include "types.h"
 #include "dspal_types.h"
 
 /*
