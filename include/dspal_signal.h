@@ -31,6 +31,9 @@
  ****************************************************************************/
 
 #pragma once
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*==========================================================================
  * FILE:         signal.h
@@ -214,3 +217,7 @@ int _sigaction(int sig, const struct sigaction *act, struct sigaction *oact);
  */
 int sigtimedwait(const sigset_t *restrict set, siginfo_t *restrict info, 
                  const struct timespec *restrict timeout);
+
+#ifdef __cplusplus
+}
+#endif

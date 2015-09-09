@@ -59,6 +59,10 @@ typedef struct timer_i * timer_t; /* handle to internal struct */
 /* have to move #include here to solve circular include problems between time.h and signal.h */
 #include <dspal_signal.h>
 
+#ifdef _cplusplus
+extern "C" {
+#endif
+
 /* Timer functions */
 
 /** \details
@@ -143,3 +147,6 @@ time_t time(time_t *t);
 #endif
 
 /** @} */
+#ifdef _cplusplus
+}
+#endif
