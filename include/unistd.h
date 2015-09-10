@@ -46,19 +46,25 @@ typedef unsigned long useconds_t;
  * @brief
  * Please refer to the POSIX standard for details.
  */
-int usleep(useconds_t);
+int usleep(useconds_t usec);
 
 /**
  * @brief
  * Please refer to the POSIX standard for details.
  */
-int close (int);
+int close (int fd);
 
 /**
  * @brief
  * Please refer to the POSIX standard for details.
  */
-size_t read(int, void *, size_t);
+size_t read(int fd, void *buf, size_t count);
+
+/**
+ * @brief
+ * Please refer to the POSIX standard for details.
+ */
+ssize_t write(int fd, const void *buf, size_t count);
 
 /**
  * @brief
