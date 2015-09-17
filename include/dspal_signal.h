@@ -46,7 +46,7 @@ extern "C" {
 #include "dspal_types.h"
 
 /* POSIX signal bits */
-#define SIGALRM        1 /* Alarm clock */
+#define DSPAL_SIGALRM  1 /* Alarm clock */
 #define POSIX_MSG      7 /* POSIX msg type used in Qube API */
 #define POSIX_NOTIF    8 /* POSIX msg type used in Qube API */
 #define SIGKILL        9 /* kill (cannot be caught or ignored) */
