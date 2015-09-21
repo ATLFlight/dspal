@@ -51,6 +51,7 @@
 
 #endif /* __BSD_VISIBLE */
 
+__BEGIN_DECLS
 /*
  * Structure defined by POSIX.1b to be like a itimerval, but with
  * timespecs. Used in the timer_*() system calls.
@@ -60,4 +61,5 @@ struct itimerspec {
 	struct timespec  it_value;
 };
 
+__END_DECLS
 #endif /* _SYS_TIMESPEC_H_ */
