@@ -36,7 +36,7 @@
 
 /**
  * @file
- * The declarations in this file are released to DspAL users and are used to
+ * The declarations in this file are released to DSPAL users and are used to
  * make file I/O call's for UART device access.  Many of the data structures
  * are used in the parameter of the IOCTL functions to define the
  * behavior of the particular IOCTL.
@@ -89,7 +89,7 @@ typedef void (*serial_tx_func_ptr_t)(void);
 
 /**
  * @brief
- * DspAL ID's for the serial bit rate. These values should be identical
+ * DSPAL ID's for the serial bit rate. These values should be identical
  * to those used in the aDSP SIO port code.
  */
 enum DSPAL_SERIAL_BITRATES
@@ -133,7 +133,7 @@ enum DSPAL_SERIAL_BITRATES
 
 /**
  * @brief
- * DspAL ID's for the serial flow control. These values should be identical
+ * DSPAL ID's for the serial flow control. These values should be identical
  * to those used in the aDSP SIO port code.
  */
 enum DSPAL_SERIAL_FLOW_CONTROL_METHODS
@@ -173,14 +173,14 @@ enum DSPAL_SERIAL_IOCTLS
 
 /**
  * @brief
- * DspAL ID's mapped to the specified aDSP SIO port.
+ * DSPAL ID's mapped to the specified aDSP SIO port.
  */
 enum DSPAL_SERIAL_PORTS
 {
-   DSPAL_SIO_PORT_UART_MAIN = 1,/**< DspAL ID for the UART_MAIN port */
-   DSPAL_SIO_PORT_UART_AUX,     /**< DspAL ID for the UART_AUX port */
-   DSPAL_SIO_PORT_UART_THIRD,   /**< DspAL ID for the UART_THIRD port */
-   DSPAL_SIO_PORT_UART_CXM,     /**< DspAL ID for the UART_CXM port */
+   DSPAL_SIO_PORT_UART_MAIN = 1,/**< DSPAL ID for the UART_MAIN port */
+   DSPAL_SIO_PORT_UART_AUX,     /**< DSPAL ID for the UART_AUX port */
+   DSPAL_SIO_PORT_UART_THIRD,   /**< DSPAL ID for the UART_THIRD port */
+   DSPAL_SIO_PORT_UART_CXM,     /**< DSPAL ID for the UART_CXM port */
 };
 
 /**

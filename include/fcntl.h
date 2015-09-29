@@ -288,7 +288,49 @@ struct __oflock {
 
 #ifndef _KERNEL
 __BEGIN_DECLS
-int	open(const char *, int, ...);
+/**
+ * Opens a device path in preparation to read/write raw data from I2C, SPI,
+ * UART, GPIO devices and files.
+ * @par
+ * Device path's are passed in the name parameter of the open function. The
+ * following format is used to specify the bus type/number or port number.
+ * @par
+ * The string format defined for use in the device path is describe below:\n
+ * /dev/{string}-{port/bus/device number}\n
+ * - I2C device:  /dev/i2c-{bus number}
+ * - SPI device:  /dev/spi-{bus number}
+ * - GPIO device:  /dev/gpio-{port number}
+ * - UART device:
+ *   -# UART MAIN device:  /dev/tty-1
+ *   -# UART AUX device:   /dev/tty-2
+ *   -# UART THIRD device: /dev/tty-3
+ *
+ * @par
+ * In the case of bus devices, the same bus device path may be opened to access different
+ * peripheral slave devices.
+ * @par
+ * The string format defined for use in the file path is describe below:\n
+ * /dev/fs/{file relative path}\n
+ * The relative path should be relative to the path /usr/share/data/adsp
+ * E.g. /dev/fs/test.txt represents the file /usr/share/data/adsp/test.txt
+ * DSPAL file I/O operations is limited to the path /usr/share/data/adsp
+ *
+ * @param name
+ * The device path of the bus or port to be opened, or the file path,
+ * formatted as described above.
+ *
+ * @param mode
+ * In the case of devices, mode argument is treated as DON'T CARE. In the case
+ * of files, the following flags are supported:
+ * O_RDONLY, O_WRONLY, O_RDWR, O_CREAT, O_APPEND
+ *
+ * @return
+ * - {file descriptor}: The device was successfully opened and is ready for read/write access.
+ * Use this return value in all other function calls requiring an "fd" parameter.
+ * - -1 on error.
+ * TODO: List error codes for all bus/port types.
+ */
+int	open(const char *name, int mode, ...);
 int	creat(const char *, mode_t);
 int	fcntl(int, int, ...);
 #if __BSD_VISIBLE

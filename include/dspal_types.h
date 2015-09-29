@@ -43,6 +43,10 @@
 #include <sys/_types.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define PTHREAD_MUTEX_OPAQUE
 
 typedef unsigned long int   pid_t;
@@ -197,3 +201,8 @@ typedef long int   time_t;
 #endif
 
 typedef int pthread_key_t;
+
+#ifdef __cplusplus
+}
+#endif
+

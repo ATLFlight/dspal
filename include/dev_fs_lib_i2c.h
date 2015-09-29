@@ -34,7 +34,7 @@
 
 /**
  * @file
- * The declarations in this file are released to DspAL users and are used to
+ * The declarations in this file are released to DSPAL users and are used to
  * make file I/O call's for I2C device access.  Many of the data structures
  * are used in the parameter to a particular IOCTL function.
  *
@@ -80,6 +80,22 @@ enum DSPAL_I2C_IOCTLS
    I2C_IOCTL_INVALID = -1, /**< invalid IOCTL code, used to return an error */
    I2C_IOCTL_SLAVE,        /**< used to select the i2c peripheral on the specified i2c bus */
    I2C_IOCTL_RDWR,         /**< used to initiate a write/read batch transfer */
+   I2C_IOCTL_CONFIG,       /**< used to select the i2c peripheral on the
+                            * specified i2c bus. This has the same effect as
+                            * I2C_IOCTL_SLAVE and will be deprecated in future
+                            * release. It is recommended to use I2C_IOCTL_SLAVE
+                            * to select the i2c peripheral.
+                            */
+   I2C_IOCTL_WRITE_REG,    /**< used to write a register */
+   I2C_IOCTL_READ,         /**< used to read data from i2c buffer. This has
+                            * the same effect as posix read() call.
+                            * NOTE: Both mechanisms assumes that a write call
+                            * has been made to write the starting register
+                            * address from which to read. The most efficient
+                            * method of reading data from a specified register
+                            * on the slave device is to use the I2C_IOCTL_RDWR
+                            * IOCTL.
+                            */
    I2C_IOCTL_MAX_NUM,      /**< number of valid IOCTL codes defined for the I2C bus */
 };
 
@@ -87,7 +103,7 @@ enum DSPAL_I2C_IOCTLS
  * @brief
  * Additional error codes added to the standard POSIX errno list.
  */
-#define EDRIVER 65536 /**< Indicates an error from the underlying driver called by DspAL */
+#define EDRIVER 65536 /**< Indicates an error from the underlying driver called by DSPAL */
 
 /**
  * @brief
@@ -126,3 +142,11 @@ struct dspal_i2c_ioctl_combined_write_read
    uint8_t *read_buf; 		/**< the address of the buffer containing the bytes read from the specified register on the slave device */
    uint32_t read_buf_len; 	/**< the length of the read_buf buffer */
 };
+
+struct dspal_i2c_ioctl_read
+{
+   uint32_t flags;  /**< reserved for future use */
+   uint8_t *read_buf; /**< the address of the buffer containing the bytes read from the specified register on the slave device */
+   uint32_t read_buf_len; /**< the length of the read_buf buffer */
+};
+

@@ -37,7 +37,7 @@
 
 /**
  * @file
- * The declarations in this file are released to DspAL users and are used to
+ * The declarations in this file are released to DSPAL users and are used to
  * make file I/O call's for access to slave devices on a SPI bus.  Many of the
  * data structures are used in the parameter of the IOCTL functions to define the
  * behavior of the particular IOCTL.
@@ -85,7 +85,6 @@ enum DSPAL_SPI_IOCTLS
    SPI_IOCTL_LOOPBACK_TEST,  /**< activate the internal loopback test mode of the spi bus */
    SPI_IOCTL_RDWR,           /**< used to initiate a write/read batch transfer */
    SPI_IOCTL_SET_BUS_FREQUENCY_IN_HZ,  /**< use this to set the SPI bus speed in HZ */
-   SPI_IOCTL_SET_GPIO_INTERRUPT,  /**< enable/disable data ready interrupt for SPI device. */
    SPI_IOCTL_MAX_NUM,        /**< number of valid IOCTL codes defined for the I2C bus */
 };
 
@@ -164,25 +163,3 @@ struct dspal_spi_ioctl_loopback
    enum DSPAL_SPI_LOOPBACK_TEST_STATE state; /**< the state indicating if loopback mode is enabled or disabled. */
 };
 
-/**
- * gpio interrupt callback function pointer
- * @param context
- * the parameter passed to the callback when gpio interrupt fires
- */
-typedef void (*spi_gpio_int_func_ptr_t)(void* context);
-
-/**
- * Structure passed to the SPI_IOCTL_SET_GPIO_INTERRUPT call. Configure the
- * GPIO interrupt or disable the interrupt.
- *
- * TODO: This is actually for interrupt configuration on GPIO device. We
- * borrow the spi sys_ioctl for now. When GPIO Dspal wrapper is available,
- * we may need to consolidate this logic into GPIO Dspal wrapper.
- */
-struct dspal_spi_ioctl_set_gpio_interrupt
-{
-   bool enable_gpio_interrupt;  /**< indicate whether this ioctl op should enable or disable the gpio interrupt */
-   int gpio_int_dev_id; /**< id of GPIO device used for interrupt */
-   spi_gpio_int_func_ptr_t gpio_int_callback;  /*< interrupt callback functtion pointer. if enable_gpio_interrupt is false, this variable is DON'T CARE */
-   void* user_context;
-};
