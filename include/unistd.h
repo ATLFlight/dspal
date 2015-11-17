@@ -38,7 +38,7 @@
  */
 
 #include "dspal_types.h"
-#include "sys/ioccom.h"
+#include <sys/cdefs.h>
 
 #define F_OK 0
 
@@ -120,28 +120,6 @@ size_t read(int fd, void *buf, size_t count);
  * - negative error code on error
  */
 ssize_t write(int fd, const void *buf, size_t count);
-
-/**
- * Sends an IOCTL for a previous open bus/port device or file.
- *
- * @param fd
- * File descriptor returned from the open function.
- * @param request
- * The numeric value of the IOCTL defined for the particular bus/port openened.
- * In the case of files, see fcntl.h\n
- * In the case of devices, see the following header files for a list of
- * IOCTL options defined for certain type of bus/port device
- * - dev_fs_lib_serial.h
- * - dev_fs_lib_spi.h
- * - dev_fs_lib_gpio.h
- * - dev_fs_lib_i2c.h \n
- * @param argp
- * Parameter buffer defined for the particular IOCTL.
- * @return
- * - SUCCESS: The IOCTL was successfully processed.
- * TODO: List error codes for all bus/port types.
- */
-int ioctl(int fd, int request, void *argp);
 
 /**
  * @brief
