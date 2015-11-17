@@ -61,40 +61,6 @@
 #define	__END_DECLS
 #endif
 
-/*
- * This code has been put in place to help reduce the addition of
- * compiler specific defines in FreeBSD code.  It helps to aid in
- * having a compiler-agnostic source tree.
- */
-
-#if defined(__GNUC__) || defined(__INTEL_COMPILER)
-
-#if __GNUC__ >= 3 || defined(__INTEL_COMPILER)
-#define __GNUCLIKE_ASM 3
-#define __GNUCLIKE_MATH_BUILTIN_CONSTANTS
-#else
-#define __GNUCLIKE_ASM 2
-#endif
-#define __GNUCLIKE___TYPEOF 1
-#define __GNUCLIKE___OFFSETOF 1
-#define __GNUCLIKE___SECTION 1
-
-#ifndef __INTEL_COMPILER
-# define __GNUCLIKE_CTOR_SECTION_HANDLING 1
-#endif
-
-#define __GNUCLIKE_BUILTIN_CONSTANT_P 1
-# if defined(__INTEL_COMPILER) && defined(__cplusplus) \
-    && __INTEL_COMPILER < 800
-#  undef __GNUCLIKE_BUILTIN_CONSTANT_P
-# endif
-
-#if (__GNUC_MINOR__ > 95 || __GNUC__ >= 3) && !defined(__INTEL_COMPILER)
-# define __GNUCLIKE_BUILTIN_VARARGS 1
-# define __GNUCLIKE_BUILTIN_STDARG 1
-# define __GNUCLIKE_BUILTIN_VAALIST 1
-#endif
-
 #if defined(__GNUC__)
 # define __GNUC_VA_LIST_COMPATIBILITY 1
 #endif
@@ -105,13 +71,6 @@
 #if defined(__GNUC__)
 #define	__compiler_membar()	__asm __volatile(" " : : : "memory")
 #endif
-
-#ifndef __INTEL_COMPILER
-# define __GNUCLIKE_BUILTIN_NEXT_ARG 1
-# define __GNUCLIKE_MATH_BUILTIN_RELOPS
-#endif
-
-#define __GNUCLIKE_BUILTIN_MEMCPY 1
 
 /* XXX: if __GNUC__ >= 2: not tested everywhere originally, where replaced */
 #define __CC_SUPPORTS_INLINE 1
@@ -232,20 +191,6 @@
 #define	__packed	__attribute__((__packed__))
 #define	__aligned(x)	__attribute__((__aligned__(x)))
 #define	__section(x)	__attribute__((__section__(x)))
-#endif
-#if defined(__INTEL_COMPILER)
-#define __dead2		__attribute__((__noreturn__))
-#define __pure2		__attribute__((__const__))
-#define __unused	__attribute__((__unused__))
-#define __used		__attribute__((__used__))
-#define __packed	__attribute__((__packed__))
-#define __aligned(x)	__attribute__((__aligned__(x)))
-#define __section(x)	__attribute__((__section__(x)))
-#endif
-#endif
-
-#if !__GNUC_PREREQ__(2, 95)
-#define	__alignof(x)	__offsetof(struct { char __a; x __b; }, __b)
 #endif
 
 /*
@@ -511,15 +456,6 @@
 	    __attribute__((__format__ (__strftime__, fmtarg, firstvararg)))
 #endif
 
-/* Compiler-dependent macros that rely on FreeBSD-specific extensions. */
-#if defined(__FreeBSD_cc_version) && __FreeBSD_cc_version >= 300001 && \
-    defined(__GNUC__) && !defined(__INTEL_COMPILER)
-#define	__printf0like(fmtarg, firstvararg) \
-	    __attribute__((__format__ (__printf0__, fmtarg, firstvararg)))
-#else
-#define	__printf0like(fmtarg, firstvararg)
-#endif
-
 #if defined(__GNUC__) || defined(__INTEL_COMPILER)
 #ifndef __INTEL_COMPILER
 #define	__strong_reference(sym,aliassym)	\
@@ -554,64 +490,6 @@
 
 #define	__GLOBL1(sym)	__asm__(".globl " #sym)
 #define	__GLOBL(sym)	__GLOBL1(sym)
-
-#if defined(__GNUC__) || defined(__INTEL_COMPILER)
-#define	__IDSTRING(name,string)	__asm__(".ident\t\"" string "\"")
-#else
-/*
- * The following definition might not work well if used in header files,
- * but it should be better than nothing.  If you want a "do nothing"
- * version, then it should generate some harmless declaration, such as:
- *    #define __IDSTRING(name,string)	struct __hack
- */
-#define	__IDSTRING(name,string)	static const char name[] __unused = string
-#endif
-
-/*
- * Embed the rcs id of a source file in the resulting library.  Note that in
- * more recent ELF binutils, we use .ident allowing the ID to be stripped.
- * Usage:
- *	__FBSDID("$FreeBSD$");
- */
-#ifndef	__FBSDID
-#if !defined(lint) && !defined(STRIP_FBSDID)
-#define	__FBSDID(s)	__IDSTRING(__CONCAT(__rcsid_,__LINE__),s)
-#else
-#define	__FBSDID(s)	struct __hack
-#endif
-#endif
-
-#ifndef	__RCSID
-#ifndef	NO__RCSID
-#define	__RCSID(s)	__IDSTRING(__CONCAT(__rcsid_,__LINE__),s)
-#else
-#define	__RCSID(s)	struct __hack
-#endif
-#endif
-
-#ifndef	__RCSID_SOURCE
-#ifndef	NO__RCSID_SOURCE
-#define	__RCSID_SOURCE(s)	__IDSTRING(__CONCAT(__rcsid_source_,__LINE__),s)
-#else
-#define	__RCSID_SOURCE(s)	struct __hack
-#endif
-#endif
-
-#ifndef	__SCCSID
-#ifndef	NO__SCCSID
-#define	__SCCSID(s)	__IDSTRING(__CONCAT(__sccsid_,__LINE__),s)
-#else
-#define	__SCCSID(s)	struct __hack
-#endif
-#endif
-
-#ifndef	__COPYRIGHT
-#ifndef	NO__COPYRIGHT
-#define	__COPYRIGHT(s)	__IDSTRING(__CONCAT(__copyright_,__LINE__),s)
-#else
-#define	__COPYRIGHT(s)	struct __hack
-#endif
-#endif
 
 #ifndef	__DECONST
 #define	__DECONST(type, var)	((type)(__uintptr_t)(const void *)(var))
