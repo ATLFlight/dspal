@@ -44,7 +44,7 @@
 #include "dspal_types.h"
 #include <stdint.h>
 #include <sys/_sigset.h>
-#include <sched.h>
+#include <sys/sched.h>
 #include "dspal_time.h"
 
 /*
@@ -216,6 +216,11 @@ int pthread_cond_destroy(pthread_cond_t *);
 int pthread_cond_signal(pthread_cond_t *);
 int pthread_cond_broadcast(pthread_cond_t *);
 int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *__mutex);
+int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *__mutex);
+
+// Not yet supported - note that the 3rd parameter MUST be ABSTIME
+int pthread_cond_timedwait(pthread_cond_t *, pthread_mutex_t *, const struct timespec *);
+
 // Not supported in DSPAL
 //int pthread_barrier_init(pthread_barrier_t *restrict barrier, const pthread_barrierattr_t *restrict attr, unsigned count);
 //int pthread_barrier_destroy(pthread_barrier_t *barrier);

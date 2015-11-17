@@ -59,21 +59,4 @@
 /* this should be _IORW, but stdio got there first */
 #define	_IOWR(g,n,t)	_IOC(IOC_INOUT,	(g), (n), sizeof(t))
 
-#ifdef _KERNEL
-
-#if defined(COMPAT_FREEBSD6) || defined(COMPAT_FREEBSD5) || \
-    defined(COMPAT_FREEBSD4) || defined(COMPAT_43)
-#define	IOCPARM_IVAL(x)	((int)(intptr_t)(void *)*(caddr_t *)(void *)(x))
-#endif
-
-#else
-
-#include <sys/cdefs.h>
-
-__BEGIN_DECLS
-int	ioctl(int, unsigned long, ...);
-__END_DECLS
-
-#endif
-
 #endif /* !_SYS_IOCCOM_H_ */

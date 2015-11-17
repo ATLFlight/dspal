@@ -38,6 +38,7 @@
  */
 
 #include "dspal_types.h"
+#include "sys/ioccom.h"
 
 #define F_OK 0
 
