@@ -62,15 +62,13 @@
 #endif
 
 #if defined(__GNUC__)
+
 # define __GNUC_VA_LIST_COMPATIBILITY 1
-#endif
 
 /*
  * Compiler memory barriers, specific to gcc and clang.
  */
-#if defined(__GNUC__)
 #define	__compiler_membar()	__asm __volatile(" " : : : "memory")
-#endif
 
 /* XXX: if __GNUC__ >= 2: not tested everywhere originally, where replaced */
 #define __CC_SUPPORTS_INLINE 1
@@ -84,17 +82,13 @@
 
 #define __CC_SUPPORTS_DYNAMIC_ARRAY_INIT 1
 
-#endif /* __GNUC__ || __INTEL_COMPILER */
+#endif /* __GNUC__ */
 
 /*
  * Macro to test if we're using a specific version of gcc or later.
  */
-#if defined(__GNUC__) && !defined(__INTEL_COMPILER)
 #define	__GNUC_PREREQ__(ma, mi)	\
 	(__GNUC__ > (ma) || __GNUC__ == (ma) && __GNUC_MINOR__ >= (mi))
-#else
-#define	__GNUC_PREREQ__(ma, mi)	0
-#endif
 
 /*
  * The __CONCAT macro is used to concatenate parts of symbol names, e.g.
@@ -172,12 +166,12 @@
 #define	__weak
 #else
 #define	__weak		__attribute__((__weak__))
-#if !__GNUC_PREREQ__(2, 5) && !defined(__INTEL_COMPILER)
+#if !__GNUC_PREREQ__(2, 5)
 #define	__dead2
 #define	__pure2
 #define	__unused
 #endif
-#if __GNUC__ == 2 && __GNUC_MINOR__ >= 5 && __GNUC_MINOR__ < 7 && !defined(__INTEL_COMPILER)
+#if __GNUC__ == 2 && __GNUC_MINOR__ >= 5 && __GNUC_MINOR__ < 7
 #define	__dead2		__attribute__((__noreturn__))
 #define	__pure2		__attribute__((__const__))
 #define	__unused
@@ -191,6 +185,7 @@
 #define	__packed	__attribute__((__packed__))
 #define	__aligned(x)	__attribute__((__aligned__(x)))
 #define	__section(x)	__attribute__((__section__(x)))
+#endif
 #endif
 
 /*
@@ -288,7 +283,7 @@
 #define	__pure
 #endif
 
-#if __GNUC_PREREQ__(3, 1) || (defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 800)
+#if __GNUC_PREREQ__(3, 1)
 #define	__always_inline	__attribute__((__always_inline__))
 #else
 #define	__always_inline
@@ -323,7 +318,7 @@
 #define	__func__	NULL
 #endif
 
-#if (defined(__INTEL_COMPILER) || (defined(__GNUC__) && __GNUC__ >= 2)) && !defined(__STRICT_ANSI__) || __STDC_VERSION__ >= 199901
+#if (defined(__GNUC__) && __GNUC__ >= 2) && !defined(__STRICT_ANSI__) || __STDC_VERSION__ >= 199901
 #define	__LONG_LONG_SUPPORTED
 #endif
 
@@ -438,7 +433,7 @@
  * that are known to support the features properly (old versions of gcc-2
  * didn't permit keeping the keywords out of the application namespace).
  */
-#if !__GNUC_PREREQ__(2, 7) && !defined(__INTEL_COMPILER)
+#if !__GNUC_PREREQ__(2, 7)
 #define	__printflike(fmtarg, firstvararg)
 #define	__scanflike(fmtarg, firstvararg)
 #define	__format_arg(fmtarg)
@@ -456,11 +451,8 @@
 	    __attribute__((__format__ (__strftime__, fmtarg, firstvararg)))
 #endif
 
-#if defined(__GNUC__) || defined(__INTEL_COMPILER)
-#ifndef __INTEL_COMPILER
 #define	__strong_reference(sym,aliassym)	\
 	extern __typeof (sym) aliassym __attribute__ ((__alias__ (#sym)))
-#endif
 #ifdef __STDC__
 #define	__weak_reference(sym,alias)	\
 	__asm__(".weak " #alias);	\
@@ -486,7 +478,6 @@
 #define	__sym_default(impl,sym,verid)	\
 	__asm__(".symver impl, sym@@verid")
 #endif	/* __STDC__ */
-#endif	/* __GNUC__ || __INTEL_COMPILER */
 
 #define	__GLOBL1(sym)	__asm__(".globl " #sym)
 #define	__GLOBL(sym)	__GLOBL1(sym)
