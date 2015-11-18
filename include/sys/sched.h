@@ -80,6 +80,7 @@ struct sched_param {
  */
 #ifndef _KERNEL
 #include <dspal_types.h>
+#include <sys/cdefs.h>
 
 struct timespec;
 
