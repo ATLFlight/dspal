@@ -44,7 +44,7 @@
 #include "dspal_types.h"
 #include <stdint.h>
 #include <sys/_sigset.h>
-#include <sys/sched.h>
+#include <sched.h>
 #include "dspal_time.h"
 
 /*
