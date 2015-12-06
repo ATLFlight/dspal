@@ -12,7 +12,7 @@
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
-# 3. Neither the name ATLFLight nor the names of its contributors may be
+# 3. Neither the name PX4 nor the names of its contributors may be
 #    used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
@@ -31,39 +31,12 @@
 #
 ############################################################################
 
-all: build_apps_targets build_adsp_targets
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-.PHONY: stubs
-stubs: dspal_tester_skel.c dspal_tester_stub.c
+set(version_major 0)
+set(version_minor 1)
+set(version_patch 0)
+set(version "${version_major}.${version_minor}.${version_patch}")
+set(package-contact "charlebm@gmail.com")
 
-dspal_tester_skel.c dspal_tester_stub.c: dspal_tester.idl
-	${HEXAGON_SDK_ROOT}/tools/qaic/Ubuntu14/qaic -m dll -I ${HEXAGON_SDK_ROOT}/inc/stddef $<
-
-.PHONY: build_adsp_targets
-build_adsp_targets: build_dsp/libdspal_tester_skel.so build_dsp/libdspal_tester.so
-
-build_dsp/libdspal_tester_skel.so build_dsp/libdspal_tester.so: stubs
-	mkdir -p build_dsp && cd build_dsp && cmake -Wno-dev ../adsp_proc -DCMAKE_TOOLCHAIN_FILE=Toolchain-qurt.cmake
-	cd build_dsp && make
-	
-.PHONY: build_apps_targets
-build_apps_targets: build_apps/dspal_tester
-
-build_apps/dspal_tester: stubs
-	mkdir -p build_apps && cd build_apps && cmake -Wno-dev ../apps_proc -DCMAKE_TOOLCHAIN_FILE=Toolchain-arm-linux-gnueabihf.cmake
-	cd build_apps && make
-
-load:
-	adb shell rm -f /usr/share/data/adsp/libdspal_tester_skel.so
-	adb shell rm -f /home/linaro/libdspal_tester.so
-	adb shell rm -f /home/linaro/dspal_tester
-	adb shell rm -f /home/linaro/setup.sh
-	adb push build_adsp/libdspal_tester_skel.so /usr/share/data/adsp
-	adb push build_apps/libdspal_tester.so /home/linaro/libdspal_tester.so
-	adb push build_apps/dspal_tester /home/linaro/dspal_tester
-	adb push setup.sh /home/linaro/
-	adb shell chmod 777 /home/linaro/dspal_tester
-	adb shell sync
-
-clean:
-	rm -rf build_dsp build_apps dspal_tester_skel.c dspal_tester_stub.c dspal_tester.h
+# vim: set noet fenc=utf-8 ff=unix ft=cmake :

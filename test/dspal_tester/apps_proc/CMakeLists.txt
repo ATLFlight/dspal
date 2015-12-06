@@ -31,16 +31,28 @@
 #
 ############################################################################
 
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+include(../cmake/common.cmake)
+
+include_directories(
+	${HEXAGON_SDK_ROOT}/lib/common/adspmsgd/ship/UbuntuARM_Debug
+	${HEXAGON_SDK_ROOT}/lib/common/rpcmem
+	../include
+	..
+	)
+
 add_executable(dspal_tester 
 	dspal_tester_main.c
 	io_test_suite.c
 	io_test_suite.h
 	posix_test_suite.c
 	posix_test_suite.h
+	../dspal_tester_stub.c
 	../common/test_utils.c
 	)
 
-target_link_libraries(helloworld
+target_link_libraries(dspal_tester
         -L${HEXAGON_SDK_ROOT}/lib/common/remote/ship/UbuntuARM_Debug 
 	adsprpc
 	)

@@ -29,6 +29,19 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ############################################################################
 
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+include(../cmake/common.cmake)
+
+include_directories(
+	${HEXAGON_SDK_ROOT}/lib/common/rpcmem
+	${HEXAGON_SDK_ROOT}/inc/stddef
+	${HEXAGON_SDK_ROOT}/inc
+	../../../include
+	../include
+	..
+	)
+
 set(CMAKE_SHARED_LIB_FLAGS "-L${HEXAGON_SDK_ROOT}/lib/common/remote/ship/hexagon_Debug -l adsprpc")
 
 add_library(dspal_tester_skel SHARED

@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2015 Mark Charlebois. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,15 +30,41 @@
  *
  ****************************************************************************/
 
-#ifndef DSPAL_ERRNO_H_
-#define DSPAL_ERRNO_H_
+#ifndef DEV_FS_LIB_H_
+#define DEV_FS_LIB_H_
 
-#ifndef ERROR
-#define ERROR -1
+/**
+ * @file
+ * The declarations in this file are for the DspAL internal implementation only.
+ * DspAL users shall never directly call these functions!
+ */
+
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
-#ifndef SUCCESS
-#define SUCCESS 0
+/**
+ * The maximum length of the device path used when naming the port or bus resources to be
+ * opened.
+ */
+#define MAX_LEN_DEVICE_PATH_IN_BYTES 32
+
+int sys_open(const char* name, unsigned int mode);
+
+int sys_ioctl(int fd, int request, void *argp);
+
+int sys_read(int fd, char* buffer, int count);
+
+int sys_write(int fd, const char* buffer, int count);
+
+int sys_close(int fd);
+
+#define DSPAL_USED_STATUS_COOKIE     "    USED" /**< indicates that the associated item is in use */
+#define DSPAL_NOT_USED_STATUS_COOKIE "NOT USED" /**< indicates that the associated item is not in use */
+
+#ifdef __cplusplus
+}
 #endif
 
-#endif /* DSPAL_ERRNO_H_ */
+#endif /* DEV_FS_LIB_H_ */

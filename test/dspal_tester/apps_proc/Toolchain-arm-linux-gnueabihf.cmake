@@ -1,5 +1,4 @@
 ############################################################################
-#
 # Copyright (c) 2015 Mark Charlebois. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -12,7 +11,7 @@
 #    notice, this list of conditions and the following disclaimer in
 #    the documentation and/or other materials provided with the
 #    distribution.
-# 3. Neither the name PX4 nor the names of its contributors may be
+# 3. Neither the name ATLFlight nor the names of its contributors may be
 #    used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
@@ -28,43 +27,65 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-#
 ############################################################################
 
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-
-set(version_major 0)
-set(version_minor 1)
-set(version_patch 0)
-set(version "${version_major}.${version_minor}.${version_patch}")
-set(package-contact "charlebm@gmail.com")
-
-include(${CMAKE_TOOLCHAIN_FILE})
-if ("$ENV{HEXAGON_TOOLS_ROOT}" STREQUAL "")
-	message( FATAL_ERROR "HEXAGON_TOOLS_ROOT not set")
-endif()
+# defines:
+#
+# C_COMPILER
+# CMAKE_SYSTEM_NAME
+# CMAKE_SYSTEM_VERSION
+# LINKER_FLAGS
+# CMAKE_EXE_LINKER_FLAGS
+# CMAKE_FIND_ROOT_PATH
+# CMAKE_FIND_ROOT_PATH_MODE_PROGRAM
+# CMAKE_FIND_ROOT_PATH_MODE_LIBRARY
+# CMAKE_FIND_ROOT_PATH_MODE_INCLUDE
+# HEXAGON_SDK_ROOT
 
 if ("$ENV{HEXAGON_SDK_ROOT}" STREQUAL "")
-	message( FATAL_ERROR "HEXAGON_SDK_ROOT not set")
+	message(FATAL_ERROR "HEXAGON_SDK_ROOT not set")
 endif()
 
-set(HEXAGON_TOOLS_ROOT $ENV{HEXAGON_TOOLS_ROOT})
 set(HEXAGON_SDK_ROOT $ENV{HEXAGON_SDK_ROOT})
 
+include(CMakeForceCompiler)
+
+# this one is important
+set(CMAKE_SYSTEM_NAME Generic)
+
+#this one not so much
+set(CMAKE_SYSTEM_VERSION 1)
+
+# specify the cross compiler
+find_program(C_COMPILER arm-linux-gnueabihf-gcc-5)
+if(NOT C_COMPILER)
+	find_program(C_COMPILER arm-linux-gnueabihf-gcc-4.9)
+	if(NOT C_COMPILER)
+		find_program(C_COMPILER arm-linux-gnueabihf-gcc-4.8)
+		if(NOT C_COMPILER)
+			find_program(C_COMPILER arm-linux-gnueabihf-gcc)
+			if(NOT C_COMPILER)
+				message(FATAL_ERROR "could not find arm-linux-gnueabihf-gcc compiler")
+			endif()
+		endif()
+	endif()
+endif()
+cmake_force_c_compiler(${C_COMPILER} GNU)
+
 include_directories(
-	${HEXAGON_TOOLS_ROOT}/Tools/target/hexagon/include
 	${HEXAGON_SDK_ROOT}/inc/stddef
-	${HEXAGON_SDK_ROOT}/lib/common/remote/ship/hexagon_Debug
-	${CMAKE_SOURCE_DIR}/../include
-	include
+	${HEXAGON_SDK_ROOT}/lib/common/remote/ship/UbuntuARM_Debug
 	)
 
-message(STATUS "CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS "")
+set(LINKER_FLAGS "-Wl,-gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS ${LINKER_FLAGS})
 
-set(CMAKE_SHARED_LIB_FLAGS "-L${HEXAGON_SDK_ROOT}/lib/common/remote/ship/hexagon_Debug -l adsprpc")
+# where is the target environment 
+set(CMAKE_FIND_ROOT_PATH  get_file_component(${C_COMPILER} PATH))
 
-add_subdirectory(src/adsp_proc)
-add_subdirectory(src/apps_proc)
-add_subdirectory(src/common)
-
-# vim: set noet fenc=utf-8 ff=unix ft=cmake :
+# search for programs in the build host directories
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# for libraries and headers in the target directories
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
