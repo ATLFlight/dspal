@@ -36,6 +36,7 @@ include(../cmake/common.cmake)
 include_directories(
 	${HEXAGON_SDK_ROOT}/lib/common/rpcmem
 	${HEXAGON_SDK_ROOT}/inc/stddef
+	${HEXAGON_SDK_ROOT}/lib/common/remote/ship/hexagon_Debug
 	${HEXAGON_SDK_ROOT}/inc
 	../../../include
 	../include
@@ -44,7 +45,7 @@ include_directories(
 
 set(CMAKE_SHARED_LIB_FLAGS "-L${HEXAGON_SDK_ROOT}/lib/common/remote/ship/hexagon_Debug -l adsprpc")
 
-add_library(dspal_tester_skel SHARED
+add_library(dspal_tester SHARED
 	gpio_test_imp.c
 	i2c_test_imp.c
 	posix_file_tests.c
@@ -53,6 +54,13 @@ add_library(dspal_tester_skel SHARED
 	posix_time_tests.c
 	serial_test_imp.c
 	spi_test_imp.c
+	../common/test_utils.c
 	)
+
+add_library(dspal_tester_skel SHARED
+	../dspal_tester_skel.c
+	)
+
+target_link_libraries(dspal_tester_skel dspal_tester)
 
 # vim: set noet fenc=utf-8 ff=unix ft=cmake :

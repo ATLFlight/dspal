@@ -33,37 +33,49 @@
 
 all: build_apps_targets build_adsp_targets
 
+.PHONY: ENV_VARS
+ENV_VARS:
+	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
+	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
+
 .PHONY: stubs
 stubs: dspal_tester_skel.c dspal_tester_stub.c
 
-dspal_tester_skel.c dspal_tester_stub.c: dspal_tester.idl
+dspal_tester_skel.c dspal_tester_stub.c: dspal_tester.idl ENV_VARS
 	${HEXAGON_SDK_ROOT}/tools/qaic/Ubuntu14/qaic -m dll -I ${HEXAGON_SDK_ROOT}/inc/stddef $<
 
 .PHONY: build_adsp_targets
 build_adsp_targets: build_dsp/libdspal_tester_skel.so build_dsp/libdspal_tester.so
 
-build_dsp/libdspal_tester_skel.so build_dsp/libdspal_tester.so: stubs
+build_dsp/libdspal_tester_skel.so build_dsp/libdspal_tester.so: stubs ENV_VARS
 	mkdir -p build_dsp && cd build_dsp && cmake -Wno-dev ../adsp_proc -DCMAKE_TOOLCHAIN_FILE=Toolchain-qurt.cmake
 	cd build_dsp && make
 	
 .PHONY: build_apps_targets
 build_apps_targets: build_apps/dspal_tester
 
-build_apps/dspal_tester: stubs
+build_apps/dspal_tester: stubs ENV_VARS
 	mkdir -p build_apps && cd build_apps && cmake -Wno-dev ../apps_proc -DCMAKE_TOOLCHAIN_FILE=Toolchain-arm-linux-gnueabihf.cmake
 	cd build_apps && make
 
-load:
+load-app:
 	adb shell rm -f /usr/share/data/adsp/libdspal_tester_skel.so
-	adb shell rm -f /home/linaro/libdspal_tester.so
+	adb shell rm -f /usr/share/data/adsp/libdspal_tester.so
 	adb shell rm -f /home/linaro/dspal_tester
-	adb shell rm -f /home/linaro/setup.sh
-	adb push build_adsp/libdspal_tester_skel.so /usr/share/data/adsp
-	adb push build_apps/libdspal_tester.so /home/linaro/libdspal_tester.so
+	adb push build_dsp/libdspal_tester_skel.so /usr/share/data/adsp
+	adb push build_dsp/libdspal_tester.so /usr/share/data/adsp/libdspal_tester.so
 	adb push build_apps/dspal_tester /home/linaro/dspal_tester
-	adb push setup.sh /home/linaro/
-	adb shell chmod 777 /home/linaro/dspal_tester
 	adb shell sync
+
+.PHONY: ADD_ON
+ADD_ON:
+	@[ ! -z "${HEXAGON_FC_ADDON}" ] || (echo "HEXAGON_FC_ADDON not set" && false)
+
+load-adsp: ADD_ON
+	@adb wait-for-devices
+	@adb push ${HEXAGON_FC_ADDON}/images/8074-eagle/normal/adsp_proc/obj/qdsp6v5_ReleaseG/LA/system/etc/firmware /lib/firmware
+	@adb shell sync
+	@adb reboot
 
 clean:
 	rm -rf build_dsp build_apps dspal_tester_skel.c dspal_tester_stub.c dspal_tester.h

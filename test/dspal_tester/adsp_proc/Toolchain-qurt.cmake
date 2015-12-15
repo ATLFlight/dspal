@@ -218,7 +218,7 @@ message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
 # Flags we pass to the linker
 #
-list2string(CMAKE_EXE_LINKER_FLAGS
+list2string(CMAKE_SHARED_LINKER_FLAGS
 	-g 
 	-mv5 
 	-mG0lib 
