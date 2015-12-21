@@ -65,6 +65,7 @@ interface dspal_tester
    long test_pthread_mutex_lock_thread();
    long test_pthread_stack();
    long test_pthread_heap();
+   long test_pthread_cond_timedwait();
 
    long test_semaphore_wait();
 

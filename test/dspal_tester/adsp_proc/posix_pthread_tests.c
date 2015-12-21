@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <dspal_signal.h>
 #include <pthread.h>
@@ -42,6 +43,7 @@
 #include "dspal_tester.h"
 
 #define SKIP_PTHREAD_KILL
+#define DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS 3
 
 /**
  * @brief Test if pthread_attr_init and pthread_attr_destroy work.
@@ -689,4 +691,181 @@ int dspal_tester_test_pthread_heap(void)
    }
 
    return TEST_PASS;
+}
+
+/**
+ * @brief Helper thread which blocks on a condition variable
+ *
+ * @par See the documentation on the test for the pthread_cond_timedwait() function.
+ *
+ * @return
+ * error code
+ */
+void *test_pthread_cond_timedwait_helper(void *test_value)
+{
+   pthread_mutex_t mutex;
+   pthread_mutexattr_t attr;
+   pthread_cond_t *cond = (pthread_cond_t *)test_value;
+   int mutex_lock_status;
+   struct timespec timeout;
+   struct timespec now;
+   int cond_status, return_status = 0;
+
+   /*
+    * Initialize and lock the mutex used to prevent race conditions when accessing
+    * the condition from multiple threads.  Explicitly set the mutex type to normal
+    * to prevent the use of the default recursive mutex.
+    */
+   if (pthread_mutexattr_init(&attr) != 0 ||
+       pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0 ||
+       pthread_mutex_init(&mutex, &attr) != 0)
+   {
+     MSG("error: pthread mutex initialization failed");
+     return_status = -1;
+     goto exit;
+   }
+
+   /*
+    * Obtain the current time and add the specified timeout, since
+    * the timeout must be specified as absolute time.
+    */
+   clock_gettime(CLOCK_REALTIME, &now);
+   timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
+   timeout.tv_nsec = now.tv_nsec;
+
+   /*
+    * Initialize the parameters to cause a new mutex and cond object
+    * to be instantiated.
+    */
+   if ((mutex_lock_status = pthread_mutex_trylock(&mutex)) != 0)
+   {
+      MSG("error: pthread_mutex_trylock indicates that the lock is already established: %d", mutex_lock_status);
+   }
+   *cond = PTHREAD_COND_INITIALIZER;
+
+   /*
+    * Wait once, long enough for a timeout to occur.
+    */
+   MSG("entering first pthread_cond_timedwait call, testing timeout");
+   cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
+   if (cond_status != ETIMEDOUT)
+   {
+      MSG("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d",
+            cond_status, ETIMEDOUT);
+     return_status = -1;
+   }
+   else
+   {
+      MSG("first pthread_cond_timedwait call timed out as expected.");
+   }
+
+   /*
+    * Update the time to the new absolute time for the next timeout.
+    */
+   clock_gettime(CLOCK_REALTIME, &now);
+   timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
+   timeout.tv_nsec = now.tv_nsec;
+
+   /*
+    * Wait again, but this time expect to be signaled before the timeout
+    * has occurred.
+    */
+   MSG("entering second pthread_cond_timedwait call, no timeout expected");
+   cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
+   if (cond_status == ETIMEDOUT)
+   {
+     MSG("error: pthread_cond_timewait timed out unexpectedly");
+     return_status = -1;
+   }
+   else
+   {
+     MSG("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d",
+            cond_status, ETIMEDOUT);
+   }
+
+   /*
+    * Leave the mutex unlocked since it is no longer needed.
+    */
+   pthread_mutex_unlock(&mutex);
+
+   /*
+    * Free the resources allocated by the called function through
+    * the use of the {_}_INITIALIZER constant and direct call to the
+    * _init function.
+    */
+   pthread_mutex_destroy(&mutex);
+   pthread_cond_destroy(cond);
+
+exit:
+   return (void *)return_status;
+}
+
+/**
+ * @brief Tests timeout functionality of the pthread_cond_timedwait() function.
+ *
+ * @par This test launches a helper thread which blocks on a condition variable.  The
+ * first blocking condition is cleared with a timeout, while the second is cleared
+ * when the condition is signaled (not timeout).
+ *
+ * @return
+ * TEST_PASS
+ * TEST_FAIL
+*/
+
+int dspal_tester_test_pthread_cond_timedwait(void)
+{
+   int rv = 0;
+   pthread_cond_t cond;
+   int test_value = TEST_FAIL;
+   pthread_t thread;
+
+   /*
+    * Create the thread passing a reference to the cond structure
+    * just initialized.
+    */
+   rv = pthread_create(&thread, NULL, test_pthread_cond_timedwait_helper, &cond);
+   if (rv != 0)
+   {
+      MSG("error pthread_create: %d", rv);
+     goto exit;
+   }
+
+   /*
+    * Begin the first test by sleeping long enough for the timeout to
+    * have occurred.
+    */
+   usleep((DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS + 2) * 1000000);
+
+   /*
+    * Now trigger the condition to verify that it was detected before
+    * the timeout period has expired.
+    */
+   MSG("entering pthread_cond_signal for the next cond wait (after the timeout)");
+   rv = pthread_cond_signal(&cond);
+   if (rv != 0)
+   {
+      MSG("error pthread_cond_signal: %d", rv);
+     goto exit;
+   }
+
+   MSG("pthread_cond_signal has returned, waiting for the helper thread to exit");
+   rv = pthread_join(thread, NULL);
+   if (rv != 0)
+    {
+     MSG("error pthread_join: %d", rv);
+     goto exit;
+    }
+
+   test_value = TEST_PASS;
+
+exit:
+   if (test_value != TEST_PASS)
+   {
+      MSG("error: dspal_tester_test_pthread_cond_timedwait");
+   }
+   else
+   {
+      MSG("success: dspal_tester_test_pthread_cond_timedwait");
+   }
+   return test_value;
 }

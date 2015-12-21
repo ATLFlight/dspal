@@ -67,6 +67,7 @@ int run_posix_test_suite(void)
    test_results |= display_test_results(dspal_tester_test_pthread_self(), "pthread self");
    test_results |= display_test_results(dspal_tester_test_pthread_exit(), "pthread exit");
    test_results |= display_test_results(dspal_tester_test_pthread_kill(), "pthread kill");
+   test_results |= display_test_results(dspal_tester_test_pthread_cond_timedwait(), "pthread condition timed wait");
    test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock(), "pthread mutex lock");
    test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock_thread(), "thread mutex lock thread");
    test_results |= display_test_results(dspal_tester_test_pthread_stack(), "thread large allocation on stack");

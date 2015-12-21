@@ -98,10 +98,10 @@
 /*
  * Static initialization values. 
  */
-#define PTHREAD_MUTEX_INITIALIZER	NULL
+#define PTHREAD_MUTEX_INITIALIZER	0xFFFFFFFF
 #define PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP	((pthread_mutex_t)1)
-#define PTHREAD_COND_INITIALIZER	NULL
-#define PTHREAD_RWLOCK_INITIALIZER	NULL
+#define PTHREAD_COND_INITIALIZER	0xFFFFFFFF
+#define PTHREAD_RWLOCK_INITIALIZER	0xFFFFFFFF
 
 /*
  * Default attribute arguments (draft 4, deprecated).
@@ -126,16 +126,18 @@
  *
  * will deviate from POSIX specified semantics.
  */
+
+/* mutex type */
 enum pthread_mutextype
 {
-   PTHREAD_MUTEX_ERRORCHECK = 1, /* Default POSIX mutex */
+   PTHREAD_MUTEX_ERRORCHECK = 0, /* Default POSIX mutex */
+   PTHREAD_MUTEX_NORMAL = 1, /* No error checking */
    PTHREAD_MUTEX_RECURSIVE = 2, /* Recursive mutex */
-   PTHREAD_MUTEX_NORMAL = 3, /* No error checking */
    PTHREAD_MUTEX_ADAPTIVE_NP = 4, /* Adaptive mutex, spins briefly before blocking on lock */
    PTHREAD_MUTEX_TYPE_MAX
 };
 
-#define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_ERRORCHECK
+#define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_RECURSIVE
 
 struct _pthread_cleanup_info
 {
@@ -156,9 +158,8 @@ static inline void pthread_yield(void)
 }
 
 __BEGIN_DECLS
-
 /*
- * Not POSIX compliant additions to pthread get/set attribute functions:
+ * Qualcomm (not POSIX compliant) additions to pthread get/set attribute functions:
  */
 int pthread_attr_setthreadname(pthread_attr_t *attr, const char * name);
 int pthread_attr_getthreadname(const pthread_attr_t *attr, char * name, int size);
@@ -216,11 +217,7 @@ int pthread_cond_destroy(pthread_cond_t *);
 int pthread_cond_signal(pthread_cond_t *);
 int pthread_cond_broadcast(pthread_cond_t *);
 int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *__mutex);
-int pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *__mutex);
-
-// Not yet supported - note that the 3rd parameter MUST be ABSTIME
-int pthread_cond_timedwait(pthread_cond_t *, pthread_mutex_t *, const struct timespec *);
-
+int pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex, const struct timespec *time);
 // Not supported in DSPAL
 //int pthread_barrier_init(pthread_barrier_t *restrict barrier, const pthread_barrierattr_t *restrict attr, unsigned count);
 //int pthread_barrier_destroy(pthread_barrier_t *barrier);
