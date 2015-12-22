@@ -79,7 +79,7 @@ int dspal_tester_serial_multi_port(void)
    int result = SUCCESS;
 
    FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_1);
-   serial_fildes_1 = open(SERIAL_DEVICE_PATH_1, 0);
+   serial_fildes_1 = open(SERIAL_DEVICE_PATH_1, O_RDWR);
    if (serial_fildes_1 < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_1);
@@ -87,7 +87,7 @@ int dspal_tester_serial_multi_port(void)
    }
 
    FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_2);
-   serial_fildes_2 = open(SERIAL_DEVICE_PATH_2, 0);
+   serial_fildes_2 = open(SERIAL_DEVICE_PATH_2, O_RDWR);
    if (serial_fildes_2 < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_2);
@@ -95,20 +95,20 @@ int dspal_tester_serial_multi_port(void)
    }
 
    FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_3);
-   serial_fildes_3 = open(SERIAL_DEVICE_PATH_3, 0);
+   serial_fildes_3 = open(SERIAL_DEVICE_PATH_3, O_RDWR);
    if (serial_fildes_3 < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_3);
       result = ERROR;
    }
 
-   // FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_4);
-   // serial_fildes_4 = open(SERIAL_DEVICE_PATH_4, 0);
-   // if (serial_fildes_4 < SUCCESS)
-   // {
-   //    FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_4);
-   //    result = ERROR;
-   // }
+   FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_4);
+   serial_fildes_4 = open(SERIAL_DEVICE_PATH_4, O_RDWR);
+   if (serial_fildes_4 < SUCCESS)
+   {
+      FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_4);
+      result = ERROR;
+   }
 
    if (serial_fildes_1 > 0)
    {
@@ -180,7 +180,7 @@ int dspal_tester_serial_multi_port_write_read(void)
 
    // open all 4 uart ports
    FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_1);
-   serial_fildes_1 = open(SERIAL_DEVICE_PATH_1, 0);
+   serial_fildes_1 = open(SERIAL_DEVICE_PATH_1, O_RDWR);
    if (serial_fildes_1 < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_1);
@@ -189,7 +189,7 @@ int dspal_tester_serial_multi_port_write_read(void)
    }
 
    FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_2);
-   serial_fildes_2 = open(SERIAL_DEVICE_PATH_2, 0);
+   serial_fildes_2 = open(SERIAL_DEVICE_PATH_2, O_RDWR);
    if (serial_fildes_2 < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_2);
@@ -198,7 +198,7 @@ int dspal_tester_serial_multi_port_write_read(void)
    }
 
    FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_3);
-   serial_fildes_3 = open(SERIAL_DEVICE_PATH_3, 0);
+   serial_fildes_3 = open(SERIAL_DEVICE_PATH_3, O_RDWR);
    if (serial_fildes_3 < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_3);
@@ -206,14 +206,14 @@ int dspal_tester_serial_multi_port_write_read(void)
       goto exit;
    }
 
-   // FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_4);
-   // serial_fildes_4 = open(SERIAL_DEVICE_PATH_4, 0);
-   // if (serial_fildes_4 < SUCCESS)
-   // {
-   //    FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_4);
-   //    result = ERROR;
-   //    goto exit;
-   // }
+   FARF(MEDIUM, "testing multi-port serial open for: %s", SERIAL_DEVICE_PATH_4);
+   serial_fildes_4 = open(SERIAL_DEVICE_PATH_4, O_RDWR);
+   if (serial_fildes_4 < SUCCESS)
+   {
+      FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_4);
+      result = ERROR;
+      goto exit;
+   }
 
    // set read callback on all uart ports
    struct dspal_serial_ioctl_receive_data_callback receive_callback;
@@ -222,7 +222,7 @@ int dspal_tester_serial_multi_port_write_read(void)
    result |= ioctl(serial_fildes_1, SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK, (void *)&receive_callback);
    result |= ioctl(serial_fildes_2, SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK, (void *)&receive_callback);
    result |= ioctl(serial_fildes_3, SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK, (void *)&receive_callback);
-   // result |= ioctl(serial_fildes_4, SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK, (void *)&receive_callback);
+   result |= ioctl(serial_fildes_4, SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK, (void *)&receive_callback);
    if (result < SUCCESS)
    {
       FARF(HIGH, "error: failed to set serial read callback on multi-ports");
@@ -239,8 +239,8 @@ int dspal_tester_serial_multi_port_write_read(void)
             write(serial_fildes_2, (const char *)serial_buffer, strlen(serial_buffer));
       num_bytes_written =
             write(serial_fildes_3, (const char *)serial_buffer, strlen(serial_buffer));
-      // num_bytes_written =
-      //       write(serial_fildes_4, (const char *)serial_buffer, strlen(serial_buffer));
+      num_bytes_written =
+            write(serial_fildes_4, (const char *)serial_buffer, strlen(serial_buffer));
       FARF(MEDIUM, "number of bytes written: %d", num_bytes_written);
       usleep(SERIAL_WRITE_DELAY_IN_USECS);
    }
@@ -324,7 +324,7 @@ int dspal_tester_serial_read_callback(void)
    char serial_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
 
    FARF(MEDIUM, "testing serial open for: %s", SERIAL_DEVICE_PATH_1);
-   serial_fildes = open(SERIAL_DEVICE_PATH_1, 0);
+   serial_fildes = open(SERIAL_DEVICE_PATH_1, O_RDWR);
    if (serial_fildes < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_1);
@@ -401,7 +401,7 @@ int dspal_tester_serial_write_read(void)
 
    memset(serial_buffer, 0, sizeof(serial_buffer));
    FARF(MEDIUM, "testing serial open for: %s", SERIAL_DEVICE_PATH_1);
-   serial_fildes = open(SERIAL_DEVICE_PATH_1, 0);
+   serial_fildes = open(SERIAL_DEVICE_PATH_1, O_RDWR);
    if (serial_fildes < SUCCESS)
    {
       FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_1);
@@ -455,6 +455,80 @@ exit:
    return result;
 }
 
+/**
+* @brief Test serial write only functionality
+*
+* @par Detailed Description:
+* Data is sent over the bus.
+*
+* Test:
+* 1) Open serial device (/dev/tty-1)
+* 2) Write data to the serial device
+* 5) Close the serial device
+*
+* @return
+* SUCCESS ------ Test Passes
+* Error -------- Test Failed
+*/
+int dspal_tester_serial_write(void)
+{
+   int serial_fildes = 0;
+   int cycle_count = 0;
+   int num_bytes_written = 0;
+
+   int result = ERROR;
+   char serial_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
+
+   memset(serial_buffer, 0, sizeof(serial_buffer));
+   FARF(MEDIUM, "testing serial open for: %s", SERIAL_DEVICE_PATH_1);
+   serial_fildes = open(SERIAL_DEVICE_PATH_1, O_RDWR);
+   if (serial_fildes < SUCCESS)
+   {
+      FARF(HIGH, "error: failed to open serial device path: %s", SERIAL_DEVICE_PATH_1);
+      result = ERROR;
+      goto exit;
+   }
+
+   /* Load up the serial buffer just allocated with test data. */
+   strncpy((char *)serial_buffer, SERIAL_WRITE_TEST_DATA, sizeof(SERIAL_WRITE_TEST_DATA) - 1);
+
+   /* Repeatedly make write calls to the serial port.  Test for possible DSM item overflow. */
+   for (cycle_count = 0; cycle_count < SERIAL_CYCLES; cycle_count++)
+   {
+      FARF(MEDIUM, "cycle count: %d", cycle_count);
+      num_bytes_written =
+            write(serial_fildes, (char *)serial_buffer, sizeof(SERIAL_WRITE_TEST_DATA) - 1);
+      FARF(MEDIUM, "number of bytes written: %d", num_bytes_written);
+
+      /*
+       * Display the data read, being sure to check if all of the data read has been displayed.
+       */
+      if (num_bytes_written != sizeof(SERIAL_WRITE_TEST_DATA) - 1)
+      {
+         FARF(ALWAYS, "error: failed to write() %u bytes, returned %u",
+              sizeof(SERIAL_WRITE_TEST_DATA) - 1, num_bytes_written);
+         result = ERROR;
+         goto exit;
+      }
+
+      FARF(MEDIUM, "delay before the next test cycle");
+      usleep(SERIAL_WRITE_DELAY_IN_USECS);
+   }
+   result = SUCCESS;
+
+exit:
+   if (serial_fildes >= SUCCESS)
+   {
+      FARF(MEDIUM, "closing serial port");
+      close(serial_fildes);
+   }
+   if (result != SUCCESS)
+   {
+      FARF(HIGH, "error: serial port write test failed");
+   }
+
+   return result;
+}
 
 /**
 * @brief Runs all the serial tests and returns 1 aggregated result.
@@ -476,6 +550,13 @@ int dspal_tester_serial_test(void)
 
    FARF(MEDIUM, "beginning serial write/read test");
    if ((result = dspal_tester_serial_write_read()) < SUCCESS)
+   {
+      FARF(HIGH, "error: serial port write/read test failed: %d", result);
+      return result;
+   }
+
+   FARF(MEDIUM, "beginning serial write test");
+   if ((result = dspal_tester_serial_write()) < SUCCESS)
    {
       FARF(HIGH, "error: serial port write test failed: %d", result);
       return result;
