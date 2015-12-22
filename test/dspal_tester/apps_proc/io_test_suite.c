@@ -52,11 +52,12 @@ int run_io_test_suite(void)
    test_results |= display_test_results(dspal_tester_test_gpio_int(), "gpio INT test");
 
    MSG("testing file I/O\n");
-   test_results |= display_test_results(dspal_tester_test_posix_file_open(), "file open");
-   test_results |= display_test_results(dspal_tester_test_posix_file_close(), "file close");
-   test_results |= display_test_results(dspal_tester_test_posix_file_read(), "file read");
-   test_results |= display_test_results(dspal_tester_test_posix_file_write(), "file write");
+   test_results |= display_test_results(dspal_tester_test_posix_file_open_close(), "file open/close");
+   test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
+   test_results |= display_test_results(dspal_tester_test_posix_file_open_trunc(), "file open_trunc");
+   test_results |= display_test_results(dspal_tester_test_posix_file_open_append(), "file open_append");
    test_results |= display_test_results(dspal_tester_test_posix_file_ioctl(), "file ioctl");
+   test_results |= display_test_results(dspal_tester_test_posix_file_fsync(), "file fsync");
    test_results |= display_test_results(dspal_tester_test_posix_file_remove(), "file remove");
    test_results |= display_test_results(dspal_tester_test_fopen_fclose(), "fopen/fclose test");
    test_results |= display_test_results(dspal_tester_test_fwrite_fread(), "fwrite/fread test");
