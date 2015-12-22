@@ -46,7 +46,7 @@ ${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic:
 	@echo "  cd ${HEXAGON_SDK_ROOT}/tools/qaic"
 	@echo "  make"
 
-dspal_tester_skel.c dspal_tester_stub.c: ${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic dspal_tester.idl ENV_VARS
+dspal_tester_skel.c dspal_tester_stub.c: dspal_tester.idl ENV_VARS ${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic
 	${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic -m dll -I ${HEXAGON_SDK_ROOT}/inc/stddef $<
 
 .PHONY: build_adsp_targets
