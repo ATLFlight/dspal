@@ -41,8 +41,13 @@ ENV_VARS:
 .PHONY: stubs
 stubs: dspal_tester_skel.c dspal_tester_stub.c
 
-dspal_tester_skel.c dspal_tester_stub.c: dspal_tester.idl ENV_VARS
-	${HEXAGON_SDK_ROOT}/tools/qaic/Ubuntu14/qaic -m dll -I ${HEXAGON_SDK_ROOT}/inc/stddef $<
+${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic:
+	@echo "Error: qaic not fully installed. To finish install:"
+	@echo "  cd ${HEXAGON_SDK_ROOT}/tools/qaic"
+	@echo "  make"
+
+dspal_tester_skel.c dspal_tester_stub.c: ${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic dspal_tester.idl ENV_VARS
+	${HEXAGON_SDK_ROOT}/tools/qaic/Linux/qaic -m dll -I ${HEXAGON_SDK_ROOT}/inc/stddef $<
 
 .PHONY: build_adsp_targets
 build_adsp_targets: build_dsp/libdspal_tester_skel.so build_dsp/libdspal_tester.so
