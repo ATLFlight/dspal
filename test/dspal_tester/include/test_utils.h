@@ -37,7 +37,7 @@
 #include <stdint.h>
 #include <errno.h>
 
-#include "dspal_errno.h"
+#include "test_status.h"
 
 #define TEST_PASS  0x00
 #define TEST_FAIL  0x01

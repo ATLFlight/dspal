@@ -38,7 +38,7 @@
 #include <dev_fs_lib.h>
 #include <dev_fs_lib_gpio.h>
 
-#include "dspal_errno.h"
+#include "test_status.h"
 #include "test_utils.h"
 
 #define GPIO_DEVICE_PATH  "/dev/gpio-56"

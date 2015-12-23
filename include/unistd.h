@@ -130,8 +130,8 @@ ssize_t write(int fd, const void *buf, size_t count);
  * File descriptor returned from the open function.
  *
  * @return
- * - SUCCESS: The fsync operation was successfully processed.
- * - ERROR: on error
+ * -  0: The fsync operation was successfully processed.
+ * - -1: on error
  * TODO: List error codes for all bus/port types.
  */
 int fsync(int fd);

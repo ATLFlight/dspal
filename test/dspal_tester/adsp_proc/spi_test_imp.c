@@ -38,7 +38,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <dev_fs_lib_spi.h>
-#include <dspal_errno.h>
+#include "test_status.h"
 
 /* Enable medium level debugging. */
 #define FARF_HIGH   1    /* Use a value of 0 to disable the specified debug level. */

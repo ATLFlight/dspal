@@ -43,7 +43,7 @@
 #define FARF_MEDIUM 1  /* 0 turns me off */
 #include <HAP_farf.h>
 
-#include "dspal_errno.h"
+#include "test_status.h"
 
 #define SERIAL_DEVICE_PATH_1 "/dev/tty-1"
 #define SERIAL_DEVICE_PATH_2 "/dev/tty-2"

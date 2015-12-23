@@ -37,7 +37,7 @@
 #include <dev_fs_lib.h>
 #include <dev_fs_lib_i2c.h>
 
-#include <dspal_errno.h>
+#include <test_status.h>
 #define FARF_MEDIUM 1
 #include <HAP_farf.h>
 
