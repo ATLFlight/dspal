@@ -89,5 +89,8 @@ interface dspal_tester
    long test_gpio_ioctl_io();
    long test_gpio_read_write();
    long test_gpio_int();
+
+   long test_cxx_heap();
+   long test_cxx_static();
 };
 

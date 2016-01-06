@@ -53,6 +53,8 @@ QURT_BUNDLE(APP_NAME dspal_tester
 	adsp_proc/posix_time_tests.c
 	adsp_proc/serial_test_imp.c
 	adsp_proc/spi_test_imp.c
+	../dspal_tester_cxx/cxx_tests.cpp
+	../dspal_tester_cxx/qurt_stubs.cpp
 	common/test_utils.c
 	APPS_SOURCES apps_proc/dspal_tester_main.c
 	apps_proc/io_test_suite.c
