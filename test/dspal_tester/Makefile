@@ -43,5 +43,8 @@ dspal_tester: ENV_VARS
 	mkdir -p build && cd build && cmake -Wno-dev .. -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	cd build && make
 	
+load: dspal_tester
+	cd build && make dspal_tester-load
+
 clean:
 	rm -rf build
