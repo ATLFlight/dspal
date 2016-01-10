@@ -44,6 +44,8 @@ include_directories(
 	include
 	)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -g -fno-strict-aliasing -fdata-sections -fno-zero-initialized-in-bss -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-gnu-array-member-paren-init -Wno-cast-align -Wno-missing-braces -Wno-strict-aliasing") 
+
 QURT_BUNDLE(APP_NAME dspal_tester
 	DSP_SOURCES adsp_proc/gpio_test_imp.c
 	adsp_proc/i2c_test_imp.c

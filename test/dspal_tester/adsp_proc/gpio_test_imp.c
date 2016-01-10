@@ -265,9 +265,11 @@ void *gpio_int_isr(DSPAL_GPIO_INT_ISR_CTX context)
 * @return
 * TEST_PASS ------ Test Passes
 * TEST_FAIL ------ Test Failed
+* TEST_SKIP ------ Test Skipped
 */
 int dspal_tester_test_gpio_int(void)
 {
+#ifdef DO_JIG_TEST
    int result = TEST_PASS;
    enum DSPAL_GPIO_VALUE_TYPE value_written;
    int fd;
@@ -353,5 +355,8 @@ int dspal_tester_test_gpio_int(void)
 exit:
    close(int_fd);
    close(fd);
+#else
+   int result = TEST_SKIP;
+#endif
    return result;
 }
