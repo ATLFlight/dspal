@@ -53,25 +53,21 @@
  * accumulated will be copied to the buffer.  The actual length of the data copied to the caller's buffer is
  * specified in the return value of the read function.
  *
- * @par Writing UART Data
+ * @par Writing SPI Data
  * To write data to the SPI bus slave device a buffer parameter containing the data to be transmitted
  * must be passed to the write function.  After the data is queued for transmit, the write function will
  * return immediately to the caller.
- *
- * @note [Not Yet Implemented]
- * The tx_data_callback member of the dspal_serial_open_options structure can be used to be receive
- * notification of when all queued data has been transmitted.  This can be used as an alternative to
- * setting the is_tx_data_synchronous member to true.
- *
- * @note [Not Yet Implemented]
- * If the is_tx_data_synchronous member of the dspal_spi_ioctl_set_options structure is set
- * to true, the transmit function will only return when all data in the transmit queue has
- * been transmitted.
  *
  * @par
  * Sample source code for read/write data to a SPI slave device is included below:
  * @include spi_test_imp.c
  */
+
+/**
+ * The maximum length of any receive or transmit over SPI bus.
+ */
+#define DSPAL_SPI_TRANSMIT_BUFFER_LENGTH 512
+#define DSPAL_SPI_RECEIVE_BUFFER_LENGTH  512
 
 /**
  * @brief
@@ -131,7 +127,7 @@ struct dspal_spi_ioctl_set_bus_frequency
 /**
  * Structure passed to the SPI_IOCTL_SET_OPTIONS IOCTL call.  Specifies certain SPI bus options and capabilities.
  *
- * TODO: Add a void* parameter to this structure to allow the caller to specify the value
+ * TODO-JYW: Add a void* parameter to this structure to allow the caller to specify the value
  * of the void* passed in the tx_data_callback and rx_data_callback.
  */
 struct dspal_spi_ioctl_set_options
@@ -148,10 +144,10 @@ struct dspal_spi_ioctl_set_options
  */
 struct dspal_spi_ioctl_read_write
 {
-   void *read_buffer;  		/**< the address of the buffer used for data read from the slave device. */
-   uint32_t read_buffer_length; /**< the length of the buffer referenced by the read_buffer parameter. */
-   void *write_buffer; 		/**< the address of the buffer containing the data to write to the slave device. */
-   uint32_t write_buffer_length;/**< the length of the buffer referenced by the write_buffer paarameter. */
+   void *read_buffer;  /**< the address of the buffer used for data read from the slave device. */
+   uint32_t read_buffer_length;  /**< the length of the buffer referenced by the read_buffer parameter. */
+   void *write_buffer; /**< the address of the buffer containing the data to write to the slave device. */
+   uint32_t write_buffer_length; /**< the length of the buffer referenced by the write_buffer paarameter. */
 };
 
 /**
@@ -162,4 +158,3 @@ struct dspal_spi_ioctl_loopback
 {
    enum DSPAL_SPI_LOOPBACK_TEST_STATE state; /**< the state indicating if loopback mode is enabled or disabled. */
 };
-

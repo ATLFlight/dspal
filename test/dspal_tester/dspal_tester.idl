@@ -69,12 +69,13 @@ interface dspal_tester
 
    long test_semaphore_wait();
 
-   long test_posix_file_open();
-   long test_posix_file_close();
-   long test_posix_file_read();
-   long test_posix_file_write();
+   long test_posix_file_open_close();
+   long test_posix_file_read_write();
+   long test_posix_file_open_trunc();
+   long test_posix_file_open_append();
    long test_posix_file_ioctl();
    long test_posix_file_remove();
+   long test_posix_file_fsync();
    long test_fopen_fclose();
    long test_fwrite_fread();
 
@@ -88,5 +89,8 @@ interface dspal_tester
    long test_gpio_ioctl_io();
    long test_gpio_read_write();
    long test_gpio_int();
+
+   long test_cxx_heap();
+   long test_cxx_static();
 };
 

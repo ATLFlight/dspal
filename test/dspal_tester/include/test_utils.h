@@ -33,11 +33,12 @@
 #ifndef TEST_UTILS_H
 #define TEST_UTILS_H
 
+#include <sys/cdefs.h>
 #include <time.h>
 #include <stdint.h>
 #include <errno.h>
 
-#include "dspal_errno.h"
+#include "test_status.h"
 
 #define TEST_PASS  0x00
 #define TEST_FAIL  0x01
@@ -65,6 +66,9 @@
   { test_failed(msg, __FILE__, __LINE__); return TEST_FAIL; } \
 }
 
+
+__BEGIN_DECLS
+
 int display_test_results(int result, const char *label);
 
 void log_error(const char *error);
@@ -74,5 +78,6 @@ const char *get_result_string(int result);
 void test_failed(const char *msg, const char *file, int lineNumber);
 
 time_t time(time_t *t);
+__END_DECLS
 
 #endif // TEST_UTILS_H

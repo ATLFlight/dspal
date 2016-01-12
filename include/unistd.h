@@ -122,6 +122,21 @@ size_t read(int fd, void *buf, size_t count);
 ssize_t write(int fd, const void *buf, size_t count);
 
 /**
+ * synchronize a file's in-core state with storage device
+ * NOTE: this is only applicable to file operation. Calling fsync() on bus
+ * device has no effect
+ *
+ * @param fd
+ * File descriptor returned from the open function.
+ *
+ * @return
+ * -  0: The fsync operation was successfully processed.
+ * - -1: on error
+ * TODO: List error codes for all bus/port types.
+ */
+int fsync(int fd);
+
+/**
  * @brief
  * Only supports getting _SC_CLK_TCK
  */

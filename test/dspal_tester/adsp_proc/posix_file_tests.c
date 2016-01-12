@@ -47,155 +47,294 @@
 
 
 /**
-* @brief Test to see if a file can be opened
+* @brief Test file open/close operation
 *
 * @par Detailed Description:
 * This tests opens a file from the adsp side ('/dev/fs/test.txt').  It then
 * tries to open the file without the dspal file prefix ('test.txt').
 
 * Test:
-* 1) Opens file with dspal path prefix ('/dev/fs/test.txt') in read_only mode
+* 1) Opens file with dspal path prefix ('/dev/fs/test.txt') in O_RDWR mode
 * 2) Close that file
-* 3) Open file without dispal path prefix ('test.txt') in read_only mode
+* 3) Open file without dispal path prefix ('test.txt') in O_RDONLY mode
 * 4) Close that file
 *
 * @return
-* TEST_PASS ------ Always
+* TEST_PASS ------ on success
+* TEST_FAIL ------ on error
 */
-int dspal_tester_test_posix_file_open(void)
+int dspal_tester_test_posix_file_open_close(void)
 {
    int fd;
-   fd = open(TEST_FILE_PATH, O_RDWR);
 
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
+   // Open TEST_FILE_PATH.  Create the file if it doesn't exist.
+   fd = open(TEST_FILE_PATH, O_RDWR|O_CREAT|O_TRUNC);
    if (fd == -1)
    {
-      FAIL("open test.txt failed. Make sure to have test.txt at $ADSP_LIBRARY_PATH");
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode. "
+           "Make sure to have test.txt at $ADSP_LIBRARY_PATH");
    }
-
-   close(fd);
-
-   // test open file path without dspal file path prefix
-   fd = open("test.txt", O_RDONLY);
-
-   if (fd == -1)
-   {
-      FAIL("open test.txt failed. Make sure to have test.txt at $ADSP_LIBRARY_PATH");
-   }
-
-   close(fd);
-
-   return TEST_PASS;
-}
-
-/**
-* @brief Test to see if a file can be opened and then closed
-*
-* @par
-* Test:
-* 1) Opens file with dspal path prefix ('/dev/fs/test.txt') in read only mode
-* 2) Close that file
-*
-* @return
-* TEST_PASS ------ Always
-*/
-int dspal_tester_test_posix_file_close(void)
-{
-   int fd;
-   fd = open(TEST_FILE_PATH, O_RDONLY);
-
-   if (fd == -1)
-   {
-      FAIL("open test.txt failed. Make sure to have test.txt at $ADSP_LIBRARY_PATH");
-   }
+   FARF(MEDIUM, "open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode");
 
    if (close(fd) != 0)
    {
-      FAIL("close test.txt failed.");
+      FAIL("failed to close file handle");
    }
+   FARF(MEDIUM, "close /dev/fs/test.txt");
 
-   return TEST_PASS;
-}
-
-
-/**
-* @brief Test to see if a file can be opened, read fully and then closed
-*
-* @par
-* Test:
-* 1) Opens file with dspal path prefix ('/dev/fs/test.txt') in read_only mode
-* 2) Read all the bytes in the file (printing to console)
-* 3) Close the file
-*
-* @return
-* TEST_PASS ------ Always
-*/
-int dspal_tester_test_posix_file_read(void)
-{
-   int fd;
-   fd = open(TEST_FILE_PATH, O_RDONLY);
-   uint8_t c;
-   int bytes_read;
-   int cnt = 0;
-
-   if (fd == -1)
+   // test open file path without dspal file path prefix
+   fd = open("test.txt", O_RDONLY);
+   // open() is expected to fail
+   if (fd >= 0)
    {
-      FAIL("open test.txt failed. Make sure to have test.txt at $ADSP_LIBRARY_PATH");
+      close(fd);
+      FAIL("open() succ for invalid path test.txt. This should never happen!");
    }
-
-   MSG("reading test.txt:");
-   while(1) {
-      bytes_read = read(fd, &c, 1);
-      if (bytes_read == 0) {
-         break;
-      } else if (bytes_read == 1) {
-         MSG("byte %d: %c", cnt++, c);
-      } else {
-         FAIL("read test.txt failed.");
-      }
-   }
-
-   close(fd);
 
    return TEST_PASS;
 }
 
 /**
-* @brief Test to see if a file can be opened, written to and then closed
+* @brief Test file read/write operations
 *
 * @par
 * Test:
-* 1) Opens file with dspal path prefix ('/dev/fs/test.txt') in read/write mode with append
-* 2) Write some data (time stamp) to the file
-* 3) Close the file
+* 1) open file with dspal path prefix ('/dev/fs/test.txt') in read/write mode
+* 2) write timestamp to file
+* 3) read the file and compare the content
+* 4) close the file
+* 5) Opens the same file with read only mode
+* 6) read the file and compare with the content written in step 3
+* 7) test write() and it should fail
+* 8) close the file
 *
 * @return
-* TEST_PASS ------ Always
+* TEST_PASS ------ if all operations succeed
+* TEST_FAIL ------ otherwise
 */
-int dspal_tester_test_posix_file_write(void)
+int dspal_tester_test_posix_file_read_write(void)
 {
    int fd;
-   fd = open(TEST_FILE_PATH, O_RDWR | O_APPEND);
-   char buffer[50] = {0};
+   int bytes_read;
+   char wbuf[100];
+   char rbuf[100];
    uint64_t timestamp = time(NULL);
 
-   if (fd == -1)
-   {
-      FAIL("open test.txt failed. Make sure to have test.txt at $ADSP_LIBRARY_PATH");
-   }
+   FARF(MEDIUM, "%s test", __FUNCTION__);
 
-   sprintf(buffer, "test - timestamp: %llu\n", timestamp);
-   MSG("writing to test.txt: %s (len: %d)", buffer, strlen(buffer) + 1);
-
-   if (write(fd, buffer, strlen(buffer)+1) != (ssize_t)(strlen(buffer) + 1))
+   // Open the file in read/write mode
+   fd = open(TEST_FILE_PATH, O_RDWR|O_CREAT|O_TRUNC);
+   if (fd < 0)
    {
-      FAIL("write test.txt failed.");
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode.");
    }
+   FARF(MEDIUM, "open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode");
+
+   // write timestamp
+   memset(wbuf, 0, 100);
+   sprintf(wbuf, "test - timestamp: %llu\n", timestamp);
+   if (write(fd, wbuf, strlen(wbuf)) != (int)strlen(wbuf))
+   {
+      FAIL("failed to write /dev/fs/test.txt");
+   }
+   FARF(MEDIUM, "written to %s: %s (len: %d)", TEST_FILE_PATH, wbuf,
+        strlen(wbuf));
 
    close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   // Open the file in read/write mode
+   fd = open(TEST_FILE_PATH, O_RDONLY);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDONLY mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDONLY mode");
+
+   // read the content to ensure the timestamp is properly written to file
+   memset(rbuf, 0, 100);
+   bytes_read = read(fd, rbuf, sizeof(rbuf)-1);
+   FARF(MEDIUM, "read %d bytes from /dev/fs/test.txt:\n%s", bytes_read, rbuf);
+
+   if ((!(strncmp(wbuf, rbuf, bytes_read) == 0) && (bytes_read == (int)strlen(wbuf))))
+   {
+      FAIL("file write and read content does not match");
+   }
+
+   // test writing file in O_RDONLY mode
+   int ret = write(fd, wbuf, strlen(wbuf));
+   if (ret >= 0)
+   {
+      FAIL("write() succ on file in O_RDONLY mode. This should never happen!");
+   }
+   FARF(MEDIUM, "write() failed on file in O_RDONLY mode.");
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
 
    return TEST_PASS;
 }
 
+/**
+ * @brief Test opening file in O_TRUNC mode
+ *
+ * @par
+ * 1) open the file in O_WRONLY mode
+ * 2) write timestamp to file
+ * 3) close the file
+ * 4) open the file in O_TRUNC mode
+ * 5) read the file and verify if the file is empty
+ * 6) cloes the file
+ *
+ * @return
+ * TEST_PASS ------- file properly truncated
+ * TEST_FAIL ------- on error
+ */
+int dspal_tester_test_posix_file_open_trunc()
+{
+   int fd;
+   int bytes_read;
+   char wbuf[100];
+   char rbuf[100];
+   uint64_t timestamp = time(NULL);
+
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
+   // Open the file in read/write mode
+   fd = open(TEST_FILE_PATH, O_RDWR|O_CREAT|O_TRUNC);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode");
+
+   // write timestamp
+   memset(wbuf, 0, 100);
+   sprintf(wbuf, "test - timestamp: %llu\n", timestamp);
+   FARF(MEDIUM, "writing to %s: %s (len: %d)", TEST_FILE_PATH, wbuf,
+       strlen(wbuf) + 1);
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   // open the file in O_TRUNC mode
+   fd = open(TEST_FILE_PATH, O_RDWR|O_TRUNC);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_TRUNC mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDWR|O_TRUNC mode");
+
+   bytes_read = read(fd, rbuf, sizeof(rbuf)-1);
+   FARF(MEDIUM, "read %d bytes from /dev/fs/test.txt", bytes_read);
+   if (bytes_read != 0)
+   {
+      FAIL("Failed to truncate the file using O_TRUNC");
+   }
+   FARF(MEDIUM, "/dev/fs/test.txt in truncated");
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   return TEST_PASS;
+}
+
+/**
+ * @brief Test opening file in O_APPEND mode
+ *
+ * @par
+ * 1) open the file in O_RDWR|O_APPEND mode
+ * 2) read file content
+ * 3) write something
+ * 4) close the file
+ * 5) open the file in O_RDONLY mode
+ * 6) read the file and verify the content
+ * 7) close the file
+ *
+ * @return
+ * TEST_PASS ------- file properly appended
+ * TEST_FAIL ------- on error
+ */
+int dspal_tester_test_posix_file_open_append()
+{
+   int fd;
+   int bytes_read;
+   char rbuf[100];
+   const char *old_content = "old content\n";
+   const char *new_content = "new content\n";
+
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
+   fd = open(TEST_FILE_PATH, O_RDWR|O_TRUNC|O_CREAT);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_TRUNC|O_CREAT mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode");
+
+   if (write(fd, old_content, strlen(old_content)) != (int)strlen(old_content))
+   {
+      FAIL("failed to write /dev/fs/test.txt");
+   }
+   FARF(MEDIUM, "writing to %s: %s (len: %d)", TEST_FILE_PATH, old_content,
+        strlen(old_content));
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   // Open the file in APPEND mode
+   fd = open(TEST_FILE_PATH, O_RDWR|O_APPEND);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_APPEND mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDWR|O_APPEND mode");
+
+   if (write(fd, new_content, strlen(new_content)) != (int)strlen(new_content))
+   {
+      FAIL("failed to write /dev/fs/test.txt");
+   }
+   FARF(MEDIUM, "writing to %s: %s (len: %d)", TEST_FILE_PATH, new_content,
+        strlen(new_content));
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   // open the file in read only mode
+   fd = open(TEST_FILE_PATH, O_RDONLY);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDONLY mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDONLY mode");
+
+   memset(rbuf, 0, 100);
+   bytes_read = read(fd, rbuf, sizeof(rbuf));
+   if (bytes_read < 0)
+   {
+      FAIL("failed to read /dev/fs/test.txt.");
+   }
+   else if (bytes_read == 0)
+   {
+      FAIL("/dev/fs/test.txt is empty");
+   }
+
+   if (!(strstr(rbuf, old_content) == rbuf) &&
+       strstr(rbuf + strlen(old_content), new_content) ==
+         rbuf+strlen(old_content))
+   {
+      FAIL("failed to append writing to /dev/fs/test.txt");
+   }
+
+   FARF(MEDIUM, "succ to append file using O_APPEND");
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   return TEST_PASS;
+}
 
 /**
 * @brief Test to see if ioctl fails (ioctl is not supported for files)
@@ -212,19 +351,25 @@ int dspal_tester_test_posix_file_write(void)
 int dspal_tester_test_posix_file_ioctl(void)
 {
    int fd;
-   fd = open(TEST_FILE_PATH, O_RDWR | O_APPEND);
+
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
+   fd = open(TEST_FILE_PATH, O_RDWR|O_TRUNC|O_TRUNC);
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDWR|O_TRUNC|O_TRUNC mode");
 
    if (fd == -1)
    {
       FAIL("open test.txt failed. Make sure to have test.txt at $ADSP_LIBRARY_PATH");
    }
 
+   FARF(MEDIUM, "trying ioctl()");
    if (ioctl(fd, 0, NULL) != -1)
    {
       FAIL("ioctl() is not supported and should have returned -1.");
    }
 
    close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
 
    return TEST_PASS;
 }
@@ -247,8 +392,11 @@ int dspal_tester_test_posix_file_remove(void)
 {
    int fd;
 
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
    // First create the file if it does not exist yet
-   fd = open(TEST_FILE_PATH, O_RDWR);
+   fd = open(TEST_FILE_PATH, O_RDWR|O_CREAT);
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDWR|O_CREAT mode");
 
    if (fd == -1)
    {
@@ -256,19 +404,109 @@ int dspal_tester_test_posix_file_remove(void)
    }
 
    close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
 
    if (remove(TEST_FILE_PATH) != 0)
    {
-      FARF(ALWAYS, "failed to remove %s", TEST_FILE_PATH);
+      FARF(MEDIUM, "failed to remove %s", TEST_FILE_PATH);
       return TEST_FAIL;
    }
+   FARF(MEDIUM, "removed /dev/fs/test.txt");
 
    // test removing a file with invalid dspal path
    if (remove("test.txt") == 0)
    {
-      FARF(ALWAYS, "removed %s. This shouldn't happen", TEST_FILE_PATH);
+      FARF(MEDIUM, "removed %s. This shouldn't happen", TEST_FILE_PATH);
       return TEST_FAIL;
    }
+   FARF(MEDIUM, "removing file with invalid path failed. expected");
+
+   return TEST_PASS;
+}
+
+/**
+* @brief Test file fsync operation
+*
+* @par
+* Test:
+* 1) open file with dspal path prefix ('/dev/fs/test.txt') in read/write mode
+* 2) write timestamp to file
+* 3) fsync on the file
+* 4) close the file
+* 5) Opens the same file with read only mode
+* 6) read the file and compare with the content written in step 3
+* 7) close the file
+*
+* @return
+* TEST_PASS ------ if all operations succeed
+* TEST_FAIL ------ otherwise
+*/
+int dspal_tester_test_posix_file_fsync(void)
+{
+   int fd;
+   int bytes_read;
+   char wbuf[100];
+   char rbuf[100];
+   uint64_t timestamp = time(NULL);
+
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
+   // Open the file in read/write mode
+   fd = open(TEST_FILE_PATH, O_RDWR|O_CREAT|O_TRUNC);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode.");
+   }
+   FARF(MEDIUM, "open /dev/fs/test.txt in O_RDWR|O_CREAT|O_TRUNC mode");
+
+   // write timestamp
+   memset(wbuf, 0, 100);
+   sprintf(wbuf, "test - timestamp: %llu\n", timestamp);
+   if (write(fd, wbuf, strlen(wbuf)) != (int)strlen(wbuf))
+   {
+      FAIL("failed to write /dev/fs/test.txt");
+   }
+   FARF(MEDIUM, "written to %s: %s (len: %d)", TEST_FILE_PATH, wbuf,
+        strlen(wbuf));
+
+   // fsync fd to flush the content to storage device
+   if (fsync(fd) < 0)
+   {
+      FAIL("failed to fsync /dev/fs/test.txt");
+   }
+   FARF(MEDIUM, "fsync() succ");
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
+
+   // Open the file in read/write mode
+   fd = open(TEST_FILE_PATH, O_RDONLY);
+   if (fd < 0)
+   {
+      FAIL("failed to open /dev/fs/test.txt in O_RDONLY mode.");
+   }
+   FARF(MEDIUM, "opened /dev/fs/test.txt in O_RDONLY mode");
+
+   // read the content to ensure the timestamp is properly written to file
+   memset(rbuf, 0, 100);
+   bytes_read = read(fd, rbuf, sizeof(rbuf)-1);
+   FARF(MEDIUM, "read %d bytes from /dev/fs/test.txt:\n%s", bytes_read, rbuf);
+
+   if ((!(strncmp(wbuf, rbuf, bytes_read) == 0) && (bytes_read == (int)strlen(wbuf))))
+   {
+      FAIL("file write and read content does not match");
+   }
+
+   // test writing file in O_RDONLY mode
+   int ret = write(fd, wbuf, strlen(wbuf));
+   if (ret >= 0)
+   {
+      FAIL("write() succ on file in O_RDONLY mode. This should never happen!");
+   }
+   FARF(MEDIUM, "write() failed on file in O_RDONLY mode.");
+
+   close(fd);
+   FARF(MEDIUM, "closed /dev/fs/test.txt");
 
    return TEST_PASS;
 }
@@ -294,19 +532,21 @@ int dspal_tester_test_fopen_fclose(void)
    };
    int num_modes = sizeof(modes) / sizeof(const char *);
 
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
    for (int i = 0; i < num_modes; i++)
    {
       fd = fopen(TEST_FILE_PATH, modes[i]);
       if (fd == NULL)
       {
-         FARF(ALWAYS, "fopen() mode %s returned NULL", modes[i]);
+         FARF(MEDIUM, "fopen() mode %s returned NULL", modes[i]);
          return TEST_FAIL;
       }
       fclose(fd);
-      FARF(ALWAYS, "fopen()/fclose mode %s succ", modes[i]);
+      FARF(MEDIUM, "fopen()/fclose mode %s succ", modes[i]);
    }
 
-   FARF(ALWAYS, "fopen_fclose test passed");
+   FARF(MEDIUM, "fopen_fclose test passed");
 
    return TEST_PASS;
 }
@@ -337,22 +577,24 @@ int dspal_tester_test_fwrite_fread(void)
    size_t bytes_read;
    size_t buffer_len;
 
+   FARF(MEDIUM, "%s test", __FUNCTION__);
+
    fd = fopen(TEST_FILE_PATH, "w");
    if (fd == NULL)
    {
-      FARF(ALWAYS, "fopen() mode w returned NULL");
+      FARF(MEDIUM, "fopen() mode w returned NULL");
       return TEST_FAIL;
    }
 
    sprintf(buffer, "test - timestamp: %llu\n", timestamp);
    buffer_len = strlen(buffer) + 1;
 
-   MSG("writing to test.txt: %s (len: %d)", buffer, buffer_len);
+   FARF(MEDIUM, "writing to test.txt: %s (len: %d)", buffer, buffer_len);
 
    bytes_written = fwrite(buffer, 1, buffer_len, fd);
    if (bytes_written != buffer_len)
    {
-      FARF(ALWAYS, "fwrite() %d bytes returned less than expected %d",
+      FARF(MEDIUM, "fwrite() %d bytes returned less than expected %d",
            buffer_len, bytes_written);
       return TEST_FAIL;
    }
@@ -363,7 +605,7 @@ int dspal_tester_test_fwrite_fread(void)
    fd = fopen(TEST_FILE_PATH, "r");
    if (fd == NULL)
    {
-      FARF(ALWAYS, "fopen() mode r returned NULL");
+      FARF(MEDIUM, "fopen() mode r returned NULL");
       return TEST_FAIL;
    }
 
@@ -371,16 +613,16 @@ int dspal_tester_test_fwrite_fread(void)
    bytes_read = fread(buffer, 1, buffer_len, fd);
    if (bytes_read != buffer_len)
    {
-      FARF(ALWAYS, "fread() %d bytes returned less than expected %d",
+      FARF(MEDIUM, "fread() %d bytes returned less than expected %d",
            buffer_len, bytes_read);
       return TEST_FAIL;
    }
 
-   FARF(ALWAYS, "fread() %d bytes: %s", bytes_read, buffer);
+   FARF(MEDIUM, "fread() %d bytes: %s", bytes_read, buffer);
 
    fclose(fd);
 
-   FARF(ALWAYS, "fwrite_fread test passed");
+   FARF(MEDIUM, "fwrite_fread test passed");
 
    return TEST_PASS;
 }

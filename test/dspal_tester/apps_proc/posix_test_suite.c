@@ -78,6 +78,11 @@ int run_posix_test_suite(void)
 
    test_results |= display_test_results(dspal_tester_test_semaphore_wait(), "semaphore wait");
 
+   MSG("testing C++\n");
+
+   test_results |= display_test_results(dspal_tester_test_cxx_heap(), "test C++ heap");
+   test_results |= display_test_results(dspal_tester_test_cxx_static(), "test C++ static initialization");
+
    MSG("tests complete\n");
 
    return test_results;

@@ -30,8 +30,7 @@
  *
  ****************************************************************************/
 
-#ifndef DSPAL_ERRNO_H_
-#define DSPAL_ERRNO_H_
+#pragma once 
 
 #ifndef ERROR
 #define ERROR -1
@@ -40,5 +39,3 @@
 #ifndef SUCCESS
 #define SUCCESS 0
 #endif
-
-#endif /* DSPAL_ERRNO_H_ */
