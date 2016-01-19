@@ -5,7 +5,7 @@ code to the Hexagon processor.
 
 ## Setup Development Environment
 
-See [GettingStarted](https://github.com/ATLFlight/ATLFlightDocs/GettingStarted.md).
+See [GettingStarted](https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md)
 
 After installing the development tools, make sure you have your environment variables set up:
 ```
