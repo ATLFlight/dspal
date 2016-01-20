@@ -551,7 +551,7 @@ int dspal_tester_test_fopen_fclose(void)
 }
 
 /**
-* @brief Test to a file can be written and read using fwrite() and frea()
+* @brief Test to a file can be written and read using fwrite() and fread()
 *
 * @par
 * Test:
