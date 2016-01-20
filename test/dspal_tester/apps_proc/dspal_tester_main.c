@@ -62,22 +62,22 @@ int main(int argc, char* argv[])
 
    MSG("\n");
 
-   MSG("Starting DspAL tests\n");
+   MSG("Starting DSPAL tests\n");
    status = run_posix_test_suite();
    status |= run_io_test_suite();
 
    if ((status & TEST_FAIL) == TEST_FAIL)
    {
-      MSG("DspAL test failed.\n");
+      MSG("DSPAL test failed.\n");
    }
    else
    {
       if ((status & TEST_SKIP) == TEST_SKIP)
       {
-         MSG("DspAL some tests skipped.\n");
+         MSG("DSPAL some tests skipped.\n");
       }
 
-      MSG("DspAL tests succeeded.\n");
+      MSG("DSPAL tests succeeded.\n");
    }
 
    MSG("\n");
