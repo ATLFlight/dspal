@@ -85,6 +85,16 @@
 
 /**
  * @brief
+ * The GPIO device path uses the following format:
+ * /dev/gpio-{device number}
+ * Device numbers start at 1 and go to up to the max number of GPIO supported
+ * by the SoC. There is no indication if the user tries to open a GPIO that has already
+ * been mapped to a different function.
+ */
+#define DEV_FS_GPIO_DEVICE_TYPE_STRING  "/dev/gpio-"
+
+/**
+ * @brief
  * GPIO function mode that can be configured through ioctl call
  */
 enum DSPAL_GPIO_MODE

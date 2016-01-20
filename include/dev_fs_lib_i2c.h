@@ -72,6 +72,15 @@
 
 /**
  * @brief
+ * The I2C device path uses the following format:
+ * /dev/iic-{bus number}
+ * Bus numbers start at 1 and may go to up to the max number of BLSPs supported
+ * by the SoC.  Using /dev/i2c-{number} is deprecated.
+ */
+#define DEV_FS_I2C_DEVICE_TYPE_STRING  "/dev/iic-"
+
+/**
+ * @brief
  * ioctl codes used to extend the functionality of the standard read/write file
  * semantics for the i2c bus.
  */

@@ -68,6 +68,14 @@
  * @include serial_test_imp.c
  */
 
+/**
+ * @brief
+ * The serial device path uses the following format:
+ * /dev/tty-{number}
+ * Device numbers start at 1 and go to up to 4. 
+ */
+#define DEV_FS_UART_DEVICE_TYPE_STRING "/dev/tty-"
+
 /* Forward references: */
 struct dspal_serial_buffer_item;
 

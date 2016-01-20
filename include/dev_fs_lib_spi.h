@@ -64,6 +64,14 @@
  */
 
 /**
+ * @brief
+ * The SPI device path uses the following format:
+ * /dev/spi-{bus number}
+ * Bus numbers at 1 (/dev/spi-1) and go to the max number of BLSPs supported by the SoC.
+ */
+#define DEV_FS_SPI_DEVICE_TYPE_STRING  "/dev/spi-"
+
+/**
  * The maximum length of any receive or transmit over SPI bus.
  */
 #define DSPAL_SPI_TRANSMIT_BUFFER_LENGTH 512
