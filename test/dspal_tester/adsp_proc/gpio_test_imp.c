@@ -35,7 +35,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <sys/ioctl.h>
-#include <dev_fs_lib.h>
 #include <dev_fs_lib_gpio.h>
 
 #include "test_status.h"

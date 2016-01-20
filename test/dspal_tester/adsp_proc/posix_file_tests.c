@@ -38,7 +38,6 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <dspal_time.h>
-#include <dev_fs_lib.h>
 
 #include "test_utils.h"
 #include "dspal_tester.h"

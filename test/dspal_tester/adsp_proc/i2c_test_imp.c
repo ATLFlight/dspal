@@ -34,7 +34,6 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <sys/ioctl.h>
-#include <dev_fs_lib.h>
 #include <dev_fs_lib_i2c.h>
 
 #include <test_status.h>

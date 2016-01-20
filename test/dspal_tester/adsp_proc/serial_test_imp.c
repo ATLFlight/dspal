@@ -36,7 +36,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <dev_fs_lib.h>
 #include <dev_fs_lib_serial.h>
 
 /* Enable medium level debugging. */
