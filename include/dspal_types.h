@@ -52,6 +52,8 @@ extern "C" {
 typedef unsigned long int   pid_t;
 typedef unsigned long int   uid_t;
 
+#define MAX_LEN_DEVICE_PATH_IN_BYTES 32
+
 #define PTHREAD_MAX_THREADS          512
 
 #define PTHREAD_NAME_LEN             16
