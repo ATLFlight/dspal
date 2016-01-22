@@ -124,6 +124,7 @@ enum DSPAL_SERIAL_BITRATES
    DSPAL_SIO_BITRATE_115200,               /**< 115200 bit-rate   */
    DSPAL_SIO_BITRATE_230400,               /**< 230400 bit-rate   */
    DSPAL_SIO_BITRATE_ILLEGAL_2 = DSPAL_SIO_BITRATE_230400,
+   DSPAL_SIO_BITRATE_250000,
    DSPAL_SIO_BITRATE_460800,               /**< 460800 bit-rate   */
    DSPAL_SIO_BITRATE_ILLEGAL_10 = DSPAL_SIO_BITRATE_460800,
    DSPAL_SIO_BITRATE_921600,               /**< 921600 bit-rate   */
@@ -188,7 +189,9 @@ enum DSPAL_SERIAL_PORTS
    DSPAL_SIO_PORT_UART_MAIN = 1,/**< DSPAL ID for the UART_MAIN port */
    DSPAL_SIO_PORT_UART_AUX,     /**< DSPAL ID for the UART_AUX port */
    DSPAL_SIO_PORT_UART_THIRD,   /**< DSPAL ID for the UART_THIRD port */
-   DSPAL_SIO_PORT_UART_CXM,     /**< DSPAL ID for the UART_CXM port */
+   DSPAL_SIO_PORT_UART_FOURTH,  /**< DspAL ID for the UART_FOURTH port */
+   DSPAL_SIO_PORT_UART_FIFTH,   /**< DspAL ID for the UART_FIFTH port */
+   DSPAL_SIO_PORT_UART_CXM,     /**< DspAL ID for the UART_CXM port */
 };
 
 /**
