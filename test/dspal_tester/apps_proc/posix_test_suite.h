@@ -37,7 +37,7 @@
 
 /**
  * @brief Runs all the posix tests.
- * 
+ *
  * @par
  * Tests that are run (in order)
  * 1) dspal_tester_test_clockid

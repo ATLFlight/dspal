@@ -97,11 +97,10 @@
  * @brief
  * GPIO function mode that can be configured through ioctl call
  */
-enum DSPAL_GPIO_MODE
-{
-   DSPAL_GPIO_MODE_IO = 0,    /**< general purpose IO mode */
-   DSPAL_GPIO_MODE_INT,       /**< interrupt mode  */
-   DSPAL_GPIO_MODE_MAX_NUM,   /**< maximum number of DspAL GPIO modes defined*/
+enum DSPAL_GPIO_MODE {
+	DSPAL_GPIO_MODE_IO = 0,    /**< general purpose IO mode */
+	DSPAL_GPIO_MODE_INT,       /**< interrupt mode  */
+	DSPAL_GPIO_MODE_MAX_NUM,   /**< maximum number of DspAL GPIO modes defined*/
 };
 
 /**
@@ -109,66 +108,61 @@ enum DSPAL_GPIO_MODE
  * Direction enumerations for configuration: an INPUT to the MSM or an OUTPUT
  * from the MSM
  */
-enum DSPAL_GPIO_DIRECTION_TYPE
-{
-   DSPAL_GPIO_DIRECTION_INPUT   = 0,     /**< SET TO INPUT */
-   DSPAL_GPIO_DIRECTION_OUTPUT  = 1,     /**< SET TO OUTPU */
-   DSPAL_GPIO_DIRECTION_MAX_NUM,         /**< maximum number of DspAL GPIO direction defined */
+enum DSPAL_GPIO_DIRECTION_TYPE {
+	DSPAL_GPIO_DIRECTION_INPUT   = 0,     /**< SET TO INPUT */
+	DSPAL_GPIO_DIRECTION_OUTPUT  = 1,     /**< SET TO OUTPU */
+	DSPAL_GPIO_DIRECTION_MAX_NUM,         /**< maximum number of DspAL GPIO direction defined */
 };
 
 /**
  * @brief
  * Pull value for a GPIO configuration
  */
-enum DSPAL_GPIO_PULL_TYPE
-{
-   DSPAL_GPIO_NO_PULL    = 0,    /**< -- Do not specify a pull. */
-   DSPAL_GPIO_PULL_DOWN  = 0x1,  /**< -- Pull the GPIO down. */
-   DSPAL_GPIO_KEEPER     = 0x2,  /**< -- Designate as a Keeper. */
-   DSPAL_GPIO_PULL_UP    = 0x3,  /**< -- Pull the GPIO up. */
-   DSPAL_GPIO_PULL_TYPE_MAX_NUM, /**< -- maximum number of DspAL GPIO pull types defined */
+enum DSPAL_GPIO_PULL_TYPE {
+	DSPAL_GPIO_NO_PULL    = 0,    /**< -- Do not specify a pull. */
+	DSPAL_GPIO_PULL_DOWN  = 0x1,  /**< -- Pull the GPIO down. */
+	DSPAL_GPIO_KEEPER     = 0x2,  /**< -- Designate as a Keeper. */
+	DSPAL_GPIO_PULL_UP    = 0x3,  /**< -- Pull the GPIO up. */
+	DSPAL_GPIO_PULL_TYPE_MAX_NUM, /**< -- maximum number of DspAL GPIO pull types defined */
 };
 
 /**
  * @brief
  * Drive strength to use in the configuration of a GPIO
  */
-enum  DSPAL_GPIO_DRIVE_TYPE
-{
-   DSPAL_GPIO_2MA     = 0,    /**< -- Specify a 2 mA drive. */
-   DSPAL_GPIO_4MA     = 0x1,  /**< -- Specify a 4 mA drive. */
-   DSPAL_GPIO_6MA     = 0x2,  /**< -- Specify a 6 mA drive. */
-   DSPAL_GPIO_8MA     = 0x3,  /**< -- Specify an 8 mA drive. */
-   DSPAL_GPIO_10MA    = 0x4,  /**< -- Specify a 10 mA drive. */
-   DSPAL_GPIO_12MA    = 0x5,  /**< -- Specify a 12 mA drive. */
-   DSPAL_GPIO_14MA    = 0x6,  /**< -- Specify a 14 mA drive. */
-   DSPAL_GPIO_16MA    = 0x7,  /**< -- Specify a 16 mA drive. */
-   DSPAL_GPIO_DRIVE_MAX_NUM,  /**< -- maximum number of DspAL GPIO drive strengths defined. */
+enum  DSPAL_GPIO_DRIVE_TYPE {
+	DSPAL_GPIO_2MA     = 0,    /**< -- Specify a 2 mA drive. */
+	DSPAL_GPIO_4MA     = 0x1,  /**< -- Specify a 4 mA drive. */
+	DSPAL_GPIO_6MA     = 0x2,  /**< -- Specify a 6 mA drive. */
+	DSPAL_GPIO_8MA     = 0x3,  /**< -- Specify an 8 mA drive. */
+	DSPAL_GPIO_10MA    = 0x4,  /**< -- Specify a 10 mA drive. */
+	DSPAL_GPIO_12MA    = 0x5,  /**< -- Specify a 12 mA drive. */
+	DSPAL_GPIO_14MA    = 0x6,  /**< -- Specify a 14 mA drive. */
+	DSPAL_GPIO_16MA    = 0x7,  /**< -- Specify a 16 mA drive. */
+	DSPAL_GPIO_DRIVE_MAX_NUM,  /**< -- maximum number of DspAL GPIO drive strengths defined. */
 };
 
 /**
  * @brief
  * Output value specification for general purpose I/O.
  */
-enum DSPAL_GPIO_VALUE_TYPE
-{
-   DSPAL_GPIO_LOW_VALUE = 0,  /**< Drive the output LOW */
-   DSPAL_GPIO_HIGH_VALUE = 1, /**< Drive the output HIGH */
-   DSPAL_GPIO_VALUE_TYPE_MAX_NUM, /**< maximum number of DspAL GPIO value types defined */
+enum DSPAL_GPIO_VALUE_TYPE {
+	DSPAL_GPIO_LOW_VALUE = 0,  /**< Drive the output LOW */
+	DSPAL_GPIO_HIGH_VALUE = 1, /**< Drive the output HIGH */
+	DSPAL_GPIO_VALUE_TYPE_MAX_NUM, /**< maximum number of DspAL GPIO value types defined */
 };
 
 /**
  * @brief
  * This enum is used to define the trigger condition of the GPIO interrupt.
  */
-enum DSPAL_GPIO_INT_TRIGGER_TYPE
-{
-   DSPAL_GPIOINT_TRIGGER_HIGH = 0,   /**< The GPIO interrupt will trigger only if the input signal is high */
-   DSPAL_GPIOINT_TRIGGER_LOW,  /**< The GPIO interrupt will trigger only if the input signal is low */
-   DSPAL_GPIOINT_TRIGGER_RISING, /**< The GPIO interrupt will trigger only if the input signal level transitions from low to high */
-   DSPAL_GPIOINT_TRIGGER_FALLING, /**< The GPIO interrupt will trigger only if the input signal level transitions from high to low */
-   DSPAL_GPIOINT_TRIGGER_DUAL_EDGE, /**< The GPIO interrupt will trigger only if the input signal level transitions from high to low or from low to high.*/
-   DSPAL_GPIOINT_TRIGGER_TYPE_MAX_NUM, /**< maximum number of DspAL GPIO interrtup trigger types defined */
+enum DSPAL_GPIO_INT_TRIGGER_TYPE {
+	DSPAL_GPIOINT_TRIGGER_HIGH = 0,   /**< The GPIO interrupt will trigger only if the input signal is high */
+	DSPAL_GPIOINT_TRIGGER_LOW,  /**< The GPIO interrupt will trigger only if the input signal is low */
+	DSPAL_GPIOINT_TRIGGER_RISING, /**< The GPIO interrupt will trigger only if the input signal level transitions from low to high */
+	DSPAL_GPIOINT_TRIGGER_FALLING, /**< The GPIO interrupt will trigger only if the input signal level transitions from high to low */
+	DSPAL_GPIOINT_TRIGGER_DUAL_EDGE, /**< The GPIO interrupt will trigger only if the input signal level transitions from high to low or from low to high.*/
+	DSPAL_GPIOINT_TRIGGER_TYPE_MAX_NUM, /**< maximum number of DspAL GPIO interrtup trigger types defined */
 };
 
 
@@ -177,13 +171,12 @@ enum DSPAL_GPIO_INT_TRIGGER_TYPE
  * ioctl codes used to extend the functionality of the standard read/write file
  * semantics for the gpio.
  */
-enum DSPAL_GPIO_IOCTLS
-{
-   DSPAL_GPIO_IOCTL_INVALID = -1, /**< invalid IOCTL code, used to return an error */
-   DSPAL_GPIO_IOCTL_CONFIG_IO,    /**< configure GPIO device into general purpose I/O mode */
-   DSPAL_GPIO_IOCTL_CONFIG_REG_INT,   /**< configure GPIO device into interrupt mode */
-   DSPAL_GPIO_IOCTL_CONFIG_DEREG_INT,   /**< configure GPIO device into interrupt mode. No argument required for this option */
-   DSPAL_GPIO_IOCTL_MAX_NUM,      /**< number of valid IOCTL codes defined for the GPIO */
+enum DSPAL_GPIO_IOCTLS {
+	DSPAL_GPIO_IOCTL_INVALID = -1, /**< invalid IOCTL code, used to return an error */
+	DSPAL_GPIO_IOCTL_CONFIG_IO,    /**< configure GPIO device into general purpose I/O mode */
+	DSPAL_GPIO_IOCTL_CONFIG_REG_INT,   /**< configure GPIO device into interrupt mode */
+	DSPAL_GPIO_IOCTL_CONFIG_DEREG_INT,   /**< configure GPIO device into interrupt mode. No argument required for this option */
+	DSPAL_GPIO_IOCTL_MAX_NUM,      /**< number of valid IOCTL codes defined for the GPIO */
 };
 
 /**
@@ -191,11 +184,10 @@ enum DSPAL_GPIO_IOCTLS
  * Structure passed to the DSPAL_GPIO_IOCTL_CONFIG_IO IOCTL call.  Specifies all
  * the required settings for general purpose I/O GPIO function
  */
-struct dspal_gpio_ioctl_config_io
-{
-   enum DSPAL_GPIO_DIRECTION_TYPE direction; /**< direction type indicating if the device is used as INPUT or OUTPUT */
-   enum DSPAL_GPIO_PULL_TYPE pull;  /**< the pull type of the GPIO device */
-   enum DSPAL_GPIO_DRIVE_TYPE drive; /**< the drive strength */
+struct dspal_gpio_ioctl_config_io {
+	enum DSPAL_GPIO_DIRECTION_TYPE direction; /**< direction type indicating if the device is used as INPUT or OUTPUT */
+	enum DSPAL_GPIO_PULL_TYPE pull;  /**< the pull type of the GPIO device */
+	enum DSPAL_GPIO_DRIVE_TYPE drive; /**< the drive strength */
 };
 
 
@@ -213,18 +205,17 @@ typedef uint32_t DSPAL_GPIO_INT_ISR_CTX;
  * DSPAL_GPIO_IOCTL_CONFIG_REG_INT IOCTL call. This function is called when
  * the GPIO interrupt fires.
  */
-typedef void * (*DSPAL_GPIO_INT_ISR)(DSPAL_GPIO_INT_ISR_CTX);
+typedef void *(*DSPAL_GPIO_INT_ISR)(DSPAL_GPIO_INT_ISR_CTX);
 
 /**
  * @brief
  * Structure passed to the DSPAL_GPIO_IOCTL_CONFIG_REG_INT IOCTL call.  Specifies all
  * the required settings for interrupt function
  */
-struct dspal_gpio_ioctl_reg_int
-{
-   enum DSPAL_GPIO_INT_TRIGGER_TYPE trigger; /**< the interrupt trigger type */
-   DSPAL_GPIO_INT_ISR isr; /**< ISR functor */
-   DSPAL_GPIO_INT_ISR_CTX isr_ctx;  /**< the context argument passed to isr */
+struct dspal_gpio_ioctl_reg_int {
+	enum DSPAL_GPIO_INT_TRIGGER_TYPE trigger; /**< the interrupt trigger type */
+	DSPAL_GPIO_INT_ISR isr; /**< ISR functor */
+	DSPAL_GPIO_INT_ISR_CTX isr_ctx;  /**< the context argument passed to isr */
 };
 
 #endif /* DEV_FS_LIB_GPIO_H_ */

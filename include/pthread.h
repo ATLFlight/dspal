@@ -14,20 +14,20 @@
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
  *  This product includes software developed by Chris Provenzano.
- * 4. The name of Chris Provenzano may not be used to endorse or promote 
+ * 4. The name of Chris Provenzano may not be used to endorse or promote
  *	  products derived from this software without specific prior written
  *	  permission.
  *
  * THIS SOFTWARE IS PROVIDED BY CHRIS PROVENZANO ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL CHRIS PROVENZANO BE LIABLE FOR ANY 
+ * ARE DISCLAIMED.  IN NO EVENT SHALL CHRIS PROVENZANO BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
  * $FreeBSD$
@@ -50,11 +50,11 @@
 /*
  * Run-time invariant values:
  */
-#define PTHREAD_DESTRUCTOR_ITERATIONS		4
-#define PTHREAD_KEYS_MAX			256
-#define PTHREAD_STACK_MIN			__MINSIGSTKSZ
-#define PTHREAD_THREADS_MAX			__ULONG_MAX
-#define PTHREAD_BARRIER_SERIAL_THREAD		-1
+#define PTHREAD_DESTRUCTOR_ITERATIONS	4
+#define PTHREAD_KEYS_MAX		256
+#define PTHREAD_STACK_MIN		__MINSIGSTKSZ
+#define PTHREAD_THREADS_MAX		__ULONG_MAX
+#define PTHREAD_BARRIER_SERIAL_THREAD	-1
 
 /*
  * Flags for threads and thread attributes.
@@ -73,7 +73,7 @@
  * Flags for read/write lock attributes
  */
 #define PTHREAD_PROCESS_PRIVATE     0
-#define PTHREAD_PROCESS_SHARED      1	
+#define PTHREAD_PROCESS_SHARED      1
 
 /*
  * Flags for cancelling threads
@@ -91,12 +91,12 @@
 #define PTHREAD_DONE_INIT   1
 
 /*
- * Static once initialization values. 
+ * Static once initialization values.
  */
 #define PTHREAD_ONCE_INIT   { PTHREAD_NEEDS_INIT, NULL }
 
 /*
- * Static initialization values. 
+ * Static initialization values.
  */
 #define PTHREAD_MUTEX_INITIALIZER	0xFFFFFFFF
 #define PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP	((pthread_mutex_t)1)
@@ -128,20 +128,18 @@
  */
 
 /* mutex type */
-enum pthread_mutextype
-{
-   PTHREAD_MUTEX_ERRORCHECK = 0, /* Default POSIX mutex */
-   PTHREAD_MUTEX_NORMAL = 1, /* No error checking */
-   PTHREAD_MUTEX_RECURSIVE = 2, /* Recursive mutex */
-   PTHREAD_MUTEX_ADAPTIVE_NP = 4, /* Adaptive mutex, spins briefly before blocking on lock */
-   PTHREAD_MUTEX_TYPE_MAX
+enum pthread_mutextype {
+	PTHREAD_MUTEX_ERRORCHECK = 0, 	/* Default POSIX mutex */
+	PTHREAD_MUTEX_NORMAL = 1, 	/* No error checking */
+	PTHREAD_MUTEX_RECURSIVE = 2, 	/* Recursive mutex */
+	PTHREAD_MUTEX_ADAPTIVE_NP = 4, 	/* Adaptive mutex, spins briefly before blocking on lock */
+	PTHREAD_MUTEX_TYPE_MAX
 };
 
 #define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_RECURSIVE
 
-struct _pthread_cleanup_info
-{
-   uintptr_t pthread_cleanup_pad[8];
+struct _pthread_cleanup_info {
+	uintptr_t pthread_cleanup_pad[8];
 };
 
 /*
@@ -149,31 +147,31 @@ struct _pthread_cleanup_info
  */
 static inline int pthread_equal(pthread_t t1, pthread_t t2)
 {
-   return t1 == t2;
+	return t1 == t2;
 }
 
 static inline void pthread_yield(void)
 {
-   return;
+	return;
 }
 
 __BEGIN_DECLS
 /*
  * Qualcomm (not POSIX compliant) additions to pthread get/set attribute functions:
  */
-int pthread_attr_setthreadname(pthread_attr_t *attr, const char * name);
-int pthread_attr_getthreadname(const pthread_attr_t *attr, char * name, int size);
+int pthread_attr_setthreadname(pthread_attr_t *attr, const char *name);
+int pthread_attr_getthreadname(const pthread_attr_t *attr, char *name, int size);
 int pthread_attr_settimetestid(pthread_attr_t *attr, unsigned int tid);
-int pthread_attr_gettimetestid(const pthread_attr_t *attr, unsigned int* tid);
+int pthread_attr_gettimetestid(const pthread_attr_t *attr, unsigned int *tid);
 
-int pthread_getattr_np(pthread_t thread, pthread_attr_t * restrict attr);
+int pthread_getattr_np(pthread_t thread, pthread_attr_t *restrict attr);
 
 /*
  * POSIX compliant function prototype definitions:
  */
 
 int pthread_create(pthread_t *, const pthread_attr_t *, void *(*)(void *),
-      void *);
+		   void *);
 void pthread_exit(void *);
 int pthread_join(pthread_t, void **);
 pthread_t pthread_self(void);

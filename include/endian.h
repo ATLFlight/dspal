@@ -77,9 +77,9 @@ __bswap64(__uint64_t _x)
 {
 
 	return ((_x >> 56) | ((_x >> 40) & 0xff00) | ((_x >> 24) & 0xff0000) |
-	    ((_x >> 8) & 0xff000000) | ((_x << 8) & ((__uint64_t)0xff << 32)) |
-	    ((_x << 24) & ((__uint64_t)0xff << 40)) |
-	    ((_x << 40) & ((__uint64_t)0xff << 48)) | ((_x << 56)));
+		((_x >> 8) & 0xff000000) | ((_x << 8) & ((__uint64_t)0xff << 32)) |
+		((_x << 24) & ((__uint64_t)0xff << 40)) |
+		((_x << 40) & ((__uint64_t)0xff << 48)) | ((_x << 56)));
 }
 
 static __inline __uint32_t
@@ -88,11 +88,11 @@ __bswap32_var(__uint32_t v)
 	__uint32_t t1;
 
 	__asm __volatile("eor %1, %0, %0, ror #16\n"
-	    		"bic %1, %1, #0x00ff0000\n"
-			"mov %0, %0, ror #8\n"
-			"eor %0, %0, %1, lsr #8\n"
-			 : "+r" (v), "=r" (t1));
-	
+			 "bic %1, %1, #0x00ff0000\n"
+			 "mov %0, %0, ror #8\n"
+			 "eor %0, %0, %1, lsr #8\n"
+			 : "+r"(v), "=r"(t1));
+
 	return (v);
 }
 
@@ -102,35 +102,35 @@ __bswap16_var(__uint16_t v)
 	__uint32_t ret = v & 0xffff;
 
 	__asm __volatile(
-	    "mov    %0, %0, ror #8\n"
-	    "orr    %0, %0, %0, lsr #16\n"
-	    "bic    %0, %0, %0, lsl #16"
-	    : "+r" (ret));
-	
+		"mov    %0, %0, ror #8\n"
+		"orr    %0, %0, %0, lsr #16\n"
+		"bic    %0, %0, %0, lsl #16"
+		: "+r"(ret));
+
 	return ((__uint16_t)ret);
-}		
+}
 
 #ifdef __OPTIMIZE__
 
 #define __bswap32_constant(x)	\
-    ((((x) & 0xff000000U) >> 24) |	\
-     (((x) & 0x00ff0000U) >>  8) |	\
-     (((x) & 0x0000ff00U) <<  8) |	\
-     (((x) & 0x000000ffU) << 24))
+	((((x) & 0xff000000U) >> 24) |	\
+	 (((x) & 0x00ff0000U) >>  8) |	\
+	 (((x) & 0x0000ff00U) <<  8) |	\
+	 (((x) & 0x000000ffU) << 24))
 
 #define __bswap16_constant(x)	\
-    ((((x) & 0xff00) >> 8) |		\
-     (((x) & 0x00ff) << 8))
+	((((x) & 0xff00) >> 8) |	\
+	 (((x) & 0x00ff) << 8))
 
 #define __bswap16(x)	\
-    ((__uint16_t)(__builtin_constant_p(x) ?	\
-     __bswap16_constant(x) :			\
-     __bswap16_var(x)))
+	((__uint16_t)(__builtin_constant_p(x) ?	\
+		      __bswap16_constant(x) :	\
+		      __bswap16_var(x)))
 
 #define __bswap32(x)	\
-    ((__uint32_t)(__builtin_constant_p(x) ? 	\
-     __bswap32_constant(x) :			\
-     __bswap32_var(x)))
+	((__uint32_t)(__builtin_constant_p(x) ?	\
+		      __bswap32_constant(x) :	\
+		      __bswap32_var(x)))
 
 #else
 #define __bswap16(x)	__bswap16_var(x)
