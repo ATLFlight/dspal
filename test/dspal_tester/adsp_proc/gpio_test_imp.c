@@ -35,7 +35,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <sys/ioctl.h>
-#include <dev_fs_lib.h>
 #include <dev_fs_lib_gpio.h>
 
 #include "test_status.h"
@@ -49,10 +48,10 @@ bool isr_called = false;
 
 /**
  * @brief Test Open and Close functionality of the GPIO Device (gpio-56)
- * 
+ *
  * @par Test:
- * 1) Opens file for GPIO device 
- * 2) If devices file opens return TEST_PASS  
+ * 1) Opens file for GPIO device
+ * 2) If devices file opens return TEST_PASS
  *
  * @return
  * TEST_PASS ------ Test Passes (file opened successfully)
@@ -60,25 +59,24 @@ bool isr_called = false;
 */
 int dspal_tester_test_gpio_open_close(void)
 {
-   int result = TEST_PASS;
-   int fd;
-   fd = open(GPIO_DEVICE_PATH, 0);
+	int result = TEST_PASS;
+	int fd;
+	fd = open(GPIO_DEVICE_PATH, 0);
 
-   if (fd == -1)
-   {
-      MSG("open gpio device failed.");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	if (fd == -1) {
+		MSG("open gpio device failed.");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
 exit:
-   close(fd);
-   return result;
+	close(fd);
+	return result;
 }
 
 /**
 * @brief Test IOCTL function to configure GPIO device into IO mode
-* 
+*
 * @par Test:
 * 1) Opens file for GPIO device  (gpio-56)
 * 2) Uses ioctl to set the GPIO pin to me in IO mode and checks that this succeeds
@@ -90,48 +88,45 @@ exit:
 */
 int dspal_tester_test_gpio_ioctl_io(void)
 {
-   int result = TEST_PASS;
-   int fd;
-   fd = open(GPIO_DEVICE_PATH, 0);
+	int result = TEST_PASS;
+	int fd;
+	fd = open(GPIO_DEVICE_PATH, 0);
 
-   if (fd == -1)
-   {
-      MSG("open gpio device failed.");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	if (fd == -1) {
+		MSG("open gpio device failed.");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   struct dspal_gpio_ioctl_config_io config = {
-         .direction = DSPAL_GPIO_DIRECTION_OUTPUT,
-         .pull = DSPAL_GPIO_NO_PULL,
-         .drive = DSPAL_GPIO_2MA,
-   };
+	struct dspal_gpio_ioctl_config_io config = {
+		.direction = DSPAL_GPIO_DIRECTION_OUTPUT,
+		.pull = DSPAL_GPIO_NO_PULL,
+		.drive = DSPAL_GPIO_2MA,
+	};
 
-   // configure GPIO device into general purpose IO mode
-   if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS)
-   {
-      MSG("ioctl gpio device failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	// configure GPIO device into general purpose IO mode
+	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
+		MSG("ioctl gpio device failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   // Test if ioctl() is rejected if called more than once
-   if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) == SUCCESS)
-   {
-      MSG("duplicate ioctl call test failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	// Test if ioctl() is rejected if called more than once
+	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) == SUCCESS) {
+		MSG("duplicate ioctl call test failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
 exit:
-   close(fd);
-   return result;
+	close(fd);
+	return result;
 }
 
 
 /**
 * @brief This test toggles the GPIO pin at 10Hz.
-* 
+*
 * @par Tests:
 * This test toggles the GPIO pin at 10Hz. After each write, we read the value
 * from GPIO port to validate the write result.
@@ -143,110 +138,107 @@ exit:
 *    written (exit if fails to read or if the value read was not the same as the value
 *    written in step 3)
 * 5) Loop steps 3-4 100 times at 100 milliseconds per loop, invert signal to write to GPIO Pin
-* 
+*
 * @return
 * TEST_PASS ------ Test Passes
 * TEST_FAIL ------ Test Failed
 */
 int dspal_tester_test_gpio_read_write(void)
 {
-   int result = TEST_PASS;
-   int fd;
-   int bytes;
-   enum DSPAL_GPIO_VALUE_TYPE value_written = DSPAL_GPIO_LOW_VALUE;
-   enum DSPAL_GPIO_VALUE_TYPE value_read;
-   struct dspal_gpio_ioctl_config_io config = {
-         .direction = DSPAL_GPIO_DIRECTION_OUTPUT,
-         .pull = DSPAL_GPIO_NO_PULL,
-         .drive = DSPAL_GPIO_2MA,
-   };
+	int result = TEST_PASS;
+	int fd;
+	int bytes;
+	enum DSPAL_GPIO_VALUE_TYPE value_written = DSPAL_GPIO_LOW_VALUE;
+	enum DSPAL_GPIO_VALUE_TYPE value_read;
+	struct dspal_gpio_ioctl_config_io config = {
+		.direction = DSPAL_GPIO_DIRECTION_OUTPUT,
+		.pull = DSPAL_GPIO_NO_PULL,
+		.drive = DSPAL_GPIO_2MA,
+	};
 
-   // Open GPIO device
-   fd = open(GPIO_DEVICE_PATH, 0);
-   if (fd == -1)
-   {
-      MSG("open gpio device failed.");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	// Open GPIO device
+	fd = open(GPIO_DEVICE_PATH, 0);
 
-   // Configure GPIO device into general purpose I/O mode
-   if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS)
-   {
-      MSG("ioctl gpio device failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	if (fd == -1) {
+		MSG("open gpio device failed.");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   // Toggle GPIO device output value for a number of repetitions
-   for (int i = 0; i < 100; i++)
-   {
-      value_written = value_written ^ 0x01;
+	// Configure GPIO device into general purpose I/O mode
+	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
+		MSG("ioctl gpio device failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-      MSG("write GPIO %s: %d", GPIO_DEVICE_PATH, value_written);
+	// Toggle GPIO device output value for a number of repetitions
+	for (int i = 0; i < 100; i++) {
+		value_written = value_written ^ 0x01;
 
-      // set output value
-      bytes = write(fd, &value_written, 1);
-      if (bytes != 1)
-      {
-         MSG("error: write failed");
-         result = TEST_FAIL;
-         goto exit;
-      }
+		MSG("write GPIO %s: %d", GPIO_DEVICE_PATH, value_written);
 
-      // verify the write result by reading the output from the same GPIO
-      bytes = read(fd, &value_read, 1);
-      if (bytes != 1)
-      {
-         MSG("error: read failed");
-         result = TEST_FAIL;
-         goto exit;
-      }
+		// set output value
+		bytes = write(fd, &value_written, 1);
 
-      MSG("read from GPIO %s: %d", GPIO_DEVICE_PATH, value_read);
+		if (bytes != 1) {
+			MSG("error: write failed");
+			result = TEST_FAIL;
+			goto exit;
+		}
 
-      if (value_read != value_written)
-      {
-         MSG("error: read inconsistent value");
-         result = TEST_FAIL;
-         goto exit;
-      }
+		// verify the write result by reading the output from the same GPIO
+		bytes = read(fd, &value_read, 1);
 
-      // sleep between each toggle
-      usleep(100000);
-   }
+		if (bytes != 1) {
+			MSG("error: read failed");
+			result = TEST_FAIL;
+			goto exit;
+		}
+
+		MSG("read from GPIO %s: %d", GPIO_DEVICE_PATH, value_read);
+
+		if (value_read != value_written) {
+			MSG("error: read inconsistent value");
+			result = TEST_FAIL;
+			goto exit;
+		}
+
+		// sleep between each toggle
+		usleep(100000);
+	}
 
 exit:
-   close(fd);
-   return result;
+	close(fd);
+	return result;
 }
 
 
 /**
 * @brief Interrupt service routine for the GPIO interrupt test.
-* 
+*
 * @return
 * NULL --- Always
 */
 void *gpio_int_isr(DSPAL_GPIO_INT_ISR_CTX context)
 {
-   bool *val = (bool *)context;
+	bool *val = (bool *)context;
 
-   MSG("gpio_int_isr called");
+	MSG("gpio_int_isr called");
 
-   *val = true;
+	*val = true;
 
-   return NULL;
+	return NULL;
 }
 
 
 /**
 * @brief Test to see if a GPIO hardware interrupt can be setup and used correctly
-* 
+*
 * @par Detailed Description:
-* This tests uses 2 GPIO pins.  1 of the pins is setup as a hardware interrupt pin 
-* that will be triggered on a rising edge.  The other pin is set to be a GPIO IO 
-* pin.  It is initially set to be LOW and then the interrupt pin is configured.  
+* This tests uses 2 GPIO pins.  1 of the pins is setup as a hardware interrupt pin
+* that will be triggered on a rising edge.  The other pin is set to be a GPIO IO
+* pin.  It is initially set to be LOW and then the interrupt pin is configured.
 * After that the IO pin state is changed from LOW to HIGH to trigger the interupt
 * GPIO interrupt (the 2 pins should be wired together)
 
@@ -270,93 +262,90 @@ void *gpio_int_isr(DSPAL_GPIO_INT_ISR_CTX context)
 int dspal_tester_test_gpio_int(void)
 {
 #ifdef DO_JIG_TEST
-   int result = TEST_PASS;
-   enum DSPAL_GPIO_VALUE_TYPE value_written;
-   int fd;
-   int int_fd = -1;
-   int bytes = 0;
+	int result = TEST_PASS;
+	enum DSPAL_GPIO_VALUE_TYPE value_written;
+	int fd;
+	int int_fd = -1;
+	int bytes = 0;
 
-   // Open GPIO device at GPIO_DEVICE_PATH for general purpose I/O
-   fd = open(GPIO_DEVICE_PATH, 0);
-   if (fd == -1)
-   {
-      MSG("open gpio device failed.");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	// Open GPIO device at GPIO_DEVICE_PATH for general purpose I/O
+	fd = open(GPIO_DEVICE_PATH, 0);
 
-   struct dspal_gpio_ioctl_config_io config = {
-         .direction = DSPAL_GPIO_DIRECTION_OUTPUT,
-         .pull = DSPAL_GPIO_NO_PULL,
-         .drive = DSPAL_GPIO_2MA,
-   };
+	if (fd == -1) {
+		MSG("open gpio device failed.");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS)
-   {
-      MSG("ioctl gpio device failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	struct dspal_gpio_ioctl_config_io config = {
+		.direction = DSPAL_GPIO_DIRECTION_OUTPUT,
+		.pull = DSPAL_GPIO_NO_PULL,
+		.drive = DSPAL_GPIO_2MA,
+	};
 
-   // set initial output value to LOW
-   value_written = DSPAL_GPIO_LOW_VALUE;
-   bytes = write(fd, &value_written, 1);
-   if (bytes != 1)
-   {
-      MSG("error: write failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
+		MSG("ioctl gpio device failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   // Open GPIO Device at GPIO_INT_DEVICE_PATH
-   int_fd = open(GPIO_INT_DEVICE_PATH, 0);
-   if (int_fd == -1)
-   {
-      MSG("open gpio device failed.");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	// set initial output value to LOW
+	value_written = DSPAL_GPIO_LOW_VALUE;
+	bytes = write(fd, &value_written, 1);
 
-   // Configure this GPIO device as interrupt source
-   struct dspal_gpio_ioctl_reg_int int_config = {
-      .trigger = DSPAL_GPIOINT_TRIGGER_RISING,
-      .isr = (DSPAL_GPIO_INT_ISR)&gpio_int_isr,
-      .isr_ctx = (DSPAL_GPIO_INT_ISR_CTX)&isr_called,
-   };
+	if (bytes != 1) {
+		MSG("error: write failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   if (ioctl(int_fd, DSPAL_GPIO_IOCTL_CONFIG_REG_INT, (void *)&int_config) != SUCCESS)
-   {
-      MSG("error: ioctl DSPAL_GPIO_IOCTL_CONFIG_REG_INT failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	// Open GPIO Device at GPIO_INT_DEVICE_PATH
+	int_fd = open(GPIO_INT_DEVICE_PATH, 0);
 
-   // Set output to HIGH to generate RISING edge to trigger the interrupt on
-   // the interrupt GPIO device
-   value_written = DSPAL_GPIO_HIGH_VALUE;
-   bytes = write(fd, &value_written, 1);
-   if (bytes != 1)
-   {
-      MSG("error: write failed");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	if (int_fd == -1) {
+		MSG("open gpio device failed.");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
-   usleep(1000000);
+	// Configure this GPIO device as interrupt source
+	struct dspal_gpio_ioctl_reg_int int_config = {
+		.trigger = DSPAL_GPIOINT_TRIGGER_RISING,
+		.isr = (DSPAL_GPIO_INT_ISR) &gpio_int_isr,
+		.isr_ctx = (DSPAL_GPIO_INT_ISR_CTX) &isr_called,
+	};
 
-   // check if isr was called
-   if (!isr_called)
-   {
-      MSG("error: isr is not called");
-      result = TEST_FAIL;
-      goto exit;
-   }
+	if (ioctl(int_fd, DSPAL_GPIO_IOCTL_CONFIG_REG_INT, (void *)&int_config) != SUCCESS) {
+		MSG("error: ioctl DSPAL_GPIO_IOCTL_CONFIG_REG_INT failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
+
+	// Set output to HIGH to generate RISING edge to trigger the interrupt on
+	// the interrupt GPIO device
+	value_written = DSPAL_GPIO_HIGH_VALUE;
+	bytes = write(fd, &value_written, 1);
+
+	if (bytes != 1) {
+		MSG("error: write failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
+
+	usleep(1000000);
+
+	// check if isr was called
+	if (!isr_called) {
+		MSG("error: isr is not called");
+		result = TEST_FAIL;
+		goto exit;
+	}
 
 exit:
-   close(int_fd);
-   close(fd);
+	close(int_fd);
+	close(fd);
 #else
-   int result = TEST_SKIP;
+	int result = TEST_SKIP;
 #endif
-   return result;
+	return result;
 }

@@ -37,53 +37,53 @@
 
 int run_posix_test_suite(void)
 {
-   int test_results = TEST_PASS;
+	int test_results = TEST_PASS;
 
-   MSG("testing time.h\n");
+	MSG("testing time.h\n");
 
-   test_results |= display_test_results(dspal_tester_test_clockid(), "clockid values exist");
-   test_results |= display_test_results(dspal_tester_test_sigevent(), "sigevent values exist");
-   test_results |= display_test_results(dspal_tester_test_time(), "time returns good value");
-   test_results |= display_test_results(dspal_tester_test_timer_realtime_sig_none(), "timer realtime");
-   test_results |= display_test_results(dspal_tester_test_timer_monotonic_sig_none(), "timer monotonic");
-   test_results |= display_test_results(dspal_tester_test_timer_process_cputime_sig_none(), "timer process cputime");
-   test_results |= display_test_results(dspal_tester_test_timer_thread_cputime_sig_none(), "timer thread cputime");
-   test_results |= display_test_results(dspal_tester_test_time_return_value(), "time return value");
-   test_results |= display_test_results(dspal_tester_test_time_param(), "time parameter");
-   test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
-   test_results |= display_test_results(dspal_tester_test_clock_getres(), "clock_getres");
-   test_results |= display_test_results(dspal_tester_test_clock_gettime(), "clock_gettime");
-   test_results |= display_test_results(dspal_tester_test_clock_settime(), "clock_settime");
-   test_results |= display_test_results(dspal_tester_test_one_shot_timer_cb(), "one shot timer cb");
-   test_results |= display_test_results(dspal_tester_test_periodic_timer_cb(), "periodic timer cb");
-   test_results |= display_test_results(dspal_tester_test_periodic_timer_signal_cb(), "periodic timer signal cb");
-   test_results |= display_test_results(dspal_tester_test_periodic_timer_sigwait(), "periodic timer sigwait");
+	test_results |= display_test_results(dspal_tester_test_clockid(), "clockid values exist");
+	test_results |= display_test_results(dspal_tester_test_sigevent(), "sigevent values exist");
+	test_results |= display_test_results(dspal_tester_test_time(), "time returns good value");
+	test_results |= display_test_results(dspal_tester_test_timer_realtime_sig_none(), "timer realtime");
+	test_results |= display_test_results(dspal_tester_test_timer_monotonic_sig_none(), "timer monotonic");
+	test_results |= display_test_results(dspal_tester_test_timer_process_cputime_sig_none(), "timer process cputime");
+	test_results |= display_test_results(dspal_tester_test_timer_thread_cputime_sig_none(), "timer thread cputime");
+	test_results |= display_test_results(dspal_tester_test_time_return_value(), "time return value");
+	test_results |= display_test_results(dspal_tester_test_time_param(), "time parameter");
+	test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
+	test_results |= display_test_results(dspal_tester_test_clock_getres(), "clock_getres");
+	test_results |= display_test_results(dspal_tester_test_clock_gettime(), "clock_gettime");
+	test_results |= display_test_results(dspal_tester_test_clock_settime(), "clock_settime");
+	test_results |= display_test_results(dspal_tester_test_one_shot_timer_cb(), "one shot timer cb");
+	test_results |= display_test_results(dspal_tester_test_periodic_timer_cb(), "periodic timer cb");
+	test_results |= display_test_results(dspal_tester_test_periodic_timer_signal_cb(), "periodic timer signal cb");
+	test_results |= display_test_results(dspal_tester_test_periodic_timer_sigwait(), "periodic timer sigwait");
 
-   MSG("testing pthread.h\n");
+	MSG("testing pthread.h\n");
 
-   test_results |= display_test_results(dspal_tester_test_pthread_attr_init(), "pthread attr init");
-   test_results |= display_test_results(dspal_tester_test_pthread_create(), "pthread create");
-   test_results |= display_test_results(dspal_tester_test_pthread_cancel(), "pthread cancel");
-   test_results |= display_test_results(dspal_tester_test_pthread_self(), "pthread self");
-   test_results |= display_test_results(dspal_tester_test_pthread_exit(), "pthread exit");
-   test_results |= display_test_results(dspal_tester_test_pthread_kill(), "pthread kill");
-   test_results |= display_test_results(dspal_tester_test_pthread_cond_timedwait(), "pthread condition timed wait");
-   test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock(), "pthread mutex lock");
-   test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock_thread(), "thread mutex lock thread");
-   test_results |= display_test_results(dspal_tester_test_pthread_stack(), "thread large allocation on stack");
-   test_results |= display_test_results(dspal_tester_test_pthread_heap(), "thread large allocation on heap");
-   test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
+	test_results |= display_test_results(dspal_tester_test_pthread_attr_init(), "pthread attr init");
+	test_results |= display_test_results(dspal_tester_test_pthread_create(), "pthread create");
+	test_results |= display_test_results(dspal_tester_test_pthread_cancel(), "pthread cancel");
+	test_results |= display_test_results(dspal_tester_test_pthread_self(), "pthread self");
+	test_results |= display_test_results(dspal_tester_test_pthread_exit(), "pthread exit");
+	test_results |= display_test_results(dspal_tester_test_pthread_kill(), "pthread kill");
+	test_results |= display_test_results(dspal_tester_test_pthread_cond_timedwait(), "pthread condition timed wait");
+	test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock(), "pthread mutex lock");
+	test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock_thread(), "thread mutex lock thread");
+	test_results |= display_test_results(dspal_tester_test_pthread_stack(), "thread large allocation on stack");
+	test_results |= display_test_results(dspal_tester_test_pthread_heap(), "thread large allocation on heap");
+	test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
 
-   MSG("testing semaphore.h\n");
+	MSG("testing semaphore.h\n");
 
-   test_results |= display_test_results(dspal_tester_test_semaphore_wait(), "semaphore wait");
+	test_results |= display_test_results(dspal_tester_test_semaphore_wait(), "semaphore wait");
 
-   MSG("testing C++\n");
+	MSG("testing C++\n");
 
-   test_results |= display_test_results(dspal_tester_test_cxx_heap(), "test C++ heap");
-   test_results |= display_test_results(dspal_tester_test_cxx_static(), "test C++ static initialization");
+	test_results |= display_test_results(dspal_tester_test_cxx_heap(), "test C++ heap");
+	test_results |= display_test_results(dspal_tester_test_cxx_static(), "test C++ static initialization");
 
-   MSG("tests complete\n");
+	MSG("tests complete\n");
 
-   return test_results;
+	return test_results;
 }

@@ -72,31 +72,39 @@
 
 /**
  * @brief
+ * The I2C device path uses the following format:
+ * /dev/iic-{bus number}
+ * Bus numbers start at 1 and may go to up to the max number of BLSPs supported
+ * by the SoC.  Using /dev/i2c-{number} is deprecated.
+ */
+#define DEV_FS_I2C_DEVICE_TYPE_STRING  "/dev/iic-"
+
+/**
+ * @brief
  * ioctl codes used to extend the functionality of the standard read/write file
  * semantics for the i2c bus.
  */
-enum DSPAL_I2C_IOCTLS
-{
-   I2C_IOCTL_INVALID = -1, /**< invalid IOCTL code, used to return an error */
-   I2C_IOCTL_SLAVE,        /**< used to select the i2c peripheral on the specified i2c bus */
-   I2C_IOCTL_RDWR,         /**< used to initiate a write/read batch transfer */
-   I2C_IOCTL_CONFIG,       /**< used to select the i2c peripheral on the
-                            * specified i2c bus. This has the same effect as
-                            * I2C_IOCTL_SLAVE and will be deprecated in future
-                            * release. It is recommended to use I2C_IOCTL_SLAVE
-                            * to select the i2c peripheral.
-                            */
-   I2C_IOCTL_WRITE_REG,    /**< used to write a register */
-   I2C_IOCTL_READ,         /**< used to read data from i2c buffer. This has
-                            * the same effect as posix read() call.
-                            * NOTE: Both mechanisms assumes that a write call
-                            * has been made to write the starting register
-                            * address from which to read. The most efficient
-                            * method of reading data from a specified register
-                            * on the slave device is to use the I2C_IOCTL_RDWR
-                            * IOCTL.
-                            */
-   I2C_IOCTL_MAX_NUM,      /**< number of valid IOCTL codes defined for the I2C bus */
+enum DSPAL_I2C_IOCTLS {
+	I2C_IOCTL_INVALID = -1, /**< invalid IOCTL code, used to return an error */
+	I2C_IOCTL_SLAVE,        /**< used to select the i2c peripheral on the specified i2c bus */
+	I2C_IOCTL_RDWR,         /**< used to initiate a write/read batch transfer */
+	I2C_IOCTL_CONFIG,       /**< used to select the i2c peripheral on the
+				* specified i2c bus. This has the same effect as
+				* I2C_IOCTL_SLAVE and will be deprecated in future
+				* release. It is recommended to use I2C_IOCTL_SLAVE
+				* to select the i2c peripheral.
+				*/
+	I2C_IOCTL_WRITE_REG,    /**< used to write a register */
+	I2C_IOCTL_READ,		/**< used to read data from i2c buffer. This has
+				* the same effect as posix read() call.
+				* NOTE: Both mechanisms assumes that a write call
+				* has been made to write the starting register
+				* address from which to read. The most efficient
+				* method of reading data from a specified register
+				* on the slave device is to use the I2C_IOCTL_RDWR
+				* IOCTL.
+				*/
+	I2C_IOCTL_MAX_NUM,      /**< number of valid IOCTL codes defined for the I2C bus */
 };
 
 /**
@@ -113,12 +121,11 @@ enum DSPAL_I2C_IOCTLS
  * This structure is used after calling the open function to select the slave device on
  * the I2C bus that will be the target of subsequent read/write functions.
  */
-struct dspal_i2c_ioctl_slave_config
-{
-   uint32_t flags;  				/**< reserved for future use */
-   uint32_t slave_address;  			/**< the address of the slave device on the i2c bus */
-   uint32_t bus_frequency_in_khz; 		/**< the bus frequency used to communication with the slave device in KHz */
-   uint32_t byte_transer_timeout_in_usecs; 	/**< the period of time to wait for a response from the slave device in usecs */
+struct dspal_i2c_ioctl_slave_config {
+	uint32_t flags;  			/**< reserved for future use */
+	uint32_t slave_address;  		/**< the address of the slave device on the i2c bus */
+	uint32_t bus_frequency_in_khz; 		/**< the bus frequency used to communication with the slave device in KHz */
+	uint32_t byte_transer_timeout_in_usecs;	/**< the period of time to wait for a response from the slave device in usecs */
 };
 
 /**
@@ -134,19 +141,17 @@ struct dspal_i2c_ioctl_slave_config
  * Sample code demonstrating the use of this function is provided below:
  * @include i2c_test_imp.c
  */
-struct dspal_i2c_ioctl_combined_write_read
-{
-   uint32_t flags;  		/**< reserved for future use */
-   uint8_t *write_buf;  	/**< the address of the buffer containing the value (register) to be read on the slave device */
-   uint32_t write_buf_len;  	/**< the length of the write_buf buffer */
-   uint8_t *read_buf; 		/**< the address of the buffer containing the bytes read from the specified register on the slave device */
-   uint32_t read_buf_len; 	/**< the length of the read_buf buffer */
+struct dspal_i2c_ioctl_combined_write_read {
+	uint32_t flags;  	/**< reserved for future use */
+	uint8_t *write_buf;  	/**< the address of the buffer containing the value (register) to be read on the slave device */
+	uint32_t write_buf_len;	/**< the length of the write_buf buffer */
+	uint8_t *read_buf; 	/**< the address of the buffer containing the bytes read from the specified register on the slave device */
+	uint32_t read_buf_len; 	/**< the length of the read_buf buffer */
 };
 
-struct dspal_i2c_ioctl_read
-{
-   uint32_t flags;  /**< reserved for future use */
-   uint8_t *read_buf; /**< the address of the buffer containing the bytes read from the specified register on the slave device */
-   uint32_t read_buf_len; /**< the length of the read_buf buffer */
+struct dspal_i2c_ioctl_read {
+	uint32_t flags;  	/**< reserved for future use */
+	uint8_t *read_buf; 	/**< the address of the buffer containing the bytes read from the specified register on the slave device */
+	uint32_t read_buf_len; 	/**< the length of the read_buf buffer */
 };
 

@@ -63,8 +63,8 @@
 #endif
 
 #define FAIL(msg) { \
-  { test_failed(msg, __FILE__, __LINE__); return TEST_FAIL; } \
-}
+		{ test_failed(msg, __FILE__, __LINE__); return TEST_FAIL; } \
+	}
 
 
 __BEGIN_DECLS

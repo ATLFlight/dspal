@@ -45,7 +45,7 @@ typedef	__pid_t		pid_t;
 #ifndef _POSIX_SOURCE
 #define	OXTABS		TAB3
 #define	MDMBUF		CCAR_OFLOW
-#endif 
+#endif
 
 #ifndef _POSIX_SOURCE
 #define	CCEQ(val, c)	((c) == (val) && (val) != _POSIX_VDISABLE)

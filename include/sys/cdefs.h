@@ -234,7 +234,7 @@
 #define	_Static_assert(x, y)	__Static_assert(x, __COUNTER__)
 #define	__Static_assert(x, y)	___Static_assert(x, y)
 #define	___Static_assert(x, y)	typedef char __assert_ ## y[(x) ? 1 : -1] \
-				__unused
+	__unused
 #else
 #define	_Static_assert(x, y)	struct __hack
 #endif
@@ -272,7 +272,7 @@
 #elif __GNUC_PREREQ__(3, 1) && !defined(__cplusplus)
 #define	__generic(expr, t, yes, no)					\
 	__builtin_choose_expr(						\
-	    __builtin_types_compatible_p(__typeof(expr), t), yes, no)
+			__builtin_types_compatible_p(__typeof(expr), t), yes, no)
 #endif
 
 #if __GNUC_PREREQ__(2, 96)
@@ -403,9 +403,9 @@
 	((__size_t)(__uintptr_t)((const volatile void *)&((type *)0)->field))
 #else
 #define __offsetof(type, field)					\
-  (__offsetof__ (reinterpret_cast <__size_t>			\
-                 (&reinterpret_cast <const volatile char &>	\
-                  (static_cast<type *> (0)->field))))
+	(__offsetof__ (reinterpret_cast <__size_t>			\
+		       (&reinterpret_cast <const volatile char &>	\
+			(static_cast<type *> (0)->field))))
 #endif
 #endif
 #define	__rangeof(type, start, end) \
@@ -419,9 +419,9 @@
  */
 #if __GNUC_PREREQ__(3, 1)
 #define	__containerof(x, s, m) ({					\
-	const volatile __typeof(((s *)0)->m) *__x = (x);		\
-	__DEQUALIFY(s *, (const volatile char *)__x - __offsetof(s, m));\
-})
+		const volatile __typeof(((s *)0)->m) *__x = (x);		\
+		__DEQUALIFY(s *, (const volatile char *)__x - __offsetof(s, m));\
+	})
 #else
 #define	__containerof(x, s, m)						\
 	__DEQUALIFY(s *, (const volatile char *)(x) - __offsetof(s, m))
@@ -441,14 +441,14 @@
 #define	__strftimelike(fmtarg, firstvararg)
 #else
 #define	__printflike(fmtarg, firstvararg) \
-	    __attribute__((__format__ (__printf__, fmtarg, firstvararg)))
+	__attribute__((__format__ (__printf__, fmtarg, firstvararg)))
 #define	__scanflike(fmtarg, firstvararg) \
-	    __attribute__((__format__ (__scanf__, fmtarg, firstvararg)))
+	__attribute__((__format__ (__scanf__, fmtarg, firstvararg)))
 #define	__format_arg(fmtarg)	__attribute__((__format_arg__ (fmtarg)))
 #define	__strfmonlike(fmtarg, firstvararg) \
-	    __attribute__((__format__ (__strfmon__, fmtarg, firstvararg)))
+	__attribute__((__format__ (__strfmon__, fmtarg, firstvararg)))
 #define	__strftimelike(fmtarg, firstvararg) \
-	    __attribute__((__format__ (__strftime__, fmtarg, firstvararg)))
+	__attribute__((__format__ (__strftime__, fmtarg, firstvararg)))
 #endif
 
 #define	__strong_reference(sym,aliassym)	\

@@ -63,7 +63,7 @@ int usleep(useconds_t usec);
  * - 0: The bus/port device was successfully closed.
  * - TODO: List error codes for all bus/port types.
  */
-int close (int fd);
+int close(int fd);
 
 /**
  * Requests that data be read from the bus/port device or file associated with

@@ -31,6 +31,7 @@
  ****************************************************************************/
 
 #pragma once
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,9 +58,11 @@ extern "C" {
 /* Notification Types. */
 /* No asynchronous notification is delivered when the event of interest occurs. */
 #define SIGEV_NONE      0
+
 /* The signal specified in sigev_signo shall be generated for the process when
    the event of interest occurs. */
 #define SIGEV_SIGNAL    1
+
 /* A notification function is called to perform notification. */
 #define SIGEV_THREAD    2
 #define SA_SIGINFO      1
@@ -73,41 +76,31 @@ extern "C" {
 
 typedef unsigned long int   sigset_t;
 
-union sigval
-{
-    int  sival_int;   /* Integer signal value. */
-    void *sival_ptr;  /* Pointer signal value. */
+union sigval {
+	int  sival_int;   /* Integer signal value. */
+	void *sival_ptr;  /* Pointer signal value. */
 };
 
 typedef struct sigevent   sigevent;
-struct sigevent
-{
-    int            sigev_notify;                           /* Notification type.       */
-    int            sigev_signo;                            /* Signal number.           */
-    union sigval   sigev_value;                            /* Signal value.            */
-    void           (*sigev_notify_function)(union sigval); /* Notification function.   */
-    pthread_attr_t *sigev_notify_attributes;
+struct sigevent {
+	int            sigev_notify;			/* Notification type.       */
+	int            sigev_signo;			/* Signal number.           */
+	union sigval   sigev_value;			/* Signal value.            */
+	void (*sigev_notify_function)(union sigval);	/* Notification function.   */
+	pthread_attr_t *sigev_notify_attributes;
 };
 
 typedef struct siginfo_t   siginfo_t;
-struct siginfo_t
-{
-    int          si_signo;
-    int          si_code;
-    union sigval si_value;
-/*  int          si_errno;
-    pid_t        si_pid;
-    uid_t        si_uid;
-    void         *si_addr;
-    int          si_status;
-    long         si_band;*/
+struct siginfo_t {
+	int          si_signo;
+	int          si_code;
+	union sigval si_value;
 };
-struct sigaction
-{
-    void     (*sa_handler)(int);
-    sigset_t sa_mask;
-    int      sa_flags;
-    void     (*sa_sigaction)(int, siginfo_t *, void *);
+struct sigaction {
+	void (*sa_handler)(int);
+	sigset_t sa_mask;
+	int      sa_flags;
+	void (*sa_sigaction)(int, siginfo_t *, void *);
 };
 
 /* Signal functions */
@@ -124,23 +117,23 @@ struct sigaction
  * problems caused by 'interrupting' signals.
  *
  * Therefore, in this implementation of POSIX signal, thread will
- * only receive signals when it explicitly waits for signals, i.e., when 
+ * only receive signals when it explicitly waits for signals, i.e., when
  * the thread calls either sigwait() or sigsuspend().
  *
- * Therefore, pthread_sigmask(), which set or get signal mask for a thread, 
- * is not supported, since the signal mask will be set by sigwait() and 
+ * Therefore, pthread_sigmask(), which set or get signal mask for a thread,
+ * is not supported, since the signal mask will be set by sigwait() and
  * sigsuspend().
  *
  * Since this implementation of POSIX kernel API is a subset of PSE51,
- * only threads can send and receive signals. The functions related to 
- * signal operations with processes, such as kill(), sigqueue(), 
+ * only threads can send and receive signals. The functions related to
+ * signal operations with processes, such as kill(), sigqueue(),
  * sigprocmask(), are not provided.
  *
  * Queued signal is not supported.
  *
  * Applications will use signals from SIGRTMIN to SIGRTMAX.
  *
- * SIGEV_SIGNAL and SIGEV_THREAD are supported. SIGEV_NONE is not 
+ * SIGEV_SIGNAL and SIGEV_THREAD are supported. SIGEV_NONE is not
  * supported.
  *
  */
@@ -155,23 +148,23 @@ struct sigaction
  */
 int sigwait(const sigset_t *restrict set, int *restrict sig);
 
-/** Examine and Change Signal Action. 
+/** Examine and Change Signal Action.
  * Please refer to POSIX standard for details.
  *
- * @param act [in] A pointer to the sigaction structure that describes the 
- * action to be taken for the signal. Can be NULL. 
- * The following flags for sa_flags field in struct sigaction are not 
- * supported: SA_NOCLDSTOP, SA_ONSTACK, SA_RESETHAND, SA_RESTART, 
- * SA_NOCLDWAIT and SA_NODEFER. Only flag SA_SIGINFO is supported.  
+ * @param act [in] A pointer to the sigaction structure that describes the
+ * action to be taken for the signal. Can be NULL.
+ * The following flags for sa_flags field in struct sigaction are not
+ * supported: SA_NOCLDSTOP, SA_ONSTACK, SA_RESETHAND, SA_RESTART,
+ * SA_NOCLDWAIT and SA_NODEFER. Only flag SA_SIGINFO is supported.
  *
- * @note Define sigaction as macro to avoid a warning when included from 
- * C++ code - it's causing a "sigaction(...) hides constructor for 
+ * @note Define sigaction as macro to avoid a warning when included from
+ * C++ code - it's causing a "sigaction(...) hides constructor for
  * 'struct sigaction'" warning.
  */
 /*lint -esym(123,sigaction) Suppress "macro used with no arguments" */
 #define sigaction(sig,act,oact) _sigaction(sig,act,oact)
 
-/** Wait for signals. 
+/** Wait for signals.
  * Please refer to POSIX standard for details.
  */
 int sigsuspend(const sigset_t *sigmask);
@@ -209,14 +202,14 @@ int _sigaction(int sig, const struct sigaction *act, struct sigaction *oact);
 /* have to move #include here to solve circular include problems between time.h and signal.h */
 #include "dspal_time.h"
 
-/** Wait for the time interval specified in the timespec structure referenced 
+/** Wait for the time interval specified in the timespec structure referenced
  * by timeout. This implementation does not support queued signals.
  * For struct siginfo_t, si_code and si_value are ignored in this implementation.
  *
  * Please refer to POSIX standard for details.
  */
-int sigtimedwait(const sigset_t *restrict set, siginfo_t *restrict info, 
-                 const struct timespec *restrict timeout);
+int sigtimedwait(const sigset_t *restrict set, siginfo_t *restrict info,
+		 const struct timespec *restrict timeout);
 
 #ifdef __cplusplus
 }

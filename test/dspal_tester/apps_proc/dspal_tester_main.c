@@ -56,32 +56,29 @@
  * TEST_FAIL ------ A test has failed
 */
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-   int status = TEST_PASS;
+	int status = TEST_PASS;
 
-   MSG("\n");
+	MSG("\n");
 
-   MSG("Starting DspAL tests\n");
-   status = run_posix_test_suite();
-   status |= run_io_test_suite();
+	MSG("Starting DSPAL tests\n");
+	status = run_posix_test_suite();
+	status |= run_io_test_suite();
 
-   if ((status & TEST_FAIL) == TEST_FAIL)
-   {
-      MSG("DspAL test failed.\n");
-   }
-   else
-   {
-      if ((status & TEST_SKIP) == TEST_SKIP)
-      {
-         MSG("DspAL some tests skipped.\n");
-      }
+	if ((status & TEST_FAIL) == TEST_FAIL) {
+		MSG("DSPAL test failed.\n");
 
-      MSG("DspAL tests succeeded.\n");
-   }
+	} else {
+		if ((status & TEST_SKIP) == TEST_SKIP) {
+			MSG("DSPAL some tests skipped.\n");
+		}
 
-   MSG("\n");
-   return status;
+		MSG("DSPAL tests succeeded.\n");
+	}
+
+	MSG("\n");
+	return status;
 }
 
 

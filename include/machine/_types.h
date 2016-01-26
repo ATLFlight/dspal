@@ -117,7 +117,7 @@ typedef	int		___wchar_t;
 #ifdef __GNUCLIKE_BUILTIN_VARARGS
 typedef __builtin_va_list	__va_list;	/* internally known to gcc */
 #else
-typedef	char *			__va_list;
+typedef	char 			*__va_list;
 #endif /* __GNUCLIKE_BUILTIN_VARARGS */
 #if defined(__GNUCLIKE_BUILTIN_VAALIST) && !defined(__GNUC_VA_LIST) \
     && !defined(__NO_GNUC_VA_LIST)

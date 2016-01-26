@@ -39,28 +39,30 @@
 
 int display_test_results(int result, const char *label)
 {
-   MSG("[%s] %s\n", get_result_string(result), label);
-   return result;
+	MSG("[%s] %s\n", get_result_string(result), label);
+	return result;
 }
 
 const char *get_result_string(int result)
 {
 
-   const char *result_str = "* FAIL";
+	const char *result_str = "* FAIL";
 
-   if (result == TEST_PASS) result_str = "  PASS";
-   if (result == TEST_SKIP) result_str = "- SKIP";
+	if (result == TEST_PASS) { result_str = "  PASS"; }
 
-   return result_str;
+	if (result == TEST_SKIP) { result_str = "- SKIP"; }
+
+	return result_str;
 }
 
 void log_error(const char *error)
 {
-   MSG("         %s\n", error);
+	MSG("         %s\n", error);
 }
 
-void test_failed(const char *msg, const char *file, int lineNumber) {
-   char buffer[POSIX_TEST_STRING_BUFFER_SIZE];
-   sprintf(buffer, "%s (%s:%d)", msg, file, lineNumber);
-   log_error(buffer);
+void test_failed(const char *msg, const char *file, int lineNumber)
+{
+	char buffer[POSIX_TEST_STRING_BUFFER_SIZE];
+	sprintf(buffer, "%s (%s:%d)", msg, file, lineNumber);
+	log_error(buffer);
 }

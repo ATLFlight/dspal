@@ -36,7 +36,7 @@
 
 /**
  * @brief Runs all the io tests.
- * 
+ *
  * @par
  * Tests that are run (in order)
  * 1) dspal_tester_spi_test

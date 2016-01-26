@@ -34,16 +34,15 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <sys/ioctl.h>
-#include <dev_fs_lib.h>
 #include <dev_fs_lib_i2c.h>
 
 #include <test_status.h>
 #define FARF_MEDIUM 1
 #include <HAP_farf.h>
 
- /**
+/**
 * @brief Test to see i2c device can be opened and configured.
-* 
+*
 * @par
 * Test:
 * 1) Open the i2c device (/dev/i2c-8)
@@ -59,30 +58,34 @@
 */
 int dspal_tester_i2c_test(void)
 {
-   int ret = SUCCESS;
-   /*
-    * Open i2c device
-    */
-   int fd = -1;
-   fd = open("/dev/i2c-8", 0);
-   if (fd > 0)
-   {
-      /*
-       * Configure I2C device
-       */
-      struct dspal_i2c_ioctl_slave_config slave_config;
-      slave_config.slave_address = 0x70;
-      slave_config.bus_frequency_in_khz = 400;
-      slave_config.byte_transer_timeout_in_usecs = 9000;
-      if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0)
-	     ret = ERROR;
-      /*
-       * Close the device ID
-       */
-      close(fd);
-   }
-   else
-      ret = ERROR;
+	int ret = SUCCESS;
+	/*
+	 * Open i2c device
+	 */
+	int fd = -1;
+	fd = open("/dev/i2c-8", 0);
 
-   return ret;
+	if (fd > 0) {
+		/*
+		 * Configure I2C device
+		 */
+		struct dspal_i2c_ioctl_slave_config slave_config;
+		slave_config.slave_address = 0x70;
+		slave_config.bus_frequency_in_khz = 400;
+		slave_config.byte_transer_timeout_in_usecs = 9000;
+
+		if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0) {
+			ret = ERROR;
+		}
+
+		/*
+		 * Close the device ID
+		 */
+		close(fd);
+
+	} else {
+		ret = ERROR;
+	}
+
+	return ret;
 }

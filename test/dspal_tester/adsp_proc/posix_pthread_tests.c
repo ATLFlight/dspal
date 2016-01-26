@@ -48,7 +48,7 @@
 /**
  * @brief Test if pthread_attr_init and pthread_attr_destroy work.
  * Errors printed to log.
- * 
+ *
  * @par Test:
  * 1) Try pthread_attr_init
  * 2) Try pthread_attr_destroy
@@ -62,10 +62,12 @@ int dspal_tester_test_pthread_attr_init(void)
 	pthread_attr_t attr;
 
 	rv = pthread_attr_init(&attr);
-	if (rv != 0) FAIL("pthread_attr_init returned error");
 
-   rv = pthread_attr_destroy(&attr);
-   if (rv != 0) FAIL("pthread_attr_destroy returned error");
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+	rv = pthread_attr_destroy(&attr);
+
+	if (rv != 0) { FAIL("pthread_attr_destroy returned error"); }
 
 	return TEST_PASS;
 }
@@ -76,17 +78,17 @@ int dspal_tester_test_pthread_attr_init(void)
  * @par Takes in an integer and changes its value to a 1 to show that this thread
  * did actually run
  *
- * @param   test_value[out]   pointer to test value (int) to change to 1 
+ * @param   test_value[out]   pointer to test value (int) to change to 1
  *
  * @return
  * NULL ------ Always
 */
 void *test_pthread_create_helper(void *test_value)
 {
-   int *v = (int*)test_value;
-   (*v) = 1;
+	int *v = (int *)test_value;
+	(*v) = 1;
 
-   return NULL;
+	return NULL;
 }
 
 /**
@@ -109,51 +111,56 @@ void *test_pthread_create_helper(void *test_value)
 */
 int dspal_tester_test_pthread_create(void)
 {
-   int rv = 0;
+	int rv = 0;
 
-   int test_value = 0;
-   pthread_t thread;
+	int test_value = 0;
+	pthread_t thread;
 
-   rv = pthread_create(&thread, NULL, test_pthread_create_helper, &test_value);
-   if (rv != 0) FAIL("thread_create returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_create_helper, &test_value);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   if (test_value == 0) FAIL("test value did not change");
+	rv = pthread_join(thread, NULL);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	if (test_value == 0) { FAIL("test value did not change"); }
+
+	return TEST_PASS;
 }
 
 void *test_pthread_cancel_helper(void *unused)
 {
-   while(TRUE) {
-      //pause(); TODO: find cancelable method
-   }
+	while (TRUE) {
+		//pause(); TODO: find cancelable method
+	}
 
-   return NULL;
+	return NULL;
 }
 
 int dspal_tester_test_pthread_cancel(void)
 {
-   return TEST_SKIP;
+	return TEST_SKIP;
 
 #if 0 // I need to find a cancelable method in order to test this
-   int rv = 0;
+	int rv = 0;
 
-   int test_value = 0;
-   pthread_t thread;
+	int test_value = 0;
+	pthread_t thread;
 
-   rv = pthread_create(&thread, NULL, test_pthread_cancel_helper, &test_value);
-   if (rv != 0) FAIL("thread_create returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_cancel_helper, &test_value);
 
-   rv = pthread_cancel(thread);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	rv = pthread_cancel(thread);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	rv = pthread_join(thread, NULL);
+
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	return TEST_PASS;
 #endif
 }
 
@@ -162,17 +169,17 @@ int dspal_tester_test_pthread_cancel(void)
  *
  * @par Assigns the parameter variable to be an instance of itself
  *
- * @param   thread_self[out]   pointer to a pthread_t that should be assigned to self instance 
+ * @param   thread_self[out]   pointer to a pthread_t that should be assigned to self instance
  *
  * @return
  * NULL ------ Always
 */
 void *test_pthread_self_helper(void *thread_self)
 {
-   pthread_t *v = (pthread_t*)thread_self;
-   (*v) = pthread_self();
+	pthread_t *v = (pthread_t *)thread_self;
+	(*v) = pthread_self();
 
-   return NULL;
+	return NULL;
 }
 
 /**
@@ -197,20 +204,22 @@ void *test_pthread_self_helper(void *thread_self)
 */
 int dspal_tester_test_pthread_self(void)
 {
-   int rv = 0;
+	int rv = 0;
 
-   pthread_t thread;
-   pthread_t thread_self;
+	pthread_t thread;
+	pthread_t thread_self;
 
-   rv = pthread_create(&thread, NULL, test_pthread_self_helper, &thread_self);
-   if (rv != 0) FAIL("thread_create returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_self_helper, &thread_self);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   if (thread_self != thread) FAIL("pthread_self did not return the expected value");
+	rv = pthread_join(thread, NULL);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	if (thread_self != thread) { FAIL("pthread_self did not return the expected value"); }
+
+	return TEST_PASS;
 }
 
 /**
@@ -218,19 +227,19 @@ int dspal_tester_test_pthread_self(void)
  *
  * @par Exits the thread.  Should not execute code that is after the thread exit
  *
- * @param   test_value[out]   pointer to test value (int) 
+ * @param   test_value[out]   pointer to test value (int)
  *
  * @return
  * NULL ------ Always
 */
 void *test_pthread_exit_helper(void *test_value)
 {
-   pthread_exit(NULL);
+	pthread_exit(NULL);
 
-   int *v = (int*)test_value;
-   (*v) = 1;
+	int *v = (int *)test_value;
+	(*v) = 1;
 
-   return NULL;
+	return NULL;
 }
 
 /**
@@ -239,9 +248,9 @@ void *test_pthread_exit_helper(void *test_value)
  *
  * @par Creates a thread and passes in a mutable test variable into the thread on creation.
  * As that created thread executes, it will execute a 'pthread_exit' call.  Everything after
- * this call should not run.  the code after this call include changing the value of the test 
- * variable.  After this created thread has exited, the value of the test variable is checked 
- * to ensure that it has not changed (the code after the 'pthread_exit' was not run because 
+ * this call should not run.  the code after this call include changing the value of the test
+ * variable.  After this created thread has exited, the value of the test variable is checked
+ * to ensure that it has not changed (the code after the 'pthread_exit' was not run because
  * the thread exited correctly).
  *
  *
@@ -256,27 +265,29 @@ void *test_pthread_exit_helper(void *test_value)
 */
 int dspal_tester_test_pthread_exit(void)
 {
-   int rv = 0;
+	int rv = 0;
 
-   int test_value = 0;
+	int test_value = 0;
 
-   pthread_t thread;
+	pthread_t thread;
 
-   rv = pthread_create(&thread, NULL, test_pthread_exit_helper, &test_value);
-   if (rv != 0) FAIL("thread_create returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_exit_helper, &test_value);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   if (test_value != 0) FAIL("test value should not have changed");
+	rv = pthread_join(thread, NULL);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	if (test_value != 0) { FAIL("test value should not have changed"); }
+
+	return TEST_PASS;
 }
 
 int last_signal;
 
 /**
- * @brief Signal handler for the 'dspal_tester_test_pthread_kill' test. 
+ * @brief Signal handler for the 'dspal_tester_test_pthread_kill' test.
  *
  * @par Sets 'last_signal' variable to the signal number.
  *
@@ -284,8 +295,8 @@ int last_signal;
 */
 void test_pthread_kill_sig_handler(int signo)
 {
-   last_signal = signo;
-   return;
+	last_signal = signo;
+	return;
 }
 
 /**
@@ -301,12 +312,13 @@ void test_pthread_kill_sig_handler(int signo)
 */
 void *test_pthread_kill_helper(void *unused)
 {
-   const int MAX_RUN_TIME = 2; // in seconds
+	const int MAX_RUN_TIME = 2; // in seconds
 
-   time_t stop_time = time(NULL) + MAX_RUN_TIME;
-   while (last_signal == 0 && time(NULL) < stop_time);
+	time_t stop_time = time(NULL) + MAX_RUN_TIME;
 
-   return NULL;
+	while (last_signal == 0 && time(NULL) < stop_time);
+
+	return NULL;
 }
 
 /**
@@ -315,9 +327,9 @@ void *test_pthread_kill_helper(void *unused)
  *
  * @par Creates a thread and passes in a mutable test variable into the thread on creation.
  * As that created thread executes, it will execute a 'pthread_exit' call.  Everything after
- * this call should not run.  the code after this call include changing the value of the test 
- * variable.  After this created thread has exited, the value of the test variable is checked 
- * to ensure that it has not changed (the code after the 'pthread_exit' was not run because 
+ * this call should not run.  the code after this call include changing the value of the test
+ * variable.  After this created thread has exited, the value of the test variable is checked
+ * to ensure that it has not changed (the code after the 'pthread_exit' was not run because
  * the thread exited correctly).
  *
  *
@@ -335,37 +347,41 @@ void *test_pthread_kill_helper(void *unused)
 int dspal_tester_test_pthread_kill(void)
 {
 #ifdef SKIP_PTHREAD_KILL
-   return TEST_SKIP;
+	return TEST_SKIP;
 #else
 
-   int rv = 0;
+	int rv = 0;
 
-   int last_signal = 0;
+	int last_signal = 0;
 
-   struct sigaction actions;
+	struct sigaction actions;
 
-   pthread_t thread;
+	pthread_t thread;
 
-   memset(&actions, 0, sizeof(actions));
-   sigemptyset(&actions.sa_mask);
-   actions.sa_flags = 0;
-   actions.sa_handler = test_pthread_kill_sig_handler;
+	memset(&actions, 0, sizeof(actions));
+	sigemptyset(&actions.sa_mask);
+	actions.sa_flags = 0;
+	actions.sa_handler = test_pthread_kill_sig_handler;
 
-   rv = sigaction(SIGALRM, &actions, NULL);
-   if (rv != 0) FAIL("sigaction returned error");
+	rv = sigaction(SIGALRM, &actions, NULL);
 
-   rv = pthread_create(&thread, NULL, test_pthread_kill_helper, NULL);
-   if (rv != 0) FAIL("thread_create returned error");
+	if (rv != 0) { FAIL("sigaction returned error"); }
 
-   rv = pthread_kill(thread, SIGALRM);
-   if (rv != 0) FAIL("pthread_kill returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_kill_helper, NULL);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   if (last_signal != SIGALRM) FAIL("last signal is not SIGALRM");
+	rv = pthread_kill(thread, SIGALRM);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("pthread_kill returned error"); }
+
+	rv = pthread_join(thread, NULL);
+
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	if (last_signal != SIGALRM) { FAIL("last signal is not SIGALRM"); }
+
+	return TEST_PASS;
 
 #endif
 }
@@ -388,35 +404,38 @@ int dspal_tester_test_pthread_kill(void)
 */
 int dspal_tester_test_pthread_mutex_lock(void)
 {
-   int rv = 0;
-   pthread_mutex_t lock;
+	int rv = 0;
+	pthread_mutex_t lock;
 
-   rv = pthread_mutex_init(&lock, NULL);
-   if (rv != 0) FAIL("pthread_mutex_init returned error");
+	rv = pthread_mutex_init(&lock, NULL);
 
-   pthread_mutex_lock(&lock);
-   if (rv != 0) FAIL("pthread_mutex_lock returned error");
+	if (rv != 0) { FAIL("pthread_mutex_init returned error"); }
 
-   rv = pthread_mutex_unlock(&lock);
-   if (rv != 0) FAIL("pthread_mutex_unlock returned error");
+	pthread_mutex_lock(&lock);
 
-   rv = pthread_mutex_destroy(&lock);
-   if (rv != 0) FAIL("pthread_mutex_destroy returned error");
+	if (rv != 0) { FAIL("pthread_mutex_lock returned error"); }
 
-   return TEST_PASS;
+	rv = pthread_mutex_unlock(&lock);
+
+	if (rv != 0) { FAIL("pthread_mutex_unlock returned error"); }
+
+	rv = pthread_mutex_destroy(&lock);
+
+	if (rv != 0) { FAIL("pthread_mutex_destroy returned error"); }
+
+	return TEST_PASS;
 }
 
-typedef struct
-{
-   int *int_value;
-   pthread_mutex_t *mutex;
+typedef struct {
+	int *int_value;
+	pthread_mutex_t *mutex;
 } test_mutex_t;
 
 /**
  * @brief Helper function for the 'dspal_tester_test_pthread_mutex_lock_thread' test.
  *
  * @par Mutates the test variable then locks the mutex.  Mutex will not lock at first
- * since the main thread locked the mutex.  After the main thread unlocks the mutex 
+ * since the main thread locked the mutex.  After the main thread unlocks the mutex
  * change the value of the test value again.
  *
  *
@@ -427,17 +446,17 @@ typedef struct
 */
 void *test_pthread_mutex_lock_thread_helper(void *test_value)
 {
-   int rv = 0;
-   test_mutex_t *v = (test_mutex_t*)test_value;
-   *(v->int_value) = 1;
+	int rv = 0;
+	test_mutex_t *v = (test_mutex_t *)test_value;
+	*(v->int_value) = 1;
 
-   pthread_mutex_lock(v->mutex);
+	pthread_mutex_lock(v->mutex);
 
-   *(v->int_value) = 2;
+	*(v->int_value) = 2;
 
-   rv = pthread_mutex_unlock(v->mutex);
+	rv = pthread_mutex_unlock(v->mutex);
 
-   return NULL;
+	return NULL;
 }
 
 /**
@@ -445,7 +464,7 @@ void *test_pthread_mutex_lock_thread_helper(void *test_value)
  * Errors printed to log.
  *
  * @par Creates a mutex and locks it. A thread is then created and mutates the data slightly.
- * The created thread then tries to lock the mutex but cant because it is already locks, it  
+ * The created thread then tries to lock the mutex but cant because it is already locks, it
  * therefore blocks until the mutex is released.  The main thread then checks the data to make
  * sure the created thread only ran the code before it tried to lock the mutex.  The main thread
  * then unlocks the mutex and joins the created thread to the main thread.  It then checks the value
@@ -466,45 +485,55 @@ void *test_pthread_mutex_lock_thread_helper(void *test_value)
 */
 int dspal_tester_test_pthread_mutex_lock_thread(void)
 {
-   const int MAX_RUN_TIME = 2; // in seconds
+	const int MAX_RUN_TIME = 2; // in seconds
 
-   int rv = 0;
-   int test_value = 0;
+	int rv = 0;
+	int test_value = 0;
 
-   pthread_mutex_t lock;
-   pthread_t thread;
+	pthread_mutex_t lock;
+	pthread_t thread;
 
-   test_mutex_t test_mutex;
-   test_mutex.int_value = &test_value;
-   test_mutex.mutex = &lock;
+	test_mutex_t test_mutex;
+	test_mutex.int_value = &test_value;
+	test_mutex.mutex = &lock;
 
-   rv = pthread_mutex_init(&lock, NULL);
-   if (rv != 0) FAIL("pthread_mutex_init returned error");
+	rv = pthread_mutex_init(&lock, NULL);
 
-   pthread_mutex_lock(&lock);
-   if (rv != 0) FAIL("pthread_mutex_lock returned error");
+	if (rv != 0) { FAIL("pthread_mutex_init returned error"); }
 
-   rv = pthread_create(&thread, NULL, test_pthread_mutex_lock_thread_helper, &test_mutex);
-   if (rv != 0) FAIL("thread_create returned error");
+	pthread_mutex_lock(&lock);
 
-   time_t stop_time = time(NULL) + MAX_RUN_TIME;
-   while (test_value != 1 && time(NULL) < stop_time);
-   if (test_value != 1) FAIL("test value did not change");
+	if (rv != 0) { FAIL("pthread_mutex_lock returned error"); }
 
-   rv = pthread_mutex_unlock(&lock);
-   if (rv != 0) FAIL("pthread_mutex_unlock returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_mutex_lock_thread_helper, &test_mutex);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   stop_time = time(NULL) + MAX_RUN_TIME;
-   while (test_value != 2 && time(NULL) < stop_time);
-   if (test_value != 2) FAIL("test value did not change");
+	time_t stop_time = time(NULL) + MAX_RUN_TIME;
 
-   rv = pthread_mutex_destroy(&lock);
-   if (rv != 0) FAIL("pthread_mutex_destroy returned error");
+	while (test_value != 1 && time(NULL) < stop_time);
 
-   return TEST_PASS;
+	if (test_value != 1) { FAIL("test value did not change"); }
+
+	rv = pthread_mutex_unlock(&lock);
+
+	if (rv != 0) { FAIL("pthread_mutex_unlock returned error"); }
+
+	rv = pthread_join(thread, NULL);
+
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	stop_time = time(NULL) + MAX_RUN_TIME;
+
+	while (test_value != 2 && time(NULL) < stop_time);
+
+	if (test_value != 2) { FAIL("test value did not change"); }
+
+	rv = pthread_mutex_destroy(&lock);
+
+	if (rv != 0) { FAIL("pthread_mutex_destroy returned error"); }
+
+	return TEST_PASS;
 }
 
 /**
@@ -513,38 +542,35 @@ int dspal_tester_test_pthread_mutex_lock_thread(void)
  * @par Attempts to allocate memory from the stack.  Checks the stack memory.
  * Sets 'test_value' to 1 if memory allocation worked.  -1 if it didn't.
  *
- * @param   test_value[out]   pointer to test value (int) 
+ * @param   test_value[out]   pointer to test value (int)
  *
  * @return
  * NULL ------ Always
 */
 void *test_pthread_stack_helper(void *test_value)
 {
-   // allocate mem on the stack and see if it crashes
+	// allocate mem on the stack and see if it crashes
 
-   int *v = (int*)test_value;
-   (*v) = -1;
+	int *v = (int *)test_value;
+	(*v) = -1;
 
-   const int SIZE = 4 * 1024 - 256;
+	const int SIZE = 4 * 1024 - 256;
 
-   uint8 mem_on_stack[SIZE];
+	uint8 mem_on_stack[SIZE];
 
-   for (int i = 0; i < SIZE; i += 1)
-   {
-      mem_on_stack[i] = (uint8)i;
-   }
+	for (int i = 0; i < SIZE; i += 1) {
+		mem_on_stack[i] = (uint8)i;
+	}
 
-   for (int i = 0; i < SIZE; i += 1)
-   {
-      if (mem_on_stack[i] != (uint8)i)
-      {
-         (*v) = -2;
-      }
-   }
+	for (int i = 0; i < SIZE; i += 1) {
+		if (mem_on_stack[i] != (uint8)i) {
+			(*v) = -2;
+		}
+	}
 
-   (*v) = 1;
+	(*v) = 1;
 
-   return NULL;
+	return NULL;
 }
 
 /**
@@ -552,7 +578,7 @@ void *test_pthread_stack_helper(void *test_value)
  *
  * @par This test launches a thread and tests if it is able to allocate memory on the stack.
  * This is done by creating a thread and changing its stack size.  During creation a mutable
- * variable is passed in.  The created thread sets the variable to -1 and tries to allocate 
+ * variable is passed in.  The created thread sets the variable to -1 and tries to allocate
  * stack memory.  If this fails the thread exits. If not then the created thread sets the
  * mutable variable to 1 and exits.  The main thread checks the value of this mutable variable
  * to see if the stack memory allocation worked
@@ -562,7 +588,7 @@ void *test_pthread_stack_helper(void *test_value)
  * 2) Set the thread stack size
  * 3) Launch a new thread while passing in a mutable variable
  * 4) Join the thread
- * 
+ *
  * In the created thread
  * 5) Set the mutable variable to -1
  * 6) Allocate stack memory and set its value
@@ -574,32 +600,35 @@ void *test_pthread_stack_helper(void *test_value)
 */
 int dspal_tester_test_pthread_stack(void)
 {
-   int rv = 0;
+	int rv = 0;
 
-   int test_value = 0;
-   pthread_t thread;
-   pthread_attr_t attr;
-   size_t stacksize = 4 * 1024;
+	int test_value = 0;
+	pthread_t thread;
+	pthread_attr_t attr;
+	size_t stacksize = 4 * 1024;
 
-   rv = pthread_attr_init(&attr);
-   if (rv != 0) FAIL("pthread_attr_init returned error");
+	rv = pthread_attr_init(&attr);
 
-   rv = pthread_attr_setstacksize(&attr, stacksize);
-   if (rv != 0) FAIL("pthread_attr_setstacksize returned error");
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
 
-   rv = pthread_create(&thread, &attr, test_pthread_stack_helper, &test_value);
-   if (rv != 0) FAIL("thread_create returned error");
+	rv = pthread_attr_setstacksize(&attr, stacksize);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
 
-   if (test_value != 1)
-   {
-      MSG("test value: %d", test_value);
-      FAIL("test value is not passing");
-   }
+	rv = pthread_create(&thread, &attr, test_pthread_stack_helper, &test_value);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("thread_create returned error"); }
+
+	rv = pthread_join(thread, NULL);
+
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	if (test_value != 1) {
+		MSG("test value: %d", test_value);
+		FAIL("test value is not passing");
+	}
+
+	return TEST_PASS;
 }
 
 /**
@@ -608,43 +637,40 @@ int dspal_tester_test_pthread_stack(void)
  * @par Attempts to allocate memory from the heap.  Checks the heap memory.
  * Sets 'test_value' to 1 if memory allocation worked.  -1 if it didn't.
  *
- * @param   test_value[out]   pointer to test value (int) 
+ * @param   test_value[out]   pointer to test value (int)
  *
  * @return
  * NULL ------ Always
 */
 void *test_pthread_heap_helper(void *test_value)
 {
-   // allocate mem on the stack and see if it crashes
+	// allocate mem on the stack and see if it crashes
 
-   int *v = (int*)test_value;
-   (*v) = -1;
+	int *v = (int *)test_value;
+	(*v) = -1;
 
-   const int SIZE = 1024;
+	const int SIZE = 1024;
 
-   uint8 *mem_on_heap1 = (uint8*)malloc(SIZE * sizeof(uint8));
-   uint8 *mem_on_heap2 = (uint8*)malloc(SIZE * sizeof(uint8));
+	uint8 *mem_on_heap1 = (uint8 *)malloc(SIZE * sizeof(uint8));
+	uint8 *mem_on_heap2 = (uint8 *)malloc(SIZE * sizeof(uint8));
 
-   for (int i = 0; i < SIZE; i += 1)
-   {
-      mem_on_heap1[i] = (uint8)i;
-      mem_on_heap2[i] = (uint8)i;
-   }
+	for (int i = 0; i < SIZE; i += 1) {
+		mem_on_heap1[i] = (uint8)i;
+		mem_on_heap2[i] = (uint8)i;
+	}
 
-   for (int i = 0; i < SIZE; i += 1)
-   {
-      if (mem_on_heap1[i] != (uint8)i || mem_on_heap2[i] != (uint8)i)
-      {
-         (*v) = -2;
-      }
-   }
+	for (int i = 0; i < SIZE; i += 1) {
+		if (mem_on_heap1[i] != (uint8)i || mem_on_heap2[i] != (uint8)i) {
+			(*v) = -2;
+		}
+	}
 
-   free(mem_on_heap1);
-   free(mem_on_heap2);
+	free(mem_on_heap1);
+	free(mem_on_heap2);
 
-   (*v) = 1;
+	(*v) = 1;
 
-   return NULL;
+	return NULL;
 }
 
 /**
@@ -652,7 +678,7 @@ void *test_pthread_heap_helper(void *test_value)
  *
  * @par This test launches a thread and tests if it is able to allocate memory on the stack.
  * This is done by creating a thread.  During creation a mutable
- * variable is passed in.  The created thread sets the variable to -1 and tries to allocate 
+ * variable is passed in.  The created thread sets the variable to -1 and tries to allocate
  * heap memory.  If this fails the thread exits. If not then the created thread sets the
  * mutable variable to 1 and exits.  The main thread checks the value of this mutable variable
  * to see if the heap memory allocation worked
@@ -661,11 +687,11 @@ void *test_pthread_heap_helper(void *test_value)
  * 1) Set thread attributes
  * 2) Launch a new thread while passing in a mutable variable
  * 3) Join the thread
- * 
+ *
  * In the created thread
  * 4) Set the mutable variable to -1
  * 5) Allocate heap memory and set its value
- * 6) Check the heap memory values 
+ * 6) Check the heap memory values
  * 7) set mutable variable to 1
  *
  * @return
@@ -673,24 +699,25 @@ void *test_pthread_heap_helper(void *test_value)
 */
 int dspal_tester_test_pthread_heap(void)
 {
-   int rv = 0;
+	int rv = 0;
 
-   int test_value = 0;
-   pthread_t thread;
+	int test_value = 0;
+	pthread_t thread;
 
-   rv = pthread_create(&thread, NULL, test_pthread_heap_helper, &test_value);
-   if (rv != 0) FAIL("thread_create returned error");
+	rv = pthread_create(&thread, NULL, test_pthread_heap_helper, &test_value);
 
-   rv = pthread_join(thread, NULL);
-   if (rv != 0) FAIL("thread_join returned error");
+	if (rv != 0) { FAIL("thread_create returned error"); }
 
-   if (test_value != 1)
-   {
-      MSG("test value: %d", test_value);
-      FAIL("test value is not passing");
-   }
+	rv = pthread_join(thread, NULL);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	if (test_value != 1) {
+		MSG("test value: %d", test_value);
+		FAIL("test value is not passing");
+	}
+
+	return TEST_PASS;
 }
 
 /**
@@ -703,101 +730,98 @@ int dspal_tester_test_pthread_heap(void)
  */
 void *test_pthread_cond_timedwait_helper(void *test_value)
 {
-   pthread_mutex_t mutex;
-   pthread_mutexattr_t attr;
-   pthread_cond_t *cond = (pthread_cond_t *)test_value;
-   int mutex_lock_status;
-   struct timespec timeout;
-   struct timespec now;
-   int cond_status, return_status = 0;
+	pthread_mutex_t mutex;
+	pthread_mutexattr_t attr;
+	pthread_cond_t *cond = (pthread_cond_t *)test_value;
+	int mutex_lock_status;
+	struct timespec timeout;
+	struct timespec now;
+	int cond_status, return_status = 0;
 
-   /*
-    * Initialize and lock the mutex used to prevent race conditions when accessing
-    * the condition from multiple threads.  Explicitly set the mutex type to normal
-    * to prevent the use of the default recursive mutex.
-    */
-   if (pthread_mutexattr_init(&attr) != 0 ||
-       pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0 ||
-       pthread_mutex_init(&mutex, &attr) != 0)
-   {
-     MSG("error: pthread mutex initialization failed");
-     return_status = -1;
-     goto exit;
-   }
+	/*
+	 * Initialize and lock the mutex used to prevent race conditions when accessing
+	 * the condition from multiple threads.  Explicitly set the mutex type to normal
+	 * to prevent the use of the default recursive mutex.
+	 */
+	if (pthread_mutexattr_init(&attr) != 0 ||
+	    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0 ||
+	    pthread_mutex_init(&mutex, &attr) != 0) {
+		MSG("error: pthread mutex initialization failed");
+		return_status = -1;
+		goto exit;
+	}
 
-   /*
-    * Obtain the current time and add the specified timeout, since
-    * the timeout must be specified as absolute time.
-    */
-   clock_gettime(CLOCK_REALTIME, &now);
-   timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
-   timeout.tv_nsec = now.tv_nsec;
+	/*
+	 * Obtain the current time and add the specified timeout, since
+	 * the timeout must be specified as absolute time.
+	 */
+	clock_gettime(CLOCK_REALTIME, &now);
+	timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
+	timeout.tv_nsec = now.tv_nsec;
 
-   /*
-    * Initialize the parameters to cause a new mutex and cond object
-    * to be instantiated.
-    */
-   if ((mutex_lock_status = pthread_mutex_trylock(&mutex)) != 0)
-   {
-      MSG("error: pthread_mutex_trylock indicates that the lock is already established: %d", mutex_lock_status);
-   }
-   *cond = PTHREAD_COND_INITIALIZER;
+	/*
+	 * Initialize the parameters to cause a new mutex and cond object
+	 * to be instantiated.
+	 */
+	if ((mutex_lock_status = pthread_mutex_trylock(&mutex)) != 0) {
+		MSG("error: pthread_mutex_trylock indicates that the lock is already established: %d", mutex_lock_status);
+	}
 
-   /*
-    * Wait once, long enough for a timeout to occur.
-    */
-   MSG("entering first pthread_cond_timedwait call, testing timeout");
-   cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
-   if (cond_status != ETIMEDOUT)
-   {
-      MSG("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d",
-            cond_status, ETIMEDOUT);
-     return_status = -1;
-   }
-   else
-   {
-      MSG("first pthread_cond_timedwait call timed out as expected.");
-   }
+	*cond = PTHREAD_COND_INITIALIZER;
 
-   /*
-    * Update the time to the new absolute time for the next timeout.
-    */
-   clock_gettime(CLOCK_REALTIME, &now);
-   timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
-   timeout.tv_nsec = now.tv_nsec;
+	/*
+	 * Wait once, long enough for a timeout to occur.
+	 */
+	MSG("entering first pthread_cond_timedwait call, testing timeout");
+	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
 
-   /*
-    * Wait again, but this time expect to be signaled before the timeout
-    * has occurred.
-    */
-   MSG("entering second pthread_cond_timedwait call, no timeout expected");
-   cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
-   if (cond_status == ETIMEDOUT)
-   {
-     MSG("error: pthread_cond_timewait timed out unexpectedly");
-     return_status = -1;
-   }
-   else
-   {
-     MSG("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d",
-            cond_status, ETIMEDOUT);
-   }
+	if (cond_status != ETIMEDOUT) {
+		MSG("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d",
+		    cond_status, ETIMEDOUT);
+		return_status = -1;
 
-   /*
-    * Leave the mutex unlocked since it is no longer needed.
-    */
-   pthread_mutex_unlock(&mutex);
+	} else {
+		MSG("first pthread_cond_timedwait call timed out as expected.");
+	}
 
-   /*
-    * Free the resources allocated by the called function through
-    * the use of the {_}_INITIALIZER constant and direct call to the
-    * _init function.
-    */
-   pthread_mutex_destroy(&mutex);
-   pthread_cond_destroy(cond);
+	/*
+	 * Update the time to the new absolute time for the next timeout.
+	 */
+	clock_gettime(CLOCK_REALTIME, &now);
+	timeout.tv_sec = now.tv_sec + DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS;
+	timeout.tv_nsec = now.tv_nsec;
+
+	/*
+	 * Wait again, but this time expect to be signaled before the timeout
+	 * has occurred.
+	 */
+	MSG("entering second pthread_cond_timedwait call, no timeout expected");
+	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
+
+	if (cond_status == ETIMEDOUT) {
+		MSG("error: pthread_cond_timewait timed out unexpectedly");
+		return_status = -1;
+
+	} else {
+		MSG("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d",
+		    cond_status, ETIMEDOUT);
+	}
+
+	/*
+	 * Leave the mutex unlocked since it is no longer needed.
+	 */
+	pthread_mutex_unlock(&mutex);
+
+	/*
+	 * Free the resources allocated by the called function through
+	 * the use of the {_}_INITIALIZER constant and direct call to the
+	 * _init function.
+	 */
+	pthread_mutex_destroy(&mutex);
+	pthread_cond_destroy(cond);
 
 exit:
-   return (void *)return_status;
+	return (void *)return_status;
 }
 
 /**
@@ -814,58 +838,58 @@ exit:
 
 int dspal_tester_test_pthread_cond_timedwait(void)
 {
-   int rv = 0;
-   pthread_cond_t cond;
-   int test_value = TEST_FAIL;
-   pthread_t thread;
+	int rv = 0;
+	pthread_cond_t cond;
+	int test_value = TEST_FAIL;
+	pthread_t thread;
 
-   /*
-    * Create the thread passing a reference to the cond structure
-    * just initialized.
-    */
-   rv = pthread_create(&thread, NULL, test_pthread_cond_timedwait_helper, &cond);
-   if (rv != 0)
-   {
-      MSG("error pthread_create: %d", rv);
-     goto exit;
-   }
+	/*
+	 * Create the thread passing a reference to the cond structure
+	 * just initialized.
+	 */
+	rv = pthread_create(&thread, NULL, test_pthread_cond_timedwait_helper, &cond);
 
-   /*
-    * Begin the first test by sleeping long enough for the timeout to
-    * have occurred.
-    */
-   usleep((DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS + 2) * 1000000);
+	if (rv != 0) {
+		MSG("error pthread_create: %d", rv);
+		goto exit;
+	}
 
-   /*
-    * Now trigger the condition to verify that it was detected before
-    * the timeout period has expired.
-    */
-   MSG("entering pthread_cond_signal for the next cond wait (after the timeout)");
-   rv = pthread_cond_signal(&cond);
-   if (rv != 0)
-   {
-      MSG("error pthread_cond_signal: %d", rv);
-     goto exit;
-   }
+	/*
+	 * Begin the first test by sleeping long enough for the timeout to
+	 * have occurred.
+	 */
+	usleep((DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS + 2) * 1000000);
 
-   MSG("pthread_cond_signal has returned, waiting for the helper thread to exit");
-   rv = pthread_join(thread, NULL);
-   if (rv != 0)
-    {
-     MSG("error pthread_join: %d", rv);
-     goto exit;
-    }
+	/*
+	 * Now trigger the condition to verify that it was detected before
+	 * the timeout period has expired.
+	 */
+	MSG("entering pthread_cond_signal for the next cond wait (after the timeout)");
+	rv = pthread_cond_signal(&cond);
 
-   test_value = TEST_PASS;
+	if (rv != 0) {
+		MSG("error pthread_cond_signal: %d", rv);
+		goto exit;
+	}
+
+	MSG("pthread_cond_signal has returned, waiting for the helper thread to exit");
+	rv = pthread_join(thread, NULL);
+
+	if (rv != 0) {
+		MSG("error pthread_join: %d", rv);
+		goto exit;
+	}
+
+	test_value = TEST_PASS;
 
 exit:
-   if (test_value != TEST_PASS)
-   {
-      MSG("error: dspal_tester_test_pthread_cond_timedwait");
-   }
-   else
-   {
-      MSG("success: dspal_tester_test_pthread_cond_timedwait");
-   }
-   return test_value;
+
+	if (test_value != TEST_PASS) {
+		MSG("error: dspal_tester_test_pthread_cond_timedwait");
+
+	} else {
+		MSG("success: dspal_tester_test_pthread_cond_timedwait");
+	}
+
+	return test_value;
 }

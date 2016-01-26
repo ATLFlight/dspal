@@ -40,7 +40,7 @@
 
 /**
 * @brief Tests semaphore functionality (using 1 thread)
-* 
+*
 * @par Test:
 * 1) Initialize the semaphore to a value of 0
 * 2) Get the value of the semaphore and check that is 0
@@ -56,37 +56,48 @@
 */
 int dspal_tester_test_semaphore_wait(void)
 {
-   int rv = 0;
+	int rv = 0;
 
-   int sem_value = 0;
-   sem_t sem;
+	int sem_value = 0;
+	sem_t sem;
 
-   rv = sem_init(&sem, 0, 0);
-   if (rv != 0) FAIL("sem_init returned error");
+	rv = sem_init(&sem, 0, 0);
 
-   rv = sem_getvalue(&sem, &sem_value);
-   if (rv != 0) FAIL("sem_getvalue returned error");
-   if (sem_value != 0) FAIL("sem_value not as expected");
+	if (rv != 0) { FAIL("sem_init returned error"); }
 
-   rv = sem_trywait(&sem);
-   if (rv != -1) FAIL("sem_trywait DID NOT return an error");
+	rv = sem_getvalue(&sem, &sem_value);
 
-   rv = sem_post(&sem);
-   if (rv != 0) FAIL("sem_post returned error");
+	if (rv != 0) { FAIL("sem_getvalue returned error"); }
 
-   rv = sem_getvalue(&sem, &sem_value);
-   if (rv != 0) FAIL("sem_getvalue returned error");
-   if (sem_value != 1) FAIL("sem_value not as expected");
+	if (sem_value != 0) { FAIL("sem_value not as expected"); }
 
-   rv = sem_wait(&sem);
-   if (rv != 0) FAIL("sem_wait returned error");
+	rv = sem_trywait(&sem);
 
-   rv = sem_getvalue(&sem, &sem_value);
-   if (rv != 0) FAIL("sem_getvalue returned error");
-   if (sem_value != 0) FAIL("sem_value not as expected");
+	if (rv != -1) { FAIL("sem_trywait DID NOT return an error"); }
 
-   rv = sem_destroy(&sem);
-   if (rv != 0) FAIL("sem_destroy returned error");
+	rv = sem_post(&sem);
 
-   return TEST_PASS;
+	if (rv != 0) { FAIL("sem_post returned error"); }
+
+	rv = sem_getvalue(&sem, &sem_value);
+
+	if (rv != 0) { FAIL("sem_getvalue returned error"); }
+
+	if (sem_value != 1) { FAIL("sem_value not as expected"); }
+
+	rv = sem_wait(&sem);
+
+	if (rv != 0) { FAIL("sem_wait returned error"); }
+
+	rv = sem_getvalue(&sem, &sem_value);
+
+	if (rv != 0) { FAIL("sem_getvalue returned error"); }
+
+	if (sem_value != 0) { FAIL("sem_value not as expected"); }
+
+	rv = sem_destroy(&sem);
+
+	if (rv != 0) { FAIL("sem_destroy returned error"); }
+
+	return TEST_PASS;
 }

@@ -83,20 +83,20 @@ typedef	struct fd_set {
 #define	FD_ISSET(n, p)	(((p)->__fds_bits[(n)/_NFDBITS] & __fdset_mask(n)) != 0)
 #define	FD_SET(n, p)	((p)->__fds_bits[(n)/_NFDBITS] |= __fdset_mask(n))
 #define	FD_ZERO(p) do {					\
-	fd_set *_p;					\
-	__size_t _n;					\
+		fd_set *_p;				\
+		__size_t _n;				\
 							\
-	_p = (p);					\
-	_n = _howmany(FD_SETSIZE, _NFDBITS);		\
-	while (_n > 0)					\
-		_p->__fds_bits[--_n] = 0;		\
-} while (0)
+		_p = (p);				\
+		_n = _howmany(FD_SETSIZE, _NFDBITS);	\
+		while (_n > 0)				\
+			_p->__fds_bits[--_n] = 0;	\
+	} while (0)
 
 #ifndef _KERNEL
 
 __BEGIN_DECLS
 int pselect(int, fd_set *__restrict, fd_set *__restrict, fd_set *__restrict,
-	const struct timespec *__restrict, const sigset_t *__restrict);
+	    const struct timespec *__restrict, const sigset_t *__restrict);
 #ifndef _SELECT_DECLARED
 #define	_SELECT_DECLARED
 /* XXX missing restrict type-qualifier */
