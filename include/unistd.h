@@ -142,4 +142,5 @@ int fsync(int fd);
  */
 long sysconf(int name);
 
+unsigned int sleep(unsigned int seconds);
 __END_DECLS
