@@ -100,12 +100,7 @@ typedef void (*serial_tx_func_ptr_t)(void);
  * DSPAL ID's for the serial bit rate. These values should be identical
  * to those used in the aDSP SIO port code.
  */
-<<<<<<< 4a7a3962fb7d1376dc9552e9495e5e58ef6e1bfe
-enum DSPAL_SERIAL_BITRATES
-{
-=======
 enum DSPAL_SERIAL_BITRATES {
->>>>>>> updated fix_code_style.sh
 	DSPAL_SIO_BITRATE_ILLEGAL_1,            /**< Illegal bit-rate 1*/
 	DSPAL_SIO_BITRATE_ILLEGAL_3,            /**< Illegal bit-rate 2*/
 	DSPAL_SIO_BITRATE_ILLEGAL_4,            /**< Illegal bit-rate 4*/

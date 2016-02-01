@@ -135,6 +135,7 @@ typedef void dspal_cond_t;
 typedef void dspal_barrier_t;
 
 #ifdef PTHREAD_MUTEX_OPAQUE
+<<<<<<< 2dc19ee3c2e56055a9f29bbe7a701ac251e2c762
 typedef unsigned int pthread_mutex_t;
 typedef struct _pthread_mutex_t _pthread_mutex_t;
 
@@ -144,14 +145,32 @@ struct _pthread_mutex_t {
 	void (*lock)(dspal_mutex_t *);		/* the function pointer for lock */
 	void (*unlock)(dspal_mutex_t *);	/* the function pointer for unlock */
 	int (*trylock)(dspal_mutex_t *);	/* the function pointer for trylock */
+=======
+typedef unsigned int              pthread_mutex_t;
+typedef struct _pthread_mutex_t   _pthread_mutex_t;
+
+struct _pthread_mutex_t {
+	pthread_mutexattr_t attr;
+	dspal_mutex_t       *mutex;                     /* holding qurt mutex or rmutex pointer */
+	void (*lock)(dspal_mutex_t *);                  /* the function pointer for lock */
+	void (*unlock)(dspal_mutex_t *);                /* the function pointer for unlock */
+	int (*trylock)(dspal_mutex_t *);                /* the function pointer for trylock */
+>>>>>>> Added astyle formatting scripts to dspal
 };
 
 #else
 typedef struct pthread_mutex_t {
+<<<<<<< 2dc19ee3c2e56055a9f29bbe7a701ac251e2c762
 	dspal_mutex_t       *kmutex;		/* holding kernel mutex (qurt mutex or rmutex) pointer */
 	void (*lock)(dspal_mutex_t *);		/* the function pointer for lock */
 	void (*unlock)(dspal_mutex_t *);	/* the function pointer for unlock */
 	int (*trylock)(dspal_mutex_t *);	/* the function pointer for trylock */
+=======
+	dspal_mutex_t       *kmutex;                    /* holding kernel mutex (qurt mutex or rmutex) pointer */
+	void (*lock)(dspal_mutex_t *);                  /* the function pointer for lock */
+	void (*unlock)(dspal_mutex_t *);                /* the function pointer for unlock */
+	int (*trylock)(dspal_mutex_t *);                /* the function pointer for trylock */
+>>>>>>> Added astyle formatting scripts to dspal
 	pthread_mutexattr_t attr;
 } pthread_mutex_t;
 #endif
