@@ -35,92 +35,16 @@
 #ifndef	_SYS_PTRACE_H_
 #define	_SYS_PTRACE_H_
 
-#define	PT_TRACE_ME	0	/* child declares it's being traced */
-#define	PT_READ_I	1	/* read word in child's I space */
-#define	PT_READ_D	2	/* read word in child's D space */
-#define	PT_WRITE_I	4	/* write word in child's I space */
-#define	PT_WRITE_D	5	/* write word in child's D space */
-#define	PT_CONTINUE	7	/* continue the child */
-#define	PT_KILL		8	/* kill the child process */
-#define	PT_ATTACH	9	/* attach to running process */
-#define	PT_DETACH	10	/* detach from running process */
-#define PT_IO		11	/* do I/O to/from the stopped process. */
-
-struct ptrace_io_desc {
-	int	piod_op;	/* I/O operation */
-	void	*piod_offs;	/* child offset */
-	void	*piod_addr;	/* parent offset */
-	size_t	piod_len;	/* request length */
-};
-
-/*
- * Operations in piod_op.
- */
-#define PIOD_READ_D	1	/* Read from D space */
-#define PIOD_WRITE_D	2	/* Write to D space */
-#define PIOD_READ_I	3	/* Read from I space */
-#define PIOD_WRITE_I	4	/* Write to I space */
-
-#define PT_SET_EVENT_MASK	12
-#define PT_GET_EVENT_MASK	13
-
-typedef struct ptrace_event {
-	int	pe_set_event;
-} ptrace_event_t;
-
-#define PTRACE_FORK	0x0002	/* Report forks */
-
-#define PT_GET_PROCESS_STATE	14
-
-typedef struct ptrace_state {
-	int	pe_report_event;
-	pid_t	pe_other_pid;
-} ptrace_state_t;
-
-#define	PT_FIRSTMACH	32	/* for machine-specific requests */
-#include <machine/ptrace.h>	/* machine-specific requests, if any */
-
-#ifdef _KERNEL
-
-/*
- * There is a bunch of PT_ requests that are machine dependent, but not
- * optional. Check if they were defined by MD code here.
- */
-#if !defined(PT_GETREGS) || !defined(PT_SETREGS)
-#error Machine dependent ptrace not complete.
-#endif
-
-struct reg;
-#if defined(PT_GETFPREGS) || defined(PT_SETFPREGS)
-struct fpreg;
-#endif
-
-void	proc_reparent(struct proc *child, struct proc *newparent);
-#ifdef PT_GETFPREGS
-int	process_read_fpregs(struct proc *p, struct fpreg *regs);
-#endif
-int	process_read_regs(struct proc *p, struct reg *regs);
-int	process_set_pc(struct proc *p, caddr_t addr);
-int	process_sstep(struct proc *p, int sstep);
-#ifdef PT_SETFPREGS
-int	process_write_fpregs(struct proc *p, struct fpreg *regs);
-#endif
-int	process_write_regs(struct proc *p, struct reg *regs);
-int	process_checkioperm(struct proc *, struct proc *);
-int	process_domem(struct proc *, struct proc *, struct uio *, int);
-
-#ifndef FIX_SSTEP
-#define FIX_SSTEP(p)
-#endif
-
-#else /* !_KERNEL */
+#define	PT_TRACE_ME			0	/* child declares it's being traced */
+#define PTRACE_EXT_IS_DEBUG_PERMITTED 	500
 
 #include <sys/cdefs.h>
+#include <sys/types.h> // for pid_t
+
+typedef void *caddr_t;
 
 __BEGIN_DECLS
-int	ptrace(int _request, pid_t _pid, caddr_t _addr, int _data);
+int	ptrace(int _request, pid_t _pid, caddr_t _addr, void * _data);
 __END_DECLS
-
-#endif /* !_KERNEL */
 
 #endif	/* !_SYS_PTRACE_H_ */
