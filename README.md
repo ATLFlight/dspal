@@ -105,7 +105,7 @@ DspAL tests succeeded.
 
 ## Troubleshooting
 
-1. If you see output like this when trying to run mini-dm, you need to update your ADSP image to one that supports pthread_cond_timedwait. To get an updated ADSP image, please contact the vendor who sold you the board.
+1. If you see output like this when trying to run mini-dm, you need to update your aDSP image to one that supports pthread_cond_timedwait. To get an updated aDSP image, please contact the vendor who sold you the board.
 ```
 host>$ ${HEXAGON_SDK_ROOT}/tools/mini-dm/Linux_Debug/mini-dm
 Device found with Product ID 0x9025. Continuing...
