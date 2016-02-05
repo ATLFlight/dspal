@@ -62,147 +62,6 @@
 #ifndef _SCHED_H_
 #define	_SCHED_H_
 
-#ifdef _KERNEL
-/*
- * General scheduling info.
- *
- * sched_load:
- *	Total runnable non-ithread threads in the system.
- *
- * sched_runnable:
- *	Runnable threads for this processor.
- */
-int	sched_load(void);
-int	sched_rr_interval(void);
-int	sched_runnable(void);
-
-/* 
- * Proc related scheduling hooks.
- */
-void	sched_exit(struct proc *p, struct thread *childtd);
-void	sched_fork(struct thread *td, struct thread *childtd);
-void	sched_fork_exit(struct thread *td);
-void	sched_class(struct thread *td, int class);
-void	sched_nice(struct proc *p, int nice);
-
-/*
- * Threads are switched in and out, block on resources, have temporary
- * priorities inherited from their procs, and use up cpu time.
- */
-void	sched_exit_thread(struct thread *td, struct thread *child);
-void	sched_fork_thread(struct thread *td, struct thread *child);
-void	sched_lend_prio(struct thread *td, u_char prio);
-void	sched_lend_user_prio(struct thread *td, u_char pri);
-fixpt_t	sched_pctcpu(struct thread *td);
-void	sched_prio(struct thread *td, u_char prio);
-void	sched_sleep(struct thread *td, int prio);
-void	sched_switch(struct thread *td, struct thread *newtd, int flags);
-void	sched_throw(struct thread *td);
-void	sched_unlend_prio(struct thread *td, u_char prio);
-void	sched_user_prio(struct thread *td, u_char prio);
-void	sched_userret(struct thread *td);
-void	sched_wakeup(struct thread *td);
-void	sched_preempt(struct thread *td);
-#ifdef	RACCT
-#ifdef	SCHED_4BSD
-fixpt_t	sched_pctcpu_delta(struct thread *td);
-#endif
-#endif
-
-/*
- * Threads are moved on and off of run queues
- */
-void	sched_add(struct thread *td, int flags);
-void	sched_clock(struct thread *td);
-void	sched_rem(struct thread *td);
-void	sched_tick(int cnt);
-void	sched_relinquish(struct thread *td);
-struct thread *sched_choose(void);
-void	sched_idletd(void *);
-
-/*
- * Binding makes cpu affinity permanent while pinning is used to temporarily
- * hold a thread on a particular CPU.
- */
-void	sched_bind(struct thread *td, int cpu);
-static __inline void sched_pin(void);
-void	sched_unbind(struct thread *td);
-static __inline void sched_unpin(void);
-int	sched_is_bound(struct thread *td);
-void	sched_affinity(struct thread *td);
-
-/*
- * These procedures tell the process data structure allocation code how
- * many bytes to actually allocate.
- */
-int	sched_sizeof_proc(void);
-int	sched_sizeof_thread(void);
-
-/*
- * This routine provides a consistent thread name for use with KTR graphing
- * functions.
- */
-char	*sched_tdname(struct thread *td);
-#ifdef KTR
-void	sched_clear_tdname(struct thread *td);
-#endif
-
-static __inline void
-sched_pin(void)
-{
-	curthread->td_pinned++;
-	__compiler_membar();
-}
-
-static __inline void
-sched_unpin(void)
-{
-	__compiler_membar();
-	curthread->td_pinned--;
-}
-
-/* sched_add arguments (formerly setrunqueue) */
-#define	SRQ_BORING	0x0000		/* No special circumstances. */
-#define	SRQ_YIELDING	0x0001		/* We are yielding (from mi_switch). */
-#define	SRQ_OURSELF	0x0002		/* It is ourself (from mi_switch). */
-#define	SRQ_INTR	0x0004		/* It is probably urgent. */
-#define	SRQ_PREEMPTED	0x0008		/* has been preempted.. be kind */
-#define	SRQ_BORROWING	0x0010		/* Priority updated due to prio_lend */
-
-/* Scheduler stats. */
-#ifdef SCHED_STATS
-DPCPU_DECLARE(long, sched_switch_stats[SWT_COUNT]);
-
-#define	SCHED_STAT_DEFINE_VAR(name, ptr, descr)				\
-static void name ## _add_proc(void *dummy __unused)			\
-{									\
-									\
-	SYSCTL_ADD_PROC(NULL,						\
-	    SYSCTL_STATIC_CHILDREN(_kern_sched_stats), OID_AUTO,	\
-	    #name, CTLTYPE_LONG|CTLFLAG_RD|CTLFLAG_MPSAFE,		\
-	    ptr, 0, sysctl_dpcpu_long, "LU", descr);			\
-}									\
-SYSINIT(name, SI_SUB_LAST, SI_ORDER_MIDDLE, name ## _add_proc, NULL);
-
-#define	SCHED_STAT_DEFINE(name, descr)					\
-    DPCPU_DEFINE(unsigned long, name);					\
-    SCHED_STAT_DEFINE_VAR(name, &DPCPU_NAME(name), descr)
-/*
- * Sched stats are always incremented in critical sections so no atomic
- * is necesssary to increment them.
- */
-#define SCHED_STAT_INC(var)     DPCPU_GET(var)++;
-#else
-#define	SCHED_STAT_DEFINE_VAR(name, descr, ptr)
-#define	SCHED_STAT_DEFINE(name, descr)
-#define SCHED_STAT_INC(var)			(void)0
-#endif
-
-/*
- * Fixup scheduler state for proc0 and thread0
- */
-void schedinit(void);
-#endif /* _KERNEL */
 
 /* POSIX 1003.1b Process Scheduling */
 
@@ -220,14 +79,8 @@ struct sched_param {
 /*
  * POSIX scheduling declarations for userland.
  */
-#ifndef _KERNEL
 #include <sys/cdefs.h>
-#include <sys/_types.h>
-
-#ifndef _PID_T_DECLARED
-typedef __pid_t         pid_t;
-#define _PID_T_DECLARED
-#endif
+#include <dspal_types.h>
 
 struct timespec;
 
@@ -242,5 +95,4 @@ int     sched_setscheduler(pid_t, int, const struct sched_param *);
 int     sched_yield(void);
 __END_DECLS
 
-#endif
 #endif /* !_SCHED_H_ */
