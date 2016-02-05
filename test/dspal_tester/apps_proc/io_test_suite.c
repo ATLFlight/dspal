@@ -38,20 +38,20 @@ int run_io_test_suite(void)
 {
 	int test_results = TEST_PASS;
 
-	MSG("testing device path access\n");
+	LOG_INFO("testing device path access");
 	test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
 
 	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
 
 	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
 
-	MSG("testing GPIO\n");
+	LOG_INFO("testing GPIO");
 	test_results |= display_test_results(dspal_tester_test_gpio_open_close(), "gpio open/close test");
 	test_results |= display_test_results(dspal_tester_test_gpio_ioctl_io(), "gpio ioctl I/O mode test");
 	test_results |= display_test_results(dspal_tester_test_gpio_read_write(), "gpio read/write test");
 	test_results |= display_test_results(dspal_tester_test_gpio_int(), "gpio INT test");
 
-	MSG("testing file I/O\n");
+	LOG_INFO("testing file I/O");
 	test_results |= display_test_results(dspal_tester_test_posix_file_open_close(), "file open/close");
 	test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
 	test_results |= display_test_results(dspal_tester_test_posix_file_open_trunc(), "file open_trunc");

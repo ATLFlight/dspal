@@ -39,7 +39,7 @@ int run_posix_test_suite(void)
 {
 	int test_results = TEST_PASS;
 
-	MSG("testing time.h\n");
+	LOG_INFO("testing time.h");
 
 	test_results |= display_test_results(dspal_tester_test_clockid(), "clockid values exist");
 	test_results |= display_test_results(dspal_tester_test_sigevent(), "sigevent values exist");
@@ -59,7 +59,7 @@ int run_posix_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_signal_cb(), "periodic timer signal cb");
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_sigwait(), "periodic timer sigwait");
 
-	MSG("testing pthread.h\n");
+	LOG_INFO("testing pthread.h");
 
 	test_results |= display_test_results(dspal_tester_test_pthread_attr_init(), "pthread attr init");
 	test_results |= display_test_results(dspal_tester_test_pthread_create(), "pthread create");
@@ -74,16 +74,16 @@ int run_posix_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_pthread_heap(), "thread large allocation on heap");
 	test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
 
-	MSG("testing semaphore.h\n");
+	LOG_INFO("testing semaphore.h");
 
 	test_results |= display_test_results(dspal_tester_test_semaphore_wait(), "semaphore wait");
 
-	MSG("testing C++\n");
+	LOG_INFO("testing C++");
 
 	test_results |= display_test_results(dspal_tester_test_cxx_heap(), "test C++ heap");
 	test_results |= display_test_results(dspal_tester_test_cxx_static(), "test C++ static initialization");
 
-	MSG("tests complete\n");
+	LOG_INFO("tests complete");
 
 	return test_results;
 }

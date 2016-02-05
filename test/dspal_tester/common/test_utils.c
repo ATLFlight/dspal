@@ -39,7 +39,7 @@
 
 int display_test_results(int result, const char *label)
 {
-	MSG("[%s] %s\n", get_result_string(result), label);
+	LOG_INFO("[%s] %s\n", get_result_string(result), label);
 	return result;
 }
 
@@ -57,7 +57,7 @@ const char *get_result_string(int result)
 
 void log_error(const char *error)
 {
-	MSG("         %s\n", error);
+	LOG_ERR("         %s\n", error);
 }
 
 void test_failed(const char *msg, const char *file, int lineNumber)

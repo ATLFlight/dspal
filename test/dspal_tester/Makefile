@@ -37,10 +37,11 @@ all: dspal_tester
 ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
+	@[ `which arm-linux-gnueabihf-gcc` ] || (echo "Add ${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux/bin to PATH" && false)
 
 cmake_hexagon/toolchain/Toolchain-qurt.cmake:
-	git submodule init
-	git submodule update
+	cd ../../ && git submodule init
+	cd ../../ && git submodule update
 
 .PHONY: dspal_tester
 dspal_tester: ENV_VARS cmake_hexagon/toolchain/Toolchain-qurt.cmake

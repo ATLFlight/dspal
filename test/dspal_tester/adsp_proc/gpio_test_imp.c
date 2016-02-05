@@ -64,7 +64,7 @@ int dspal_tester_test_gpio_open_close(void)
 	fd = open(GPIO_DEVICE_PATH, 0);
 
 	if (fd == -1) {
-		MSG("open gpio device failed.");
+		LOG_ERR("open gpio device failed.");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -93,7 +93,7 @@ int dspal_tester_test_gpio_ioctl_io(void)
 	fd = open(GPIO_DEVICE_PATH, 0);
 
 	if (fd == -1) {
-		MSG("open gpio device failed.");
+		LOG_ERR("open gpio device failed.");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -106,16 +106,19 @@ int dspal_tester_test_gpio_ioctl_io(void)
 
 	// configure GPIO device into general purpose IO mode
 	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
-		MSG("ioctl gpio device failed");
+		LOG_ERR("ioctl gpio device failed");
 		result = TEST_FAIL;
 		goto exit;
 	}
 
 	// Test if ioctl() is rejected if called more than once
 	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) == SUCCESS) {
-		MSG("duplicate ioctl call test failed");
+		LOG_ERR("duplicate ioctl call test failed");
 		result = TEST_FAIL;
 		goto exit;
+
+	} else {
+		LOG_INFO("duplicate ioctl call expected to be rejected. PASSED");
 	}
 
 exit:
@@ -160,14 +163,14 @@ int dspal_tester_test_gpio_read_write(void)
 	fd = open(GPIO_DEVICE_PATH, 0);
 
 	if (fd == -1) {
-		MSG("open gpio device failed.");
+		LOG_ERR("open gpio device failed.");
 		result = TEST_FAIL;
 		goto exit;
 	}
 
 	// Configure GPIO device into general purpose I/O mode
 	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
-		MSG("ioctl gpio device failed");
+		LOG_ERR("ioctl gpio device failed");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -176,13 +179,13 @@ int dspal_tester_test_gpio_read_write(void)
 	for (int i = 0; i < 100; i++) {
 		value_written = value_written ^ 0x01;
 
-		MSG("write GPIO %s: %d", GPIO_DEVICE_PATH, value_written);
+		LOG_DEBUG("write GPIO %s: %d", GPIO_DEVICE_PATH, value_written);
 
 		// set output value
 		bytes = write(fd, &value_written, 1);
 
 		if (bytes != 1) {
-			MSG("error: write failed");
+			LOG_ERR("error: write failed");
 			result = TEST_FAIL;
 			goto exit;
 		}
@@ -191,15 +194,15 @@ int dspal_tester_test_gpio_read_write(void)
 		bytes = read(fd, &value_read, 1);
 
 		if (bytes != 1) {
-			MSG("error: read failed");
+			LOG_ERR("error: read failed");
 			result = TEST_FAIL;
 			goto exit;
 		}
 
-		MSG("read from GPIO %s: %d", GPIO_DEVICE_PATH, value_read);
+		LOG_DEBUG("read from GPIO %s: %d", GPIO_DEVICE_PATH, value_read);
 
 		if (value_read != value_written) {
-			MSG("error: read inconsistent value");
+			LOG_ERR("error: read inconsistent value");
 			result = TEST_FAIL;
 			goto exit;
 		}
@@ -224,7 +227,7 @@ void *gpio_int_isr(DSPAL_GPIO_INT_ISR_CTX context)
 {
 	bool *val = (bool *)context;
 
-	MSG("gpio_int_isr called");
+	LOG_DEBUG("gpio_int_isr called");
 
 	*val = true;
 
@@ -261,8 +264,8 @@ void *gpio_int_isr(DSPAL_GPIO_INT_ISR_CTX context)
 */
 int dspal_tester_test_gpio_int(void)
 {
-#ifdef DO_JIG_TEST
 	int result = TEST_PASS;
+#ifdef DO_JIG_TEST
 	enum DSPAL_GPIO_VALUE_TYPE value_written;
 	int fd;
 	int int_fd = -1;
@@ -272,7 +275,7 @@ int dspal_tester_test_gpio_int(void)
 	fd = open(GPIO_DEVICE_PATH, 0);
 
 	if (fd == -1) {
-		MSG("open gpio device failed.");
+		LOG_ERR("open gpio device failed.");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -284,7 +287,7 @@ int dspal_tester_test_gpio_int(void)
 	};
 
 	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
-		MSG("ioctl gpio device failed");
+		LOG_ERR("ioctl gpio device failed");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -294,7 +297,7 @@ int dspal_tester_test_gpio_int(void)
 	bytes = write(fd, &value_written, 1);
 
 	if (bytes != 1) {
-		MSG("error: write failed");
+		LOG_ERR("error: write failed");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -303,7 +306,7 @@ int dspal_tester_test_gpio_int(void)
 	int_fd = open(GPIO_INT_DEVICE_PATH, 0);
 
 	if (int_fd == -1) {
-		MSG("open gpio device failed.");
+		LOG_ERR("open gpio device failed.");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -316,7 +319,7 @@ int dspal_tester_test_gpio_int(void)
 	};
 
 	if (ioctl(int_fd, DSPAL_GPIO_IOCTL_CONFIG_REG_INT, (void *)&int_config) != SUCCESS) {
-		MSG("error: ioctl DSPAL_GPIO_IOCTL_CONFIG_REG_INT failed");
+		LOG_ERR("error: ioctl DSPAL_GPIO_IOCTL_CONFIG_REG_INT failed");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -327,7 +330,7 @@ int dspal_tester_test_gpio_int(void)
 	bytes = write(fd, &value_written, 1);
 
 	if (bytes != 1) {
-		MSG("error: write failed");
+		LOG_ERR("error: write failed");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -336,7 +339,7 @@ int dspal_tester_test_gpio_int(void)
 
 	// check if isr was called
 	if (!isr_called) {
-		MSG("error: isr is not called");
+		LOG_ERR("error: isr is not called");
 		result = TEST_FAIL;
 		goto exit;
 	}
@@ -345,7 +348,7 @@ exit:
 	close(int_fd);
 	close(fd);
 #else
-	int result = TEST_SKIP;
+	result = TEST_SKIP;
 #endif
 	return result;
 }

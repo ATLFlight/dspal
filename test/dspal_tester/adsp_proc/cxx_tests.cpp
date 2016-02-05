@@ -89,7 +89,7 @@ int CXXTest::testInit()
 
 int CXXTest::doTests()
 {
-	MSG("Running CXX tests");
+	LOG_INFO("Running CXX tests");
 
 	if (testInit() != TEST_PASS) { FAIL("C++ init test failed"); }
 

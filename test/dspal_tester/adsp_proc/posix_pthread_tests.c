@@ -624,7 +624,7 @@ int dspal_tester_test_pthread_stack(void)
 	if (rv != 0) { FAIL("thread_join returned error"); }
 
 	if (test_value != 1) {
-		MSG("test value: %d", test_value);
+		LOG_ERR("test value: %d", test_value);
 		FAIL("test value is not passing");
 	}
 
@@ -713,7 +713,7 @@ int dspal_tester_test_pthread_heap(void)
 	if (rv != 0) { FAIL("thread_join returned error"); }
 
 	if (test_value != 1) {
-		MSG("test value: %d", test_value);
+		LOG_ERR("test value: %d", test_value);
 		FAIL("test value is not passing");
 	}
 
@@ -746,7 +746,7 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	if (pthread_mutexattr_init(&attr) != 0 ||
 	    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0 ||
 	    pthread_mutex_init(&mutex, &attr) != 0) {
-		MSG("error: pthread mutex initialization failed");
+		LOG_ERR("error: pthread mutex initialization failed");
 		return_status = -1;
 		goto exit;
 	}
@@ -764,7 +764,7 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	 * to be instantiated.
 	 */
 	if ((mutex_lock_status = pthread_mutex_trylock(&mutex)) != 0) {
-		MSG("error: pthread_mutex_trylock indicates that the lock is already established: %d", mutex_lock_status);
+		LOG_ERR("error: pthread_mutex_trylock indicates that the lock is already established: %d", mutex_lock_status);
 	}
 
 	*cond = PTHREAD_COND_INITIALIZER;
@@ -772,16 +772,16 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	/*
 	 * Wait once, long enough for a timeout to occur.
 	 */
-	MSG("entering first pthread_cond_timedwait call, testing timeout");
+	LOG_DEBUG("entering first pthread_cond_timedwait call, testing timeout");
 	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
 
 	if (cond_status != ETIMEDOUT) {
-		MSG("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d",
-		    cond_status, ETIMEDOUT);
+		LOG_ERR("error: pthread_cond_timewait did not time out as expected, cond_status: %d, ETIMEDOUT: %d",
+			cond_status, ETIMEDOUT);
 		return_status = -1;
 
 	} else {
-		MSG("first pthread_cond_timedwait call timed out as expected.");
+		LOG_DEBUG("first pthread_cond_timedwait call timed out as expected.");
 	}
 
 	/*
@@ -795,16 +795,16 @@ void *test_pthread_cond_timedwait_helper(void *test_value)
 	 * Wait again, but this time expect to be signaled before the timeout
 	 * has occurred.
 	 */
-	MSG("entering second pthread_cond_timedwait call, no timeout expected");
+	LOG_DEBUG("entering second pthread_cond_timedwait call, no timeout expected");
 	cond_status = pthread_cond_timedwait(cond, &mutex, &timeout);
 
 	if (cond_status == ETIMEDOUT) {
-		MSG("error: pthread_cond_timewait timed out unexpectedly");
+		LOG_ERR("error: pthread_cond_timewait timed out unexpectedly");
 		return_status = -1;
 
 	} else {
-		MSG("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d",
-		    cond_status, ETIMEDOUT);
+		LOG_INFO("second pthread_cond_timedwait did *not* timeout as expected, cond_status: %d, ETIMEDOUT: %d",
+			 cond_status, ETIMEDOUT);
 	}
 
 	/*
@@ -850,7 +850,7 @@ int dspal_tester_test_pthread_cond_timedwait(void)
 	rv = pthread_create(&thread, NULL, test_pthread_cond_timedwait_helper, &cond);
 
 	if (rv != 0) {
-		MSG("error pthread_create: %d", rv);
+		LOG_ERR("error pthread_create: %d", rv);
 		goto exit;
 	}
 
@@ -864,19 +864,19 @@ int dspal_tester_test_pthread_cond_timedwait(void)
 	 * Now trigger the condition to verify that it was detected before
 	 * the timeout period has expired.
 	 */
-	MSG("entering pthread_cond_signal for the next cond wait (after the timeout)");
+	LOG_DEBUG("entering pthread_cond_signal for the next cond wait (after the timeout)");
 	rv = pthread_cond_signal(&cond);
 
 	if (rv != 0) {
-		MSG("error pthread_cond_signal: %d", rv);
+		LOG_ERR("error pthread_cond_signal: %d", rv);
 		goto exit;
 	}
 
-	MSG("pthread_cond_signal has returned, waiting for the helper thread to exit");
+	LOG_INFO("pthread_cond_signal has returned, waiting for the helper thread to exit");
 	rv = pthread_join(thread, NULL);
 
 	if (rv != 0) {
-		MSG("error pthread_join: %d", rv);
+		LOG_ERR("error pthread_join: %d", rv);
 		goto exit;
 	}
 
@@ -885,10 +885,10 @@ int dspal_tester_test_pthread_cond_timedwait(void)
 exit:
 
 	if (test_value != TEST_PASS) {
-		MSG("error: dspal_tester_test_pthread_cond_timedwait");
+		LOG_ERR("error: dspal_tester_test_pthread_cond_timedwait");
 
 	} else {
-		MSG("success: dspal_tester_test_pthread_cond_timedwait");
+		LOG_INFO("success: dspal_tester_test_pthread_cond_timedwait");
 	}
 
 	return test_value;

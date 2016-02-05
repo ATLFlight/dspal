@@ -35,10 +35,7 @@
 #include <stdint.h>
 #include <sys/ioctl.h>
 #include <dev_fs_lib_i2c.h>
-
 #include <test_status.h>
-#define FARF_MEDIUM 1
-#include <HAP_farf.h>
 
 /**
 * @brief Test to see i2c device can be opened and configured.
