@@ -73,7 +73,7 @@
 #define SCHED_RR        3
 
 struct sched_param {
-        int     sched_priority;
+	int     sched_priority;
 };
 
 /*

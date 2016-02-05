@@ -55,11 +55,21 @@
 #ifdef __hexagon__
 /* Use the following macro for debug output on the aDSP. */
 #include <HAP_farf.h>
-#define MSG(...) FARF(ALWAYS, __VA_ARGS__);
+
+/* Enable medium level debugging. */
+//#define FARF_HIGH   1    /* Use a value of 0 to disable the specified debug level. */
+//#define FARF_MEDIUM 1
+//#define FARF_LOW    1
+
+#define LOG_INFO(...) FARF(ALWAYS, __VA_ARGS__);
+#define LOG_ERR(...) FARF(ALWAYS, __VA_ARGS__);
+#define LOG_DEBUG(...) FARF(MEDIUM, __VA_ARGS__);
 #else
 /* Use the following macro for debug output on the Application Processor. */
 #include <stdio.h>
-#define MSG(...) printf(__VA_ARGS__);
+#define LOG_INFO(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#define LOG_ERR(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#define LOG_DEBUG(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
 #endif
 
 #define FAIL(msg) { \

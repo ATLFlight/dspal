@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2016 James Wilson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,55 +30,22 @@
  *
  ****************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-#include "adspmsgd.h"
-#include "rpcmem.h"
-
+#include <dspal_version.h>
 #include "test_utils.h"
 #include "dspal_tester.h"
-#include "posix_test_suite.h"
-#include "io_test_suite.h"
 
-
-/**
- * @brief Runs all the tests, the io tests and the posix tests.
- *
- * @param   argc[in]    number of arguments
- * @param   argv[in]    array of parameters (each is a char array)
- *
- * @return
- * TEST_PASS ------ All tests passed
- * TEST_FAIL ------ A test has failed
-*/
-
-int main(int argc, char *argv[])
+int dspal_tester_test_dspal_get_version_info()
 {
-	int status = TEST_PASS;
+	char *version_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
+	char *build_date_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
+	char *build_time_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
 
-	LOG_INFO("");
+	dspal_get_version_info((char *)version_string, (char *)build_date_string,
+			       (char *)build_time_string);
 
-	LOG_INFO("Starting DSPAL tests");
-	dspal_tester_test_dspal_get_version_info();
-	status = run_posix_test_suite();
-	status |= run_io_test_suite();
+	LOG_INFO("version: %s", version_string);
+	LOG_INFO("build date: %s", build_date_string);
+	LOG_INFO("build time: %s", build_time_string);
 
-	if ((status & TEST_FAIL) == TEST_FAIL) {
-		LOG_INFO("DSPAL test failed.");
-
-	} else {
-		if ((status & TEST_SKIP) == TEST_SKIP) {
-			LOG_INFO("DSPAL some tests skipped.");
-		}
-
-		LOG_INFO("DSPAL tests succeeded.");
-	}
-
-	LOG_INFO("");
-	return status;
+	return 0;
 }
-

@@ -44,7 +44,7 @@
 typedef void *caddr_t;
 
 __BEGIN_DECLS
-int	ptrace(int _request, pid_t _pid, caddr_t _addr, void * _data);
+int	ptrace(int _request, pid_t _pid, caddr_t _addr, void *_data);
 __END_DECLS
 
 #endif	/* !_SYS_PTRACE_H_ */

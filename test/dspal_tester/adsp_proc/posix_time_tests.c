@@ -254,7 +254,7 @@ int dspal_tester_test_usleep(void)
 	time_t length = finish - start;
 
 	if (length < 1) {
-		MSG("usleep run length: %d", length);
+		LOG_ERR("usleep run length: %d", length);
 		FAIL("usleep returned too fast");
 	}
 
@@ -301,10 +301,10 @@ static void one_shot_timer_callback(union sigval val)
 	struct timespec now;
 
 	clock_gettime(CLOCK_REALTIME, &now);
-	MSG("one shot timer expected time: %ld us", MAX_WAIT_TIME_US);
-	MSG("one shot timer elapsed time: %ld us",
-	    (now.tv_sec - one_shot_timer_start.tv_sec) * 1000000 +
-	    (now.tv_nsec - one_shot_timer_start.tv_nsec) / 1000);
+	LOG_DEBUG("one shot timer expected time: %ld us", MAX_WAIT_TIME_US);
+	LOG_DEBUG("one shot timer elapsed time: %ld us",
+		  (now.tv_sec - one_shot_timer_start.tv_sec) * 1000000 +
+		  (now.tv_nsec - one_shot_timer_start.tv_nsec) / 1000);
 
 	pthread_kill(one_shot_timer_cb_thread, val.sival_int);
 }
@@ -319,7 +319,7 @@ void *one_shot_timer_cb_test(void *context)
 	int sig;
 	int rv;
 
-	MSG("one_shot_timer_cb_test thread id = %d", pthread_self());
+	LOG_DEBUG("one_shot_timer_cb_test thread id = %d", pthread_self());
 
 	sigemptyset(&set);
 	sigaddset(&set, SIG);
@@ -330,7 +330,7 @@ void *one_shot_timer_cb_test(void *context)
 	sev.sigev_notify_attributes = 0;
 
 	if (timer_create(CLOCK_REALTIME, &sev, &timer_id) != 0) {
-		MSG("timer_create failed");
+		LOG_ERR("timer_create failed");
 		goto exit;
 	}
 
@@ -340,7 +340,7 @@ void *one_shot_timer_cb_test(void *context)
 	timer_spec.it_interval.tv_nsec = 0;
 
 	if (timer_settime(timer_id, 0, &timer_spec, NULL) != 0) {
-		MSG("timer_settime failed");
+		LOG_ERR("timer_settime failed");
 		timer_delete(timer_id);
 		goto exit;
 	}
@@ -350,7 +350,7 @@ void *one_shot_timer_cb_test(void *context)
 	rv = sigwait(&set, &sig);
 
 	if (rv != 0 || sig != SIGRTMIN) {
-		MSG("sigwait failed");
+		LOG_ERR("sigwait failed");
 	}
 
 	timer_delete(timer_id);
@@ -372,7 +372,7 @@ int dspal_tester_test_one_shot_timer_cb(void)
 		FAIL("pthread_create failed");
 	}
 
-	MSG("created one_shot_timer_cb_test thread %d", one_shot_timer_cb_thread);
+	LOG_DEBUG("created one_shot_timer_cb_test thread %d", one_shot_timer_cb_thread);
 
 	// wait on the child thread
 	rv = pthread_join(one_shot_timer_cb_thread, (void **)&exit_status);
@@ -398,9 +398,9 @@ static void periodic_timer_callback(union sigval val)
 
 	} else {
 		clock_gettime(CLOCK_REALTIME, &now);
-		MSG("periodic timer elapsed time: %ld us",
-		    (now.tv_sec - last_time.tv_sec) * 1000000 +
-		    (now.tv_nsec - last_time.tv_nsec) / 1000);
+		LOG_DEBUG("periodic timer elapsed time: %ld us",
+			  (now.tv_sec - last_time.tv_sec) * 1000000 +
+			  (now.tv_nsec - last_time.tv_nsec) / 1000);
 		last_time = now;
 	}
 
@@ -421,7 +421,7 @@ void *periodic_timer_cb_test(void *context)
 	int sig;
 	int rv;
 
-	MSG("periodic_timer_cb_test thread id = %d", pthread_self());
+	LOG_DEBUG("periodic_timer_cb_test thread id = %d", pthread_self());
 
 	// set signal type
 	sigemptyset(&set);
@@ -434,7 +434,7 @@ void *periodic_timer_cb_test(void *context)
 	sev.sigev_notify_attributes = 0;
 
 	if (timer_create(CLOCK_REALTIME, &sev, &timer_id) != 0) {
-		MSG("timer_create failed");
+		LOG_ERR("timer_create failed");
 		goto exit;
 	}
 
@@ -445,7 +445,7 @@ void *periodic_timer_cb_test(void *context)
 
 	// start the timer
 	if (timer_settime(timer_id, 0, &timer_spec, NULL) != 0) {
-		MSG("timer_settime failed");
+		LOG_ERR("timer_settime failed");
 		timer_delete(timer_id);
 		goto exit;
 	}
@@ -455,7 +455,7 @@ void *periodic_timer_cb_test(void *context)
 		rv = sigwait(&set, &sig);
 
 		if (rv != 0 || sig != SIGRTMIN) {
-			MSG("sigwait failed");
+			LOG_ERR("sigwait failed");
 		}
 	}
 
@@ -486,7 +486,7 @@ int dspal_tester_test_periodic_timer_cb(void)
 		FAIL("pthread_create failed");
 	}
 
-	MSG("created periodic_timer_cb_test thread %d", periodic_timer_cb_thread);
+	LOG_DEBUG("created periodic_timer_cb_test thread %d", periodic_timer_cb_thread);
 
 	// wait on the child thread
 	rv = pthread_join(periodic_timer_cb_thread, (void **)&exit_status);
@@ -513,9 +513,9 @@ static void periodic_timer_signal_callback(int signum)
 
 	} else {
 		clock_gettime(CLOCK_REALTIME, &now);
-		MSG("periodic timer elapsed time: %ld us",
-		    (now.tv_sec - last_time.tv_sec) * 1000000 +
-		    (now.tv_nsec - last_time.tv_nsec) / 1000);
+		LOG_DEBUG("periodic timer elapsed time: %ld us",
+			  (now.tv_sec - last_time.tv_sec) * 1000000 +
+			  (now.tv_nsec - last_time.tv_nsec) / 1000);
 		last_time = now;
 	}
 
@@ -534,7 +534,7 @@ void *periodic_timer_signal_cb_test(void *context)
 	sigset_t set;
 	int rv;
 
-	MSG("periodic_timer_signal_cb_test thread id = %d", pthread_self());
+	LOG_DEBUG("periodic_timer_signal_cb_test thread id = %d", pthread_self());
 
 	// register signal handler for SIGRTMIN
 	sa.sa_handler = periodic_timer_signal_callback;
@@ -543,7 +543,7 @@ void *periodic_timer_signal_cb_test(void *context)
 	sa.sa_sigaction = NULL;
 
 	if (sigaction(SIGRTMIN, &sa, NULL) != 0) {
-		MSG("sigaction failed");
+		LOG_ERR("sigaction failed");
 		goto exit;
 	}
 
@@ -555,7 +555,7 @@ void *periodic_timer_signal_cb_test(void *context)
 	sev.sigev_notify_attributes = 0;
 
 	if (timer_create(CLOCK_REALTIME, &sev, &timer_id) != 0) {
-		MSG("timer_create failed");
+		LOG_ERR("timer_create failed");
 		goto exit;
 	}
 
@@ -566,7 +566,7 @@ void *periodic_timer_signal_cb_test(void *context)
 
 	// start the timer
 	if (timer_settime(timer_id, 0, &timer_spec, NULL) != 0) {
-		MSG("timer_settime failed");
+		LOG_ERR("timer_settime failed");
 		timer_delete(timer_id);
 		goto exit;
 	}
@@ -611,7 +611,7 @@ int dspal_tester_test_periodic_timer_signal_cb(void)
 		FAIL("pthread_create failed");
 	}
 
-	MSG("created periodic_timer_signal_cb_test thread %d", periodic_timer_signal_cb_thread);
+	LOG_DEBUG("created periodic_timer_signal_cb_test thread %d", periodic_timer_signal_cb_thread);
 
 	// wait on the child thread
 	// TODO: Possible issue with pthread_join().  Must be investigated.
@@ -637,7 +637,7 @@ void *periodic_timer_sigwait_test(void *context)
 	int rv;
 	int sig;
 
-	MSG("periodic_timer_sigwait_test thread id = %d", pthread_self());
+	LOG_DEBUG("periodic_timer_sigwait_test thread id = %d", pthread_self());
 
 	// set event notification function
 	sev.sigev_notify           = SIGEV_SIGNAL;
@@ -647,7 +647,7 @@ void *periodic_timer_sigwait_test(void *context)
 	sev.sigev_notify_attributes = 0;
 
 	if (timer_create(CLOCK_REALTIME, &sev, &timer_id) != 0) {
-		MSG("timer_create failed");
+		LOG_ERR("timer_create failed");
 		goto exit;
 	}
 
@@ -658,7 +658,7 @@ void *periodic_timer_sigwait_test(void *context)
 
 	// start the timer
 	if (timer_settime(timer_id, 0, &timer_spec, NULL) != 0) {
-		MSG("timer_settime failed");
+		LOG_ERR("timer_settime failed");
 		timer_delete(timer_id);
 		goto exit;
 	}
@@ -678,7 +678,7 @@ void *periodic_timer_sigwait_test(void *context)
 
 		// check the received signal
 		if (rv != 0 || sig != SIGRTMIN) {
-			MSG("sigwait failed rv %d sig %d", rv, sig);
+			LOG_ERR("sigwait failed rv %d sig %d", rv, sig);
 			continue;
 		}
 
@@ -687,9 +687,9 @@ void *periodic_timer_sigwait_test(void *context)
 
 		} else {
 			clock_gettime(CLOCK_REALTIME, &now);
-			MSG("periodic timer elapsed time: %ld us",
-			    (now.tv_sec - last_time.tv_sec) * 1000000 +
-			    (now.tv_nsec - last_time.tv_nsec) / 1000);
+			LOG_DEBUG("periodic timer elapsed time: %ld us",
+				  (now.tv_sec - last_time.tv_sec) * 1000000 +
+				  (now.tv_nsec - last_time.tv_nsec) / 1000);
 			last_time = now;
 		}
 	}
@@ -723,7 +723,7 @@ int dspal_tester_test_periodic_timer_sigwait(void)
 		FAIL("pthread_create failed");
 	}
 
-	MSG("created periodic_timer_sigwait_test thread %d", periodic_timer_sigwait_thread);
+	LOG_DEBUG("created periodic_timer_sigwait_test thread %d", periodic_timer_sigwait_thread);
 
 	// wait on the child thread
 	rv = pthread_join(periodic_timer_sigwait_thread, (void **)&exit_status);
