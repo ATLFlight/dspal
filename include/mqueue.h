@@ -36,8 +36,7 @@
 
 struct timespec;
 
-// FIXME - Need correct opaque type here
-typedef void *mqd_t;
+typedef int mqd_t;
 
 __BEGIN_DECLS
 mqd_t mq_open(const char *, int, ...);

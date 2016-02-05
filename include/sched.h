@@ -82,8 +82,6 @@ struct sched_param {
 #include <dspal_types.h>
 #include <sys/cdefs.h>
 
-struct timespec;
-
 __BEGIN_DECLS
 int     sched_get_priority_max(int);
 int     sched_get_priority_min(int);

@@ -47,10 +47,17 @@
 extern "C" {
 #endif
 
+#ifdef __GNUC__
+#define restrict __restrict__
+#else
+#define restrict
+#endif
+
+
 #define PTHREAD_MUTEX_OPAQUE
 
-typedef unsigned long int   pid_t;
-typedef unsigned long int   uid_t;
+typedef int   		pid_t;
+typedef unsigned int	uid_t;
 
 #define MAX_LEN_DEVICE_PATH_IN_BYTES 32
 
@@ -168,10 +175,16 @@ typedef struct pthread_condattr_t {
 
 typedef unsigned int pthread_cond_t;
 
+typedef unsigned int timer_type;
+typedef unsigned int timer_group_type;
+
 typedef struct _pthread_cond_t _pthread_cond_t;
 struct _pthread_cond_t {
 	pthread_condattr_t attr;
-	dspal_cond_t       *qurt_cond;
+	dspal_cond_t      *qurt_cond;
+	timer_type         pthread_wait_timer;
+	timer_group_type   pthread_wait_timer_group;
+	int                is_timed_out;
 };
 
 typedef struct pthread_barrierattr_t {

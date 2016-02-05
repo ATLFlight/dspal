@@ -36,11 +36,6 @@ typedef	__suseconds_t	suseconds_t;
 #define	_SUSECONDS_T_DECLARED
 #endif
 
-#ifndef _TIME_T_DECLARED
-typedef	__time_t	time_t;
-#define	_TIME_T_DECLARED
-#endif
-
 /*
  * Structure returned by gettimeofday(2) system call, and used in other calls.
  */
