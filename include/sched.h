@@ -59,8 +59,7 @@
  * $FreeBSD$
  */
 
-#ifndef _SCHED_H_
-#define	_SCHED_H_
+#pragma once
 
 /* POSIX 1003.1b Process Scheduling */
 
@@ -87,5 +86,3 @@ int     sched_get_priority_max(int);
 int     sched_get_priority_min(int);
 __END_DECLS
 #endif
-
-#endif /* !_SCHED_H_ */

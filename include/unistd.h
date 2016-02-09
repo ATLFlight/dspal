@@ -31,6 +31,7 @@
  ****************************************************************************/
 
 #pragma once
+
 /**
  * @file
  * The declarations in this file are released to DSPAL users and are used to

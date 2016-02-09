@@ -32,10 +32,6 @@
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*==========================================================================
  * FILE:         signal.h
  *
@@ -44,6 +40,7 @@ extern "C" {
  * DESCRIPTION:  POSIX Signal API interface based upon POSIX 1003.1-2004
  *==========================================================================*/
 
+#include <sys/cdefs.h>
 #include "dspal_types.h"
 
 /* POSIX signal bits */
@@ -73,6 +70,8 @@ extern "C" {
 #define SIG_BLOCK       1 /* block specified signal set */
 #define SIG_UNBLOCK     2 /* unblock specified signal set */
 #define SIG_SETMASK     3 /* set specified signal set */
+
+__BEGIN_DECLS
 
 typedef unsigned long int   sigset_t;
 
@@ -211,6 +210,4 @@ int _sigaction(int sig, const struct sigaction *act, struct sigaction *oact);
 int sigtimedwait(const sigset_t *restrict set, siginfo_t *restrict info,
 		 const struct timespec *restrict timeout);
 
-#ifdef __cplusplus
-}
-#endif
+__END_DECLS

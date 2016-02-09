@@ -29,8 +29,7 @@
 
 /* semaphore.h: POSIX 1003.1b semaphores */
 
-#ifndef _SEMAPHORE_H_
-#define _SEMAPHORE_H_
+#pragma once
 
 #include <sys/cdefs.h>
 
@@ -47,5 +46,3 @@ int    sem_post(sem_t *);
 int    sem_getvalue(sem_t *__restrict, int *__restrict);
 int    sem_destroy(sem_t *);
 __END_DECLS
-
-#endif /* !_SEMAPHORE_H_ */
