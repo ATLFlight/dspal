@@ -30,8 +30,7 @@
  *
  ****************************************************************************/
 
-#ifndef DEV_FS_LIB_GPIO_H_
-#define DEV_FS_LIB_GPIO_H_
+#pragma once
 
 /**
  * @file
@@ -217,5 +216,3 @@ struct dspal_gpio_ioctl_reg_int {
 	DSPAL_GPIO_INT_ISR isr; /**< ISR functor */
 	DSPAL_GPIO_INT_ISR_CTX isr_ctx;  /**< the context argument passed to isr */
 };
-
-#endif /* DEV_FS_LIB_GPIO_H_ */

@@ -210,9 +210,9 @@ struct dspal_serial_open_options {
  * context, included as a parameter to the callback function.
  */
 struct dspal_serial_ioctl_receive_data_callback {
-	serial_rx_func_ptr_t
-	rx_data_callback_func_ptr; /**< pointer to a callback function, called in the ISR context when new data has arrived. */
-	void *context; 		   /**< the pointer to user defined context data, passed to the callback function */
+	serial_rx_func_ptr_t rx_data_callback_func_ptr; 
+			/**< pointer to a callback function, called in the ISR context when new data has arrived. */
+	void *context; 	/**< the pointer to user defined context data, passed to the callback function */
 };
 
 /**
