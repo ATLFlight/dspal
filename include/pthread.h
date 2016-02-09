@@ -33,8 +33,7 @@
  * $FreeBSD$
  */
 
-#ifndef _PTHREAD_H_
-#define _PTHREAD_H_
+#pragma once
 
 /*
  * Header files.
@@ -229,4 +228,3 @@ int pthread_setspecific(pthread_key_t, const void *);
 void *pthread_getspecific(pthread_key_t);
 int pthread_attr_setaffinity_np(pthread_attr_t *attr, size_t cpusetsize, const cpu_set_t *cpuset);
 __END_DECLS
-#endif
