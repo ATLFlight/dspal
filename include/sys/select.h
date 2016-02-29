@@ -85,7 +85,7 @@ typedef	struct fd_set {
 #define	FD_ZERO(p) do {					\
 		fd_set *_p;				\
 		__size_t _n;				\
-							\
+		\
 		_p = (p);				\
 		_n = _howmany(FD_SETSIZE, _NFDBITS);	\
 		while (_n > 0)				\

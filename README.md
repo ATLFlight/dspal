@@ -55,7 +55,7 @@ $ adb shell
 # ./dspal_tester_app
 ```
 
-You should see output on the ADB terminal similar to:
+You should see output on the ADB terminal similar to (if you don't, see the "Troubleshooting" section below):
 ```
 Starting DspAL tests
 testing time.h
@@ -101,4 +101,30 @@ testing device path access
 ...
 DspAL some tests skipped.
 DspAL tests succeeded.
+```
+
+## Troubleshooting
+
+1. If you see output like this when trying to run mini-dm, you need to update your aDSP image to one that supports pthread_cond_timedwait. To get an updated aDSP image, please contact the vendor who sold you the board.
+```
+host>$ ${HEXAGON_SDK_ROOT}/tools/mini-dm/Linux_Debug/mini-dm
+Device found with Product ID 0x9025. Continuing...
+mini-dm is waiting for a DMSS connection...
+DMSS is connected. Running mini-dm...
+[08500/02]  17:13.750  HAP:12332:Verification skipped, no function specified!!  0256  map_object.c
+[08500/03]  17:13.755  HAP:12332:Found text relocation in /libdspal_tester_skel.so. Support for text relocations in shared objects i  0094  reloc.c
+[08500/03]  17:13.756  HAP:12332:Found text relocation in /libdspal_tester.so. Support for text relocations in shared objects is dep  0094  reloc.c
+[08500/03]  17:13.756  HAP:12332:HAP_debug_v2 weak ref not found, return _rtld_sym_zero@_rtld_objmain  0294  symbol.c
+[08500/03]  17:13.756  HAP:12332:HAP_debug_v2 weak ref not found, return _rtld_sym_zero@_rtld_objmain  0294  symbol.c
+[08500/03]  17:13.756  HAP:12332:undefined PLT symbol pthread_cond_timedwait (452) /libdspal_tester.so  0303  symbol.c
+[08500/02]  17:13.760  HAP:12332:Verification skipped, no function specified!!  0256  map_object.c
+[08500/02]  17:13.765  HAP:12332:Verification skipped, no function specified!!  0256  map_object.c
+[08500/03]  17:13.770  HAP:12332:Found text relocation in /libdspal_tester_skel.so. Support for text relocations in shared objects i  0094  reloc.c
+[08500/03]  17:13.770  HAP:12332:Found text relocation in /libdspal_tester.so. Support for text relocations in shared objects is dep  0094  reloc.c
+[08500/03]  17:13.770  HAP:12332:HAP_debug_v2 weak ref not found, return _rtld_sym_zero@_rtld_objmain  0294  symbol.c
+[08500/03]  17:13.771  HAP:12332:HAP_debug_v2 weak ref not found, return _rtld_sym_zero@_rtld_objmain  0294  symbol.c
+[08500/03]  17:13.771  HAP:12332:undefined PLT symbol pthread_cond_timedwait (452) /libdspal_tester.so  0303  symbol.c
+[08500/02]  17:13.780  HAP:12332:Verification skipped, no function specified!!  0256  map_object.c
+[08500/02]  17:13.786  HAP:12332:Verification skipped, no function specified!!  0256  map_object.c
+[08500/03]  17:13.790  HAP:12332:Found text relocation in /libdspal_tester_skel.so. Support for text relocations in shared objects i  0094  reloc.c
 ```

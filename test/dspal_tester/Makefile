@@ -38,8 +38,12 @@ ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
 
+cmake_hexagon/toolchain/Toolchain-qurt.cmake:
+	git submodule init
+	git submodule update
+
 .PHONY: dspal_tester
-dspal_tester: ENV_VARS
+dspal_tester: ENV_VARS cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	mkdir -p build && cd build && cmake -Wno-dev .. -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	cd build && make
 	
