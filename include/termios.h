@@ -96,6 +96,7 @@ __END_DECLS
 #endif /* !_TERMIOS_H_ */
 
 #ifndef _POSIX_SOURCE
-#include <sys/ttycom.h>
-#include <sys/ttydefaults.h>
+// TODO: These are not found on QURT.
+//#include <sys/ttycom.h>
+//#include <sys/ttydefaults.h>
 #endif
