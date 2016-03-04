@@ -46,6 +46,32 @@
 #define DSPAL_VERSION_INFO_OVERFLOW "####"
 
 /**
+ * @brief
+ * Structure used for retrieving the version information 
+ *
+ * @par version_string
+ * The version information of the DSPAL implementation currently in use, formatted as a key/value pair:
+ * DSPAL_VERSION_STRING=[major.minor.update.build_number]. May be left NULL.
+ * e.g.: DSPAL_VERSION_STRING=DSPAL-1.0.1.4242 
+ *  
+ * @par build_date
+ * The build date of the DSPAL implementation currently in use, formatted as a key/value pair:
+ * DSPAL_DATE_STRING=[Mmm dd yyyy]. May be left NULL.
+ * e.g.: DSPAL_DATE_STRING=Jan 01 2016 
+ *  
+ * @par build_time
+ * The build time of the DSPAL implementation currently in use, formatted as a key/value pair:
+ * BUILD_TIME_STRING=[hh:mm:ss]. May be left NULL.
+ * e.g.: BUILD_TIME_STRING=[23:59:01]
+ */
+struct dspal_version_info
+{
+	char version_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
+	char build_date[DSPAL_MAX_LEN_VERSION_INFO_STR];
+	char build_time[DSPAL_MAX_LEN_VERSION_INFO_STR];
+};
+
+/**
  * Returns version information strings formatted as key/value pairs in each
  * of the out variables defined below.
  * @param out_version_string
@@ -62,3 +88,14 @@
  * e.g.: BUILD_TIME_STRING=[23:59:01]
  */
 void dspal_get_version_info(char *out_version_string, char *out_build_date, char *out_build_time);
+
+/** 
+ * @brief 
+ * Returns version information strings formatted as key/value 
+ * pairs inside the dispal_version_info structure 
+ *  
+ * @param out_version_info
+ * version information structure, each member will be populated 
+ * according to structure description 
+ */
+void dspal_get_version_info_ext(struct dspal_version_info* out_version_info);
