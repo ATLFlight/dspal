@@ -39,7 +39,7 @@ ENV_VARS:
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
 	@[ `which arm-linux-gnueabihf-gcc` ] || (echo "Add ${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux/bin to PATH" && false)
 
-cmake_hexagon/toolchain/Toolchain-qurt.cmake:
+cmake_hexagon/bundle.cmake:
 	cd ../../ && git submodule init
 	cd ../../ && git submodule update
 
