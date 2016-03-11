@@ -36,7 +36,7 @@
 #include <sys/_types.h>
 
 #include <sys/_sigset.h>
-#include <sys/_timeval.h>
+#include <sys/time.h>
 #include <sys/timespec.h>
 
 typedef	unsigned long	__fd_mask;
