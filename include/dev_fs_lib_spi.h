@@ -88,6 +88,7 @@ enum DSPAL_SPI_IOCTLS {
 	SPI_IOCTL_LOOPBACK_TEST,  /**< activate the internal loopback test mode of the spi bus */
 	SPI_IOCTL_RDWR,           /**< used to initiate a write/read batch transfer */
 	SPI_IOCTL_SET_BUS_FREQUENCY_IN_HZ,  /**< use this to set the SPI bus speed in HZ */
+	SPI_IOCTL_SET_SPI_MODE,   /**< use this to set the SPI mode */
 	SPI_IOCTL_MAX_NUM,        /**< number of valid IOCTL codes defined for the I2C bus */
 };
 
@@ -99,6 +100,23 @@ enum DSPAL_SPI_LOOPBACK_TEST_STATE {
 	SPI_LOOPBACK_STATE_UNCONFIGURED, /**< initial loopback state indicating that it is neither enabled, nor disabled */
 	SPI_LOOPBACK_STATE_DISABLED,     /**< specifies that the loopback state should be disabled */
 	SPI_LOOPBACK_STATE_ENABLED,      /**< specifies that the loopback state should be enabled */
+};
+
+/**
+* In the idle state whether the SPI clk is high or low.
+*/
+enum SPI_CLOCK_POLARITY_TYPE {
+   SPI_CLOCK_IDLE_LOW,	/**< CLK signal is low when idle.*/
+   SPI_CLOCK_IDLE_HIGH	/**< CLK signal is high when idle.*/
+};
+
+
+/**
+* Shift mode, detemines which signal (input or output) is sampled first.
+*/
+enum SPI_SHIFT_MODE_TYPE {
+   SPI_INPUT_FIRST,		/**< In both Master and slave input Bit is shifted in first.*/
+   SPI_OUTPUT_FIRST		/**< In both Master and slave  output Bit is shifted in first*/
 };
 
 /**
@@ -127,6 +145,19 @@ typedef void (*spi_tx_func_ptr_t)(int event, void *);
  */
 struct dspal_spi_ioctl_set_bus_frequency {
 	uint32_t bus_frequency_in_hz;  /**< the maximum speed of the bus for high speed data transfers */
+};
+
+/**
+ * Structure passed to the SPI_IOCTL_SET_SPI_MODE IOCTL call.  Specifies
+ * the SPI bus mode to the slave device. if not set, use the default mode 3.
+ */
+struct dspal_spi_ioctl_set_spi_mode {
+	enum SPI_CLOCK_POLARITY_TYPE eClockPolarity;/**< Clock polarity  type to be used for the SPI core.*/
+
+	   /* This parameter specifies whether the SPI core operates in OUTPUT
+	    * or INPUT FIRST Mode. This specifies whether the shift register
+	    * latches the DATA at the input pin on the rising or falling edge */
+	enum SPI_SHIFT_MODE_TYPE eShiftMode;/**< Shift mode type to be used for SPI core.*/
 };
 
 /**

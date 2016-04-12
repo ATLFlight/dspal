@@ -126,6 +126,7 @@ int dspal_tester_spi_loopback_test(void)
 	int test_data_length_in_bytes = SPI_LOOPBACK_TEST_TRANSMIT_BUFFER_LENGTH - 1;
 	struct dspal_spi_ioctl_loopback loopback;
 	struct dspal_spi_ioctl_read_write read_write;
+	struct dspal_spi_ioctl_set_spi_mode bus_mode;
 
 	LOG_DEBUG("testing spi open for: %s", SPI_DEVICE_PATH);
 	spi_fildes = open(SPI_DEVICE_PATH, 0);
@@ -152,6 +153,15 @@ int dspal_tester_spi_loopback_test(void)
 	if (result < SUCCESS) {
 		LOG_ERR("error: unable to activate spi loopback mode");
 		goto exit;
+	}
+
+	/* set bus mode, don't goto exit for downward compatible */
+	bus_mode.eClockPolarity = SPI_CLOCK_IDLE_HIGH;
+	bus_mode.eShiftMode = SPI_OUTPUT_FIRST;
+	result = ioctl(spi_fildes, SPI_IOCTL_SET_SPI_MODE, &bus_mode);
+	if (result < SUCCESS)
+	{
+		LOG_ERR("error: unable to set bus mode");
 	}
 
 	/*
@@ -204,6 +214,7 @@ int dspal_tester_spi_exceed_max_length_test(void)
 	uint8_t read_data_buffer[DSPAL_SPI_RECEIVE_BUFFER_LENGTH + 1];
 	struct dspal_spi_ioctl_loopback loopback;
 	struct dspal_spi_ioctl_read_write read_write;
+	struct dspal_spi_ioctl_set_spi_mode bus_mode;
 
 	LOG_DEBUG("testing spi open for: %s", SPI_DEVICE_PATH);
 	spi_fildes = open(SPI_DEVICE_PATH, 0);
@@ -224,6 +235,15 @@ int dspal_tester_spi_exceed_max_length_test(void)
 	if (result < SUCCESS) {
 		LOG_ERR("error: unable to activate spi loopback mode");
 		goto exit;
+	}
+
+	/* set bus mode, don't goto exit for downward compatible */
+	bus_mode.eClockPolarity = SPI_CLOCK_IDLE_HIGH;
+	bus_mode.eShiftMode = SPI_OUTPUT_FIRST;
+	result = ioctl(spi_fildes, SPI_IOCTL_SET_SPI_MODE, &bus_mode);
+	if (result < SUCCESS)
+	{
+		LOG_ERR("error: unable to set bus mode");
 	}
 
 	read_write.read_buffer = &read_data_buffer[0];
