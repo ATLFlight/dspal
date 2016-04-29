@@ -29,27 +29,14 @@
 
 /* semaphore.h: POSIX 1003.1b semaphores */
 
-#ifndef _SEMAPHORE_H_
-#define _SEMAPHORE_H_
+#pragma once
 
 #include <sys/cdefs.h>
-#include <sys/_types.h>
-#include <sys/_umtx.h>
 
-#include <machine/_limits.h>
-
-struct _sem {
-	__uint32_t	_magic;
-	struct _usem2	_kern;
-	__uint32_t	_padding;	/* Preserve structure size */
-};
-
-typedef	struct _sem	sem_t;
+typedef	unsigned int	sem_t;
 
 #define	SEM_FAILED	((sem_t *)0)
-#define	SEM_VALUE_MAX	__INT_MAX
-
-struct timespec;
+#define	SEM_VALUE_MAX	((unsigned int) 30)
 
 __BEGIN_DECLS
 int    sem_init(sem_t *, int, unsigned int);
@@ -59,5 +46,3 @@ int    sem_post(sem_t *);
 int    sem_getvalue(sem_t *__restrict, int *__restrict);
 int    sem_destroy(sem_t *);
 __END_DECLS
-
-#endif /* !_SEMAPHORE_H_ */

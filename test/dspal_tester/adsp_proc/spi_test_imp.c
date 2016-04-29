@@ -39,13 +39,7 @@
 #include <stdbool.h>
 #include <dev_fs_lib_spi.h>
 #include "test_status.h"
-
-/* Enable medium level debugging. */
-#define FARF_HIGH   1    /* Use a value of 0 to disable the specified debug level. */
-#define FARF_MEDIUM 1
-#define FARF_LOW    1
-
-#include <HAP_farf.h>
+#include "test_utils.h"
 
 #define SPI_DEVICE_PATH "/dev/spi-8"
 #define SPI_TEST_CYCLES 10
@@ -73,11 +67,11 @@
 bool dpsal_tester_is_memory_matching(uint8_t *buffer1, uint8_t *buffer2, int length)
 {
 	if (memcmp(buffer1, buffer2, length) != 0) {
-		FARF(ALWAYS, "error: the bytes read to not match the bytes written");
-		FARF(ALWAYS, "bytes read: %c, %c, %c, %c, %c", buffer1[0], buffer1[1], buffer1[2],
-		     buffer1[3], buffer1[4]);
-		FARF(ALWAYS, "bytes written: %c, %c, %c, %c, %c", buffer2[0], buffer2[1], buffer2[2],
-		     buffer2[3], buffer2[4]);
+		LOG_ERR("error: the bytes read to not match the bytes written");
+		LOG_ERR("bytes read: %c, %c, %c, %c, %c", buffer1[0], buffer1[1], buffer1[2],
+			buffer1[3], buffer1[4]);
+		LOG_ERR("bytes written: %c, %c, %c, %c, %c", buffer2[0], buffer2[1], buffer2[2],
+			buffer2[3], buffer2[4]);
 		return false;
 	}
 
@@ -132,12 +126,13 @@ int dspal_tester_spi_loopback_test(void)
 	int test_data_length_in_bytes = SPI_LOOPBACK_TEST_TRANSMIT_BUFFER_LENGTH - 1;
 	struct dspal_spi_ioctl_loopback loopback;
 	struct dspal_spi_ioctl_read_write read_write;
+	struct dspal_spi_ioctl_set_spi_mode bus_mode;
 
-	FARF(MEDIUM, "testing spi open for: %s", SPI_DEVICE_PATH);
+	LOG_DEBUG("testing spi open for: %s", SPI_DEVICE_PATH);
 	spi_fildes = open(SPI_DEVICE_PATH, 0);
 
 	if (spi_fildes < SUCCESS) {
-		FARF(HIGH, "error: failed to open spi device path: %s", SPI_DEVICE_PATH);
+		LOG_ERR("error: failed to open spi device path: %s", SPI_DEVICE_PATH);
 		result = ERROR;
 		goto exit;
 	}
@@ -151,19 +146,28 @@ int dspal_tester_spi_loopback_test(void)
 	/*
 	 * Enable loopback mode to allow write/reads to be tested internally.
 	 */
-	FARF(MEDIUM, "enabling spi loopback mode");
+	LOG_DEBUG("enabling spi loopback mode");
 	loopback.state = SPI_LOOPBACK_STATE_ENABLED;
 	result = ioctl(spi_fildes, SPI_IOCTL_LOOPBACK_TEST, &loopback);
 
 	if (result < SUCCESS) {
-		FARF(HIGH, "error: unable to activate spi loopback mode");
+		LOG_ERR("error: unable to activate spi loopback mode");
 		goto exit;
+	}
+
+	/* set bus mode, don't goto exit for downward compatible */
+	bus_mode.eClockPolarity = SPI_CLOCK_IDLE_HIGH;
+	bus_mode.eShiftMode = SPI_OUTPUT_FIRST;
+	result = ioctl(spi_fildes, SPI_IOCTL_SET_SPI_MODE, &bus_mode);
+	if (result < SUCCESS)
+	{
+		LOG_ERR("error: unable to set bus mode");
 	}
 
 	/*
 	 * Test loopback mode using combined read/write mode.
 	 */
-	FARF(MEDIUM, "testing spi write/read for %d cycles", SPI_TEST_CYCLES);
+	LOG_DEBUG("testing spi write/read for %d cycles", SPI_TEST_CYCLES);
 
 	for (cycle_count = 0; cycle_count < SPI_TEST_CYCLES; cycle_count++) {
 		memset(read_data_buffer, 0, sizeof(read_data_buffer));
@@ -172,26 +176,26 @@ int dspal_tester_spi_loopback_test(void)
 		read_write.write_buffer = &write_data_buffer[0];
 		read_write.write_buffer_length = test_data_length_in_bytes;
 
-		FARF(MEDIUM, "writing bytes: (%d bytes)",
-		     test_data_length_in_bytes);
+		LOG_DEBUG("writing bytes: (%d bytes)",
+			  test_data_length_in_bytes);
 
 		result = ioctl(spi_fildes, SPI_IOCTL_RDWR, &read_write);
 
 		if (result < SUCCESS) {
-			FARF(ALWAYS, "error: unable to activate read/write ioctl");
+			LOG_ERR("error: unable to activate read/write ioctl");
 			goto exit;
 		}
 
 		if (!dpsal_tester_is_memory_matching(write_data_buffer, read_data_buffer, test_data_length_in_bytes)) {
-			FARF(ALWAYS, "error: read/write memory buffers do not match");
+			LOG_ERR("error: read/write memory buffers do not match");
 			goto exit;
 		}
 
-		FARF(MEDIUM, "written data matches read data");
+		LOG_DEBUG("written data matches read data");
 	}
 
 	result = SUCCESS;
-	FARF(MEDIUM, "SPI lookback test passed");
+	LOG_DEBUG("SPI lookback test passed");
 
 exit:
 
@@ -210,12 +214,13 @@ int dspal_tester_spi_exceed_max_length_test(void)
 	uint8_t read_data_buffer[DSPAL_SPI_RECEIVE_BUFFER_LENGTH + 1];
 	struct dspal_spi_ioctl_loopback loopback;
 	struct dspal_spi_ioctl_read_write read_write;
+	struct dspal_spi_ioctl_set_spi_mode bus_mode;
 
-	FARF(MEDIUM, "testing spi open for: %s", SPI_DEVICE_PATH);
+	LOG_DEBUG("testing spi open for: %s", SPI_DEVICE_PATH);
 	spi_fildes = open(SPI_DEVICE_PATH, 0);
 
 	if (spi_fildes < SUCCESS) {
-		FARF(HIGH, "error: failed to open spi device path: %s", SPI_DEVICE_PATH);
+		LOG_ERR("error: failed to open spi device path: %s", SPI_DEVICE_PATH);
 		result = ERROR;
 		goto exit;
 	}
@@ -223,13 +228,22 @@ int dspal_tester_spi_exceed_max_length_test(void)
 	/*
 	 * Enable loopback mode to allow write/reads to be tested internally.
 	 */
-	FARF(MEDIUM, "enabling spi loopback mode");
+	LOG_DEBUG("enabling spi loopback mode");
 	loopback.state = SPI_LOOPBACK_STATE_ENABLED;
 	result = ioctl(spi_fildes, SPI_IOCTL_LOOPBACK_TEST, &loopback);
 
 	if (result < SUCCESS) {
-		FARF(HIGH, "error: unable to activate spi loopback mode");
+		LOG_ERR("error: unable to activate spi loopback mode");
 		goto exit;
+	}
+
+	/* set bus mode, don't goto exit for downward compatible */
+	bus_mode.eClockPolarity = SPI_CLOCK_IDLE_HIGH;
+	bus_mode.eShiftMode = SPI_OUTPUT_FIRST;
+	result = ioctl(spi_fildes, SPI_IOCTL_SET_SPI_MODE, &bus_mode);
+	if (result < SUCCESS)
+	{
+		LOG_ERR("error: unable to set bus mode");
 	}
 
 	read_write.read_buffer = &read_data_buffer[0];
@@ -239,13 +253,13 @@ int dspal_tester_spi_exceed_max_length_test(void)
 	result = ioctl(spi_fildes, SPI_IOCTL_RDWR, &read_write);
 
 	if (result == SUCCESS) {
-		FARF(ALWAYS, "error: SPI_IOCTL_RDWR transfer overly large data should "
-		     "have failed but didn't. ");
+		LOG_ERR("error: SPI_IOCTL_RDWR transfer overly large data should "
+			"have failed but didn't. ");
 		goto exit;
 	}
 
 	result = SUCCESS;
-	FARF(MEDIUM, "SPI exceed max write length test passed");
+	LOG_DEBUG("SPI exceed max write length test passed");
 
 exit:
 
@@ -266,17 +280,17 @@ int dspal_tester_spi_test(void)
 {
 	int result;
 
-	FARF(ALWAYS, "beginning spi loopback test");
+	LOG_INFO("beginning spi loopback test");
 
 	if ((result = dspal_tester_spi_loopback_test()) < SUCCESS) {
-		FARF(ALWAYS, "error: spi loopback test failed: %d", result);
+		LOG_ERR("error: spi loopback test failed: %d", result);
 		return result;
 	}
 
-	FARF(ALWAYS, "beginning spi exceed max write length test");
+	LOG_INFO("beginning spi exceed max write length test");
 
 	if ((result = dspal_tester_spi_exceed_max_length_test()) < SUCCESS) {
-		FARF(ALWAYS, "error: spi exceed max write length test failed: %d", result);
+		LOG_ERR("error: spi exceed max write length test failed: %d", result);
 		return result;
 	}
 

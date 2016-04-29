@@ -35,8 +35,7 @@
  * $FreeBSD$
  */
 
-#ifndef _SYS_FCNTL_H_
-#define	_SYS_FCNTL_H_
+#pragma once
 
 /*
  * This file includes the definitions for open and fcntl
@@ -346,4 +345,3 @@ int	posix_fallocate(int, off_t, off_t);
 __END_DECLS
 #endif
 
-#endif /* !_SYS_FCNTL_H_ */

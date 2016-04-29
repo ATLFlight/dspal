@@ -26,18 +26,23 @@
  * $FreeBSD$
  */
 
-#ifndef _MQUEUE_H_
-#define _MQUEUE_H_
+#pragma once
 
 #include <sys/cdefs.h>
 #include "dspal_types.h"
-#include <sys/mqueue.h>
 #include "dspal_signal.h"
+
+struct mq_attr {
+	long	mq_flags;	/* Message queue flags. */
+	long	mq_maxmsg;	/* Maximum number of messages. */
+	long	mq_msgsize;	/* Maximum message size. */
+	long	mq_curmsgs;	/* Number of messages currently queued. */
+	long    __reserved[4];  /* Ignored for input, zeroed for output */
+};
 
 struct timespec;
 
-// FIXME - Need correct opaque type here
-typedef void *mqd_t;
+typedef int mqd_t;
 
 __BEGIN_DECLS
 mqd_t mq_open(const char *, int, ...);
@@ -53,4 +58,3 @@ int mq_getattr(mqd_t, struct mq_attr *);
 int mq_setattr(mqd_t, const struct mq_attr *__restrict,
 	       struct mq_attr *__restrict);
 __END_DECLS
-#endif

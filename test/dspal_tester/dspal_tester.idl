@@ -37,6 +37,7 @@
 
 interface dspal_tester
 {
+   long test_dspal_get_version_info();
    long test_clockid();
    long test_sigevent();
    long test_time();

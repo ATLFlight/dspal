@@ -30,8 +30,7 @@
  * $FreeBSD$
  */
 
-#ifndef _ENDIAN_H_
-#define	_ENDIAN_H_
+#pragma once
 
 #include <sys/_types.h>
 
@@ -137,4 +136,3 @@ __bswap16_var(__uint16_t v)
 #define __bswap32(x)	__bswap32_var(x)
 
 #endif /* __OPTIMIZE__ */
-#endif /* !_ENDIAN_H_ */

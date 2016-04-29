@@ -46,7 +46,7 @@
 typedef int              clockid_t; /* ignored */
 #define _CLOCKID_T
 
-typedef struct timer_i *timer_t;  /* handle to internal struct */
+typedef int timer_t;
 
 #if !defined(CLOCK_REALTIME)
 # define CLOCK_REALTIME 0
@@ -142,9 +142,7 @@ int clock_settime(clockid_t clk_id, const struct timespec *tp);
  * Use the definition of the time provided by time.h to avoid conflicts.  The implementation
  * of time.h in the static image will still be called.
  */
-#ifndef __PX4_QURT
 time_t time(time_t *t);
-#endif
 
 /** @} */
 
