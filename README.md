@@ -19,9 +19,8 @@ export PATH=${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux
 
 ```
 git clone https://github.com/ATLFlight/dspal
-cd dspal/test/dspal_tester
+cd dspal/test
 make
-cd build
 ```
 
 Connect the device via ADB and make sure it can be found.
@@ -36,23 +35,24 @@ List of devices attached
 ```
 Now load the dspal_tester app on the device.
 ```
-cd build
-make dspal_tester-load
+make load
 ```
 
-This will push dspal_tester_app to /home/linaro/ on the device, and it will push libdspal_tester.so and libdspal_tester_skel.so to /usr/share/data/adsp/ on the device.
+This will push dspal_tester and version_test to /home/linaro/ on the device, and it will push
+libdspal_tester.so, libdspal_tester_skel.so, libversion_test_skel.so and libversion_test.so to
+/usr/share/data/adsp/ on the device.
 
-## Running the program
 To see the program output from the code running on the DSP, you will need to run mini-dm in another terminal.
 ```
 ${HEXAGON_SDK_ROOT}/tools/mini-dm/Linux_Debug/mini-dm
 ```
 
+### Running dspal_tester
 To run the program:
 ```
 $ adb shell
 # cd /home/linaro
-# ./dspal_tester_app
+# ./dspal_tester
 ```
 
 You should see output on the ADB terminal similar to (if you don't, see the "Troubleshooting" section below):
@@ -103,7 +103,30 @@ DspAL some tests skipped.
 DspAL tests succeeded.
 ```
 
-## Troubleshooting
+### Running version_test
+
+There is a utility to check the version of the DSP SW.
+
+Connect the Snapdragon Flight board via micro USB connector for ADB.
+
+Then get a shell on the device:
+
+```
+adb shell
+# cd /home/linaro
+# ./version_test
+# exit
+```
+
+Amongst the debug output you should see something like:
+
+```
+version: DSPAL_VERSION_STRING=DSPAL-1.0.1.0001
+build date: BUILD_DATE_STRING=Feb  2 2016
+build time: BUILD_TIME_STRING=19:10:21
+```
+
+### Troubleshooting
 
 1. If you see output like this when trying to run mini-dm, you need to update your aDSP image to one that supports pthread_cond_timedwait. To get an updated aDSP image, please contact the vendor who sold you the board.
 ```
@@ -128,3 +151,4 @@ DMSS is connected. Running mini-dm...
 [08500/02]  17:13.786  HAP:12332:Verification skipped, no function specified!!  0256  map_object.c
 [08500/03]  17:13.790  HAP:12332:Found text relocation in /libdspal_tester_skel.so. Support for text relocations in shared objects i  0094  reloc.c
 ```
+
