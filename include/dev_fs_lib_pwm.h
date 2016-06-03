@@ -97,19 +97,37 @@ struct dspal_pwm_signal {
  * for each I/O line specified.
  */
 struct dspal_pwm_ioctl_signal_definition {
-	uint32_t period_in_usecs; /**< the duty cycle or period of the pulses generated, maximum period [TODO-JYW], can be changed once after the device is first opened */
+	uint32_t period_in_usecs; /**< the period of the pulses generated, maximum period [TODO-JYW], can only be changed once after the device is first opened */
 	uint32_t num_signals; /**< number of signals specified in the following array, maximum number [TODO-JYW] */
-	struct dspal_pwm_signal *pwm_signals; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
+	struct dspal_pwm_signal *pwm_signals; /**< array defining the GPIO lines and pulse widths to be used by the signal generator */
 };
 
 /**
  * @brief
  * Structure used in the ioctl: PWM_IOCTL_PULSE_WIDTH
  *
- * Upon return from the function the pulses specified will be generated for each I/O line.  The
- * I/O lines used cannot be changed from those defined in in the PWM_IOCTL_SIGNAL_DEFINITION structure.
+ * At the end of the current period (defined with PWM_IOCTL_SIGNAL_DEFINITION), the pulses
+ * specified will be generated for each I/O line.  Pulses specified with PWM_IOCTL_SIGNAL_DEFINITION,
+ * but NOT included in the pwm_signals array will remain unchanged and continue to generated pulses
+ * as specified.
+ *
+ * The I/O lines used cannot be changed from those defined in in the PWM_IOCTL_SIGNAL_DEFINITION structure.
  */
 struct dspal_pwm_ioctl_pulse_width {
 	uint32_t num_signals; /**< the number of signals specified in the following array */
 	struct dspal_pwm_signal *pwm_signals; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
 };
+
+/**
+ * @brief
+ * Under Review: Updating pulse widths by writing to a shared memory region.
+ *
+ * A new IOCTL would be defined PWM_IOCTL_GET_CHANGE_SEMAPHORE to retrieve
+ * a reference to a semaphore used to indicated a change in the content of a shared memory
+ * region containing a predefined structure for the signal definition.  This memory buffer
+ * would be returned by PWM_IOCTL_SIGNAL_DEFINITION.
+ *
+ * This would eliminate the overhead of calling PWM_IOCTL_PULSE_WIDTH to initiate a change
+ * in the pulse width and more closely approximates writing to a hardware register to
+ * change a pulse width.
+ */
