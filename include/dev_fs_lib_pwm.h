@@ -103,8 +103,8 @@ struct dspal_pwm {
  */
 struct dspal_pwm_ioctl_signal_definition {
 	uint32_t period_in_usecs; /**< the period of the pulses generated, maximum period [TODO-JYW], can only be changed once after the device is first opened */
-	uint32_t num_signals; /**< number of signals specified in the following array, maximum number [TODO-JYW] */
-	struct dspal_pwm *pwm_signals; /**< array defining the GPIO lines and pulse widths to be used by the signal generator */
+	uint32_t num_gpios; /**< number of signals specified in the following array, maximum number [TODO-JYW] */
+	struct dspal_pwm *pwm_signal; /**< array defining the GPIO lines and pulse widths to be used by the signal generator */
 };
 
 /**
@@ -123,9 +123,9 @@ struct dspal_pwm_ioctl_signal_definition {
  *
  * The I/O lines used cannot be changed from those defined in in the PWM_IOCTL_SIGNAL_DEFINITION structure.
  */
-struct dspal_pwm_ioctl_pulse_width {
-	uint32_t num_signals; /**< the number of signals specified in the following array */
-	struct dspal_pwm *pwm_signals; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
+struct dspal_pwm_ioctl_update_buffer {
+	uint32_t num_gpios; /**< the number of PWM's specified in the following array */
+	struct dspal_pwm *pwm_signal; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
 };
 
 /**
