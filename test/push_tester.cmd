@@ -44,13 +44,12 @@ adb shell chmod 755 /home/root/dspal_tester
 
 adb push \\crate\adsp-platform\contexthub\scripts\testsig-0x0.so  %adsp_lib_dir%/
 adb push C:\Qualcomm\Hexagon_SDK\2.0\tools\elfsigner\testsigs\testsig-0xf1ee91f3.so %adsp_lib_dir%/
-adb push \\wangx2-linux\workspace\wangx\flight_8096\adsp-8096\adsp_proc2.0\build\dynamic_signed\shared_obj\fastrpc_shell_0  %adsp_lib_dir%/
+adb push \\armory\atlanticus\builds\OE_0510\fastrpc_shell_0  %adsp_lib_dir%/
 adb shell chmod 755   %adsp_lib_dir%/fastrpc_shell_0
 
 adb shell ldconfig
 adb shell export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/system/vendor/lib:/usr/lib:/lib:/home/root
 adb shell export ADSP_LIBRARY_PATH=%adsp_lib_dir%
 
-adb shell rm /test123.txt
 adb shell /home/root/dspal_tester 0 1 100
 
