@@ -53,6 +53,12 @@
 
 /**
  * @brief
+ * The maximum number of pwm signals allowed in a signal definition.
+ */
+#define DEV_FS_PWM_MAX_NUM_SIGNALS 8
+
+/**
+ * @brief
  * The PWM device path uses the following format:
  * /dev/pwm-{gpio pin number}
  * Pin numbers start at 1 and may go to up to the max number of GPIO pins supported
