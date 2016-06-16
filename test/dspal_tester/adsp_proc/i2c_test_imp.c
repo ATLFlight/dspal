@@ -37,17 +37,23 @@
 #include <dev_fs_lib_i2c.h>
 #include <test_status.h>
 
+#include "test_utils.h"
+
 /**
 * @brief Test to see i2c device can be opened and configured.
 *
 * @par
 * Test:
-* 1) Open the i2c device (/dev/i2c-8)
+* 1) Open the i2c device (/dev/i2c-3) 
 * 2) Configure the i2c device to have (using ioctl):
-*     -Slave address: 0x70
+*     -Slave address: 0x77
 *     -Bus Frequency in khz: 400
 *     -Transfer timeout in usec: 9000
-* 3) Close the i2c device
+* 3) RDWR Operation to get sensor ID - register 0x0D
+* 4) Write operation for further calibration data reading - 
+* register 0xAA 
+* 5) Read 2 bytes of calibration data 
+* 6) Close the i2c device 
 *
 * @return
 * SUCCESS ------ Test Passes
@@ -56,24 +62,54 @@
 int dspal_tester_i2c_test(void)
 {
 	int ret = SUCCESS;
+    uint8_t buf[2]; 
 	/*
 	 * Open i2c device
 	 */
 	int fd = -1;
-	fd = open("/dev/i2c-8", 0);
+	fd = open("/dev/i2c-2", 0);
 
 	if (fd > 0) {
 		/*
 		 * Configure I2C device
 		 */
 		struct dspal_i2c_ioctl_slave_config slave_config;
-		slave_config.slave_address = 0x70;
+		slave_config.slave_address = 0x77;
 		slave_config.bus_frequency_in_khz = 400;
 		slave_config.byte_transer_timeout_in_usecs = 9000;
 
 		if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0) {
 			ret = ERROR;
 		}
+
+        struct dspal_i2c_ioctl_combined_write_read ioctl_write_read;
+        uint8_t write_buffer[1];
+        /* Save the address of the register to read from in the write buffer for the combined write. */
+        write_buffer[0] = 0xD0;
+        ioctl_write_read.write_buf     = write_buffer;
+        ioctl_write_read.write_buf_len = 1;
+        ioctl_write_read.read_buf      = &buf[0];
+        ioctl_write_read.read_buf_len  = 1;
+
+        uint8_t byte_count = ioctl(fd, I2C_IOCTL_RDWR, &ioctl_write_read);
+        if ( byte_count != 1) {
+             ret = ERROR;
+        }
+        LOG_ERR("Sensor id register 0xD0 write/read 0x%x", buf[0]);
+
+        uint8_t reg = 0xAA; 
+        if (ioctl(fd, I2C_IOCTL_WRITE_REG, &reg) != 0) {
+                ret = ERROR;
+        }
+
+        struct dspal_i2c_ioctl_read read_params; 
+        read_params.read_buf = &buf[0]; 
+        read_params.read_buf_len = 2; 
+        if (ioctl(fd, I2C_IOCTL_READ, &read_params) != 0) {
+                 ret = ERROR;
+        }
+       
+        LOG_ERR("Calibration data register 0xAA read 2 bytes 0x%x 0x%x", buf[0], buf[1]);
 
 		/*
 		 * Close the device ID

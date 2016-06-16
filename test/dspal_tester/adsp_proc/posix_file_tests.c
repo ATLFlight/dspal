@@ -38,6 +38,8 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <dspal_time.h>
+#include <dspal_signal.h>
+#include <pthread.h>
 
 #include "test_utils.h"
 #include "dspal_tester.h"
@@ -634,3 +636,63 @@ int dspal_tester_test_fwrite_fread(void)
 
 	return TEST_PASS;
 }
+
+/**
+* @brief Test file read/write operations, but in a different thread
+*
+* @par
+* Test:
+* 1) open file with dspal path prefix ('/dev/fs/test.txt') in read/write mode
+* 2) write timestamp to file
+* 3) read the file and compare the content
+* 4) close the file
+* 5) Opens the same file with read only mode
+* 6) read the file and compare with the content written in step 3
+* 7) test write() and it should fail
+* 8) close the file
+*
+* @return
+* TEST_PASS ------ if all operations succeed
+* TEST_FAIL ------ otherwise
+*/
+
+int dspal_tester_test_posix_file_threading(void)
+{
+	int rv = 0;
+
+	int test_value = 0;
+	pthread_t thread;
+	LOG_DEBUG("dspal_tester_test_posix_file_threading");
+	pthread_attr_t attr;
+	size_t stacksize = 8 * 1024;
+	rv = pthread_attr_init(&attr);
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+	rv = pthread_attr_setstacksize(&attr, stacksize);
+	attr.priority = 235;
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+	rv = pthread_create(&thread, &attr, (void *)dspal_tester_test_posix_file_read_write, &test_value);
+	if (rv != 0) { FAIL("thread_create returned error"); }
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running 1");
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running");
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running");
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running");
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running");
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running 6");
+	usleep(5 * 1000000);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading running....done!");
+	usleep(5 * 1000000);
+	rv = pthread_join(thread, NULL);
+	LOG_DEBUG("dspal_tester_test_posix_file_threading joining....done!");
+	usleep(5 * 1000000);
+
+	if (rv != 0) { FAIL("thread_join returned error"); }
+
+	return TEST_PASS;
+}
+

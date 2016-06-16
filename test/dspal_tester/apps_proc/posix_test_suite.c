@@ -40,7 +40,6 @@ int run_posix_test_suite(void)
 	int test_results = TEST_PASS;
 
 	LOG_INFO("testing time.h");
-
 	test_results |= display_test_results(dspal_tester_test_clockid(), "clockid values exist");
 	test_results |= display_test_results(dspal_tester_test_sigevent(), "sigevent values exist");
 	test_results |= display_test_results(dspal_tester_test_time(), "time returns good value");
@@ -67,7 +66,9 @@ int run_posix_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_pthread_self(), "pthread self");
 	test_results |= display_test_results(dspal_tester_test_pthread_exit(), "pthread exit");
 	test_results |= display_test_results(dspal_tester_test_pthread_kill(), "pthread kill");
+	#if 1
 	test_results |= display_test_results(dspal_tester_test_pthread_cond_timedwait(), "pthread condition timed wait");
+	#endif
 	test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock(), "pthread mutex lock");
 	test_results |= display_test_results(dspal_tester_test_pthread_mutex_lock_thread(), "thread mutex lock thread");
 	test_results |= display_test_results(dspal_tester_test_pthread_stack(), "thread large allocation on stack");
@@ -82,7 +83,6 @@ int run_posix_test_suite(void)
 
 	test_results |= display_test_results(dspal_tester_test_cxx_heap(), "test C++ heap");
 	test_results |= display_test_results(dspal_tester_test_cxx_static(), "test C++ static initialization");
-
 	LOG_INFO("tests complete");
 
 	return test_results;

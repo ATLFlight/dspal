@@ -41,7 +41,7 @@
 #include "test_status.h"
 #include "test_utils.h"
 
-#define SPI_DEVICE_PATH "/dev/spi-8"
+#define SPI_DEVICE_PATH "/dev/spi-1"
 #define SPI_TEST_CYCLES 10
 
 /**

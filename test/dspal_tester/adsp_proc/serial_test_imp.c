@@ -38,12 +38,14 @@
 #include <sys/ioctl.h>
 #include <dev_fs_lib_serial.h>
 
+#include <pthread.h>
+
 #include "test_utils.h"
 #include "test_status.h"
 
 #define SERIAL_TEST_CYCLES 10
 #define SERIAL_SIZE_OF_DATA_BUFFER 128
-#define SERIAL_WRITE_DELAY_IN_USECS (8000 * 10)
+#define SERIAL_WRITE_DELAY_IN_USECS (8000 * 1000)
 
 /**
  * Snapdragon Flight DSP supports up to 6 UART devices. However, the actual
@@ -56,14 +58,22 @@
  * - make sure to define UART-BAM mappings in /usr/share/data/adsp/blsp.config
  *   See snapdragon flight user guide for details.
  */
-#define MAX_UART_DEVICE_NUM      6
-#define NUM_UART_DEVICE_ENABLED  4
+#define MAX_UART_DEVICE_NUM      1 //6
+#define NUM_UART_DEVICE_ENABLED  1 //4
 
 const char *serial_device_path[MAX_UART_DEVICE_NUM] = {
+	"/dev/tty-2"
+};
+
+#if 0 
+const char *serial_device_path2[MAX_UART_DEVICE_NUM] = {
 	"/dev/tty-1", "/dev/tty-2", "/dev/tty-3",
 	"/dev/tty-4", "/dev/tty-5", "/dev/tty-6"
 };
+#endif
+
 int serial_fildes[MAX_UART_DEVICE_NUM] = { -1};
+int serial_i2c_fildes; 
 
 /**
 * @brief Test serial device open and close
@@ -103,16 +113,125 @@ int dspal_tester_serial_multi_port_open(void)
 	return result;
 }
 
+void* dspal_tester_serial_write(void* esc_fd)
+{
+    int fd = (int)esc_fd; 
+
+    /*Spin motor*/
+    uint8_t out[] = {0xAF, 0x0F, 0x01, 0x51, 0x00, 0x50, 0x00, 0x50, 0x00, 0x50, 0x00, 0xFF, 0x0F, 0x3F, 0xF6}; 
+    int packet_size = sizeof(out); 
+
+    for (int i = 0; i < 10000; i++) 
+    {
+        int num_bytes_written = write(fd,(const char *)out,packet_size);
+
+        if (num_bytes_written == packet_size) {
+            LOG_INFO("written %d bytes for i = %d ", num_bytes_written,i);
+
+        } else {
+            LOG_ERR("failed to write");
+            return NULL; 
+        }
+
+        usleep(10000); 
+    }
+
+#if 0 
+    /* Assign IDs: 
+      Front Left 0:  0xAF, 0x06, 0x0B, 0x00, 0x96, 0xF1
+      Rear Left 1:   0xAF, 0x06, 0x0B, 0x01, 0x57, 0x31
+      Rear Right 2:  0xAF, 0x06, 0x0B, 0x02, 0x17, 0x30
+      Front Right 3: 0xAF, 0x06, 0x0B, 0x03, 0xD6, 0xF0 
+    */ 
+
+    uint8_t id_assign[] = {0xAF, 0x06, 0x0B, 0x01, 0x57, 0x31}; 
+    int packet_size = sizeof(id_assign); 
+
+    int num_bytes_written = write(fd,(const char *)id_assign,packet_size);
+
+    if (num_bytes_written == packet_size) {
+        LOG_INFO("written %d bytes ", num_bytes_written);
+
+    } else {
+        LOG_ERR("failed to write");
+        return NULL; 
+    }
+    usleep(100); 
+#endif
+
+    return NULL; 
+}
+
+int dspal_tester_serial_open_write(void)
+{
+    LOG_INFO("beginning serial device write test");
+	int result = SUCCESS;
+
+    int esc_fd = open("/dev/tty-2", O_RDWR);
+    LOG_INFO("open /dev/tty-2 O_RDWR mode %s", 
+             (esc_fd < SUCCESS) ? "fail" : "succeed");
+	
+    if (esc_fd < SUCCESS) {
+        result = ERROR; 
+        goto exit;
+    }
+
+    pthread_t thread;
+    pthread_attr_t attr;
+    size_t stacksize = 2 * 1024;
+
+    int rv = pthread_attr_init(&attr);
+
+    if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+    rv = pthread_attr_setstacksize(&attr, stacksize);
+
+    if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
+
+    /*
+     * Create the thread passing a reference to the cond structure
+     * just initialized.
+     */
+    rv = pthread_create(&thread, &attr, dspal_tester_serial_write, (void*)esc_fd);
+
+    if (rv != 0) {
+        LOG_ERR("error pthread_create: %d", rv);
+        goto exit;
+    }
+
+    
+    rv = pthread_join(thread, NULL);
+
+	if (rv != 0) {
+		LOG_ERR("error pthread_join: %d", rv);
+		goto exit;
+	}
+        
+	close(esc_fd);
+	
+	
+exit:
+	LOG_INFO("serial multi-port open test %s",
+		 result == SUCCESS ? "PASSED" : "FAILED");
+
+	return result;
+}
+
 void multi_port_read_callback(void *context, char *buffer, size_t num_bytes)
 {
 	int rx_dev_id = (int)context;
-	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
+	//char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
 
-	if (num_bytes > 0) {
-		memcpy(rx_buffer, buffer, num_bytes);
-		rx_buffer[num_bytes] = 0;
-		LOG_INFO("/dev/tty-%d read callback received bytes [%d]: %s",
-			 rx_dev_id, num_bytes, rx_buffer);
+	if ((buffer != NULL ) && (num_bytes > 0)) {
+		//memcpy(rx_buffer, buffer, num_bytes);
+		//rx_buffer[num_bytes] = 0;
+		LOG_ERR("/dev/tty-%d read callback received bytes: %x",
+			 rx_dev_id, num_bytes);
+
+        for (int i = 0; i < (int)num_bytes; i++) 
+        {
+            LOG_ERR("buffer[%d]=%x", i , buffer[i]);
+        }
 
 	} else {
 		LOG_ERR("error: read callback with no data in the buffer");
@@ -405,6 +524,138 @@ exit:
 }
 
 /**
+* @brief Test multiple serial device at the same time for open,write,read,close.
+*
+* @par Test:
+* 1) Open the serial device /dev/tty-[1-6]. Note: some device open may fail
+*    if it is not enabled or configured. See dev_fs_lib_serial.h for more
+*    details about how to configure and enable UART devices on the board.
+* 2) register read callback on the opened serial devices
+* 3) write data to each ports
+* 4) close all serial devices
+*
+* @return
+* - SUCCESS if write succeeds on all serial devices through SERIAL_TEST_CYCLES cycles
+* - Error otherwise
+*/
+int dspal_tester_serial_i2c_read_callback(void)
+{
+	int result = SUCCESS;
+
+	LOG_ERR("beginning serial i2c port read callback test");
+
+    serial_i2c_fildes = open("/dev/tty-102", O_RDWR);
+	LOG_ERR("open tty-102 O_RDWR mode %s",
+			 (serial_i2c_fildes < SUCCESS) ? "fail" : "succeed");
+
+    if (serial_i2c_fildes < SUCCESS)  {
+        LOG_ERR("serial multi-port read/write callback test FAILED");
+        result = ERROR; 
+        return result; 
+    }
+
+	// set read callback
+	struct dspal_serial_ioctl_receive_data_callback receive_callback;
+	receive_callback.rx_data_callback_func_ptr = multi_port_read_callback;
+    receive_callback.context = (void *)(1);
+
+    result = ioctl(serial_i2c_fildes,
+                   SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK,
+                   (void *)&receive_callback);
+
+    LOG_INFO("set serial read callback on %d %s",
+             serial_i2c_fildes, (result < SUCCESS) ? ("failed") : ("succeeded"));
+
+    if (result < SUCCESS) {
+            close(serial_i2c_fildes);
+            serial_i2c_fildes = -1;
+        }
+
+
+    usleep(SERIAL_WRITE_DELAY_IN_USECS);
+
+	close(serial_i2c_fildes);
+
+
+	LOG_ERR("serial multi-port read/write callback test %s",
+		 result == SUCCESS ? "PASSED" : "FAILED");
+
+	return result;
+}
+
+int dspal_tester_serial_i2c_write(void)
+{
+	int result = SUCCESS;
+
+	LOG_ERR("beginning serial i2c port read callback test");
+
+    serial_i2c_fildes = open("/dev/tty-202", O_RDWR);
+	LOG_ERR("open tty-102 O_RDWR mode %s",
+			 (serial_i2c_fildes < SUCCESS) ? "fail" : "succeed");
+
+    if (serial_i2c_fildes < SUCCESS)  {
+        LOG_ERR("serial multi-port read/write callback test FAILED");
+        result = ERROR; 
+        return result; 
+    }
+
+#if 0 
+     /*Spin motor*/
+    uint8_t out[] = {0xAF, 0x0F, 0x01, 0x51, 0x00, 0x50, 0x00, 0x50, 0x00, 0x50, 0x00, 0xFF, 0x0F, 0x3F, 0xF6}; 
+    int packet_size = sizeof(out); 
+
+    for (int i = 0; i < 100; i++) 
+    {
+        //int num_bytes_written = ;
+        write(serial_i2c_fildes,(const char *)out,packet_size);
+
+        /*if (num_bytes_written == packet_size) {
+            LOG_INFO("written %d bytes for i = %d ", num_bytes_written,i);
+
+        } else {
+            LOG_ERR("failed to write");
+            return NULL; 
+        }*/
+
+        usleep(10000); 
+    }
+#endif
+
+    /* Assign IDs: 
+      Front Left 0:  0xAF, 0x06, 0x0B, 0x00, 0x96, 0xF1
+      Rear Left 1:   0xAF, 0x06, 0x0B, 0x01, 0x57, 0x31
+      Rear Right 2:  0xAF, 0x06, 0x0B, 0x02, 0x17, 0x30
+      Front Right 3: 0xAF, 0x06, 0x0B, 0x03, 0xD6, 0xF0 
+    */ 
+
+    uint8_t id_assign[] = {0xAF, 0x06, 0x0B, 0x03, 0xD6, 0xF0}; 
+    int packet_size = sizeof(id_assign); 
+
+    //int num_bytes_written = 
+    write(serial_i2c_fildes,(const char *)id_assign,packet_size);
+
+    /*if (num_bytes_written == packet_size) {
+        LOG_INFO("written %d bytes ", num_bytes_written);
+
+    } else {
+        LOG_ERR("failed to write");
+        return NULL; 
+    }*/
+
+    usleep(10000); 
+
+    //usleep(SERIAL_WRITE_DELAY_IN_USECS);
+
+	close(serial_i2c_fildes);
+
+
+	LOG_ERR("serial multi-port read/write callback test %s",
+		 result == SUCCESS ? "PASSED" : "FAILED");
+
+	return result;
+}
+
+/**
 * @brief Runs all the serial tests and returns 1 aggregated result.
 *
 * @return
@@ -415,6 +666,24 @@ int dspal_tester_serial_test(void)
 {
 	int result;
 
+#if 0 
+    result = dspal_tester_serial_i2c_read_callback(); 
+    if (result < SUCCESS) {
+        return result;
+    }
+#endif
+
+    result = dspal_tester_serial_i2c_write(); 
+    if (result < SUCCESS) {
+        return result;
+    }
+
+#if 0  
+    result = dspal_tester_serial_open_write(); 
+    if (result < SUCCESS) {
+		return result;
+	}
+  
 	// serial devices open test
 	result = dspal_tester_serial_multi_port_open();
 
@@ -441,6 +710,7 @@ int dspal_tester_serial_test(void)
 	if (result < SUCCESS) {
 		return result;
 	}
+#endif
 
 	return SUCCESS;
 }

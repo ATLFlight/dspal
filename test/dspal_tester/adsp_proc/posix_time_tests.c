@@ -364,10 +364,20 @@ int dspal_tester_test_one_shot_timer_cb(void)
 {
 	int rv = 0;
 	int *exit_status;
+	size_t stacksize = 2 * 1024;
+	pthread_attr_t attr;
+
+	rv = pthread_attr_init(&attr);
+
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+	rv = pthread_attr_setstacksize(&attr, stacksize);
+
+	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
 
 	// create test thread.
 	// posix functions must be called in a thread created with pthread
-	if (pthread_create(&one_shot_timer_cb_thread, NULL, one_shot_timer_cb_test,
+	if (pthread_create(&one_shot_timer_cb_thread, &attr, one_shot_timer_cb_test,
 			   NULL) != 0) {
 		FAIL("pthread_create failed");
 	}
@@ -478,10 +488,20 @@ int dspal_tester_test_periodic_timer_cb(void)
 {
 	int rv = 0;
 	int *exit_status;
+	size_t stacksize = 2 * 1024;
+	pthread_attr_t attr;
+
+	rv = pthread_attr_init(&attr);
+
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+	rv = pthread_attr_setstacksize(&attr, stacksize);
+
+	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
 
 	// create test thread.
 	// posix functions must be called in a thread created with pthread
-	if (pthread_create(&periodic_timer_cb_thread, NULL, periodic_timer_cb_test,
+	if (pthread_create(&periodic_timer_cb_thread, &attr, periodic_timer_cb_test,
 			   NULL) != 0) {
 		FAIL("pthread_create failed");
 	}
@@ -600,12 +620,22 @@ exit:
 int dspal_tester_test_periodic_timer_signal_cb(void)
 {
 	// TODO: Possible issue with pthread_join().  Must be investigated.
-	// int rv = 0;
+	int rv = 0;
 	// int *exit_status;
+	size_t stacksize = 2 * 1024;
+	pthread_attr_t attr;
+
+	rv = pthread_attr_init(&attr);
+
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+	rv = pthread_attr_setstacksize(&attr, stacksize);
+
+	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
 
 	// create test thread.
 	// posix functions must be called in a thread created with pthread
-	if (pthread_create(&periodic_timer_signal_cb_thread, NULL,
+	if (pthread_create(&periodic_timer_signal_cb_thread, &attr, 
 			   periodic_timer_signal_cb_test,
 			   NULL) != 0) {
 		FAIL("pthread_create failed");
@@ -714,10 +744,20 @@ int dspal_tester_test_periodic_timer_sigwait(void)
 {
 	int rv = 0;
 	int *exit_status;
+	size_t stacksize = 2 * 1024;
+	pthread_attr_t attr;
+
+	rv = pthread_attr_init(&attr);
+
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+	rv = pthread_attr_setstacksize(&attr, stacksize);
+
+	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
 
 	// create test thread.
 	// posix functions must be called in a thread created with pthread
-	if (pthread_create(&periodic_timer_sigwait_thread, NULL,
+	if (pthread_create(&periodic_timer_sigwait_thread, &attr, 
 			   periodic_timer_sigwait_test,
 			   NULL) != 0) {
 		FAIL("pthread_create failed");
