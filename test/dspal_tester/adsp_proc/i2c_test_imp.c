@@ -74,7 +74,7 @@ int dspal_tester_i2c_test(void)
 		 * Configure I2C device
 		 */
 		struct dspal_i2c_ioctl_slave_config slave_config;
-		slave_config.slave_address = 0x77;
+		slave_config.slave_address = 0x76;
 		slave_config.bus_frequency_in_khz = 400;
 		slave_config.byte_transer_timeout_in_usecs = 9000;
 
