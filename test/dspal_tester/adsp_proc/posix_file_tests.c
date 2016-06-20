@@ -664,13 +664,14 @@ int dspal_tester_test_posix_file_threading(void)
 	pthread_t thread;
 	LOG_DEBUG("dspal_tester_test_posix_file_threading");
 	pthread_attr_t attr;
-	size_t stacksize = 8 * 1024;
+	size_t stacksize = 20 * 1024;
 	rv = pthread_attr_init(&attr);
 	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
 	rv = pthread_attr_setstacksize(&attr, stacksize);
+	rv = pthread_attr_setthreadname(&attr, "dspal_test_thread_file");
 	attr.priority = 235;
 	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
-	rv = pthread_create(&thread, &attr, (void *)dspal_tester_test_posix_file_read_write, &test_value);
+	rv = pthread_create(&thread, &attr, (void *)dspal_tester_test_posix_file_open_close, &test_value);
 	if (rv != 0) { FAIL("thread_create returned error"); }
 	usleep(5 * 1000000);
 	LOG_DEBUG("dspal_tester_test_posix_file_threading running 1");

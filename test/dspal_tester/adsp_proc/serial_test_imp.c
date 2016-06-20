@@ -671,18 +671,18 @@ int dspal_tester_serial_test(void)
     if (result < SUCCESS) {
         return result;
     }
-#endif
 
     result = dspal_tester_serial_i2c_write(); 
     if (result < SUCCESS) {
         return result;
     }
+#endif
 
-#if 0  
     result = dspal_tester_serial_open_write(); 
     if (result < SUCCESS) {
 		return result;
 	}
+#if 0  
   
 	// serial devices open test
 	result = dspal_tester_serial_multi_port_open();

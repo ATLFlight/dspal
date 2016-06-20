@@ -301,10 +301,12 @@ static void one_shot_timer_callback(union sigval val)
 	struct timespec now;
 
 	clock_gettime(CLOCK_REALTIME, &now);
+	#if 0
 	LOG_DEBUG("one shot timer expected time: %ld us", MAX_WAIT_TIME_US);
 	LOG_DEBUG("one shot timer elapsed time: %ld us",
 		  (now.tv_sec - one_shot_timer_start.tv_sec) * 1000000 +
 		  (now.tv_nsec - one_shot_timer_start.tv_nsec) / 1000);
+	#endif
 
 	pthread_kill(one_shot_timer_cb_thread, val.sival_int);
 }
@@ -408,9 +410,11 @@ static void periodic_timer_callback(union sigval val)
 
 	} else {
 		clock_gettime(CLOCK_REALTIME, &now);
+		#if 0
 		LOG_DEBUG("periodic timer elapsed time: %ld us",
 			  (now.tv_sec - last_time.tv_sec) * 1000000 +
 			  (now.tv_nsec - last_time.tv_nsec) / 1000);
+		#endif
 		last_time = now;
 	}
 
@@ -717,9 +721,11 @@ void *periodic_timer_sigwait_test(void *context)
 
 		} else {
 			clock_gettime(CLOCK_REALTIME, &now);
+			#if 0
 			LOG_DEBUG("periodic timer elapsed time: %ld us",
 				  (now.tv_sec - last_time.tv_sec) * 1000000 +
 				  (now.tv_nsec - last_time.tv_nsec) / 1000);
+			#endif
 			last_time = now;
 		}
 	}

@@ -43,7 +43,7 @@
 
 #define LOG_INFO(...) FARF(ALWAYS, __VA_ARGS__);
 #define LOG_ERR(...) FARF(ALWAYS, __VA_ARGS__);
-#define LOG_DEBUG(...) FARF(MEDIUM, __VA_ARGS__);
+#define LOG_DEBUG(...) FARF(ALWAYS, __VA_ARGS__);
 #else
 /* Use the following macro for debug output on the Application Processor. */
 #include <stdio.h>
