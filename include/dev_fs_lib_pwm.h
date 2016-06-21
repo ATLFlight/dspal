@@ -134,16 +134,3 @@ struct dspal_pwm_ioctl_update_buffer {
 	struct dspal_pwm *pwm_signal; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
 };
 
-/**
- * @brief
- * Under Review: Updating pulse widths by writing to a shared memory region.
- *
- * A new IOCTL would be defined PWM_IOCTL_GET_CHANGE_SEMAPHORE to retrieve
- * a reference to a semaphore used to indicated a change in the content of a shared memory
- * region containing a predefined structure for the signal definition.  This memory buffer
- * would be returned by PWM_IOCTL_SIGNAL_DEFINITION.
- *
- * This would eliminate the overhead of calling PWM_IOCTL_PULSE_WIDTH to initiate a change
- * in the pulse width and more closely approximates writing to a hardware register to
- * change a pulse width.
- */

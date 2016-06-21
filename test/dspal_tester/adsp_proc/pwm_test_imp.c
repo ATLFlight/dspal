@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <sys/ioctl.h>
-#include <dev_fs_lib_i2c.h>
+#include <dev_fs_lib_pwm.h>
 #include <test_status.h>
 
 /**
@@ -45,38 +45,37 @@
 * Test:
 * 1) Open the PWM device (/dev/pwm-1)
 * 2) Configure the
-*     GPIO 5 (pin 3, J9 on the eagleboard)
+*     GPIO 5 (pin 3, J9 on the Eagle Board)
 *
-*     // TODO-JYW: LEFT-OFF:
-*
-*     -Slave address: 0x70
-*     -Bus Frequency in khz: 400
-*     -Transfer timeout in usec: 9000
-* 3) Close the i2c device
+* 3) Close the PWM device
 *
 * @return
 * SUCCESS ------ Test Passes
 * ERROR ------ Test Failed
 */
-int dspal_tester_i2c_test(void)
+int dspal_tester_pwm_test(void)
 {
 	int ret = SUCCESS;
 	/*
-	 * Open i2c device
+	 * Open PWM device
 	 */
 	int fd = -1;
-	fd = open("/dev/i2c-8", 0);
+	fd = open("/dev/pwm-1", 0);
 
 	if (fd > 0) {
 		/*
-		 * Configure I2C device
+		 * Configure PWM device
 		 */
-		struct dspal_i2c_ioctl_slave_config slave_config;
-		slave_config.slave_address = 0x70;
-		slave_config.bus_frequency_in_khz = 400;
-		slave_config.byte_transer_timeout_in_usecs = 9000;
+		struct dspal_pwm pwm_gpio;
+		struct dspal_pwm_ioctl_signal_definition signal_definition;
 
-		if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0) {
+		pwm_gpio.gpio_id = 3;
+		pwm_gpio.pulse_width_in_usecs = 100;
+		signal_definition.num_gpios = 1;
+		signal_definition.period_in_usecs = 1000;
+		signal_definition.pwm_signal = &pwm_gpio;
+
+		if (ioctl(fd, PWM_IOCTL_SIGNAL_DEFINITION, &signal_definition) != 0) {
 			ret = ERROR;
 		}
 
