@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 Mark Charlebois. All rights reserved.
+ *   Copyright (c) 2016 James Wilson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,41 +30,17 @@
  *
  ****************************************************************************/
 
-#pragma once
+#include <dspal_version.h>
+#include "test_utils.h"
 
-#include <sys/cdefs.h>
-#include <time.h>
-#include <stdint.h>
-#include <errno.h>
-#include "dspal_log.h"
+int version_test_get_version_info(char* version_string, int version_stringLen, char* build_date_string, int build_date_stringLen, char* build_time_string, int build_time_stringLen)
+{
+	dspal_get_version_info(version_string, build_date_string,
+			       build_time_string);
 
-#include "test_status.h"
+	LOG_INFO("version: %s", version_string);
+	LOG_INFO("build date: %s", build_date_string);
+	LOG_INFO("build time: %s", build_time_string);
 
-#define TEST_PASS  0x00
-#define TEST_FAIL  0x01
-#define TEST_SKIP  0x02
-
-#ifndef TRUE
-#define TRUE (1 == 1)
-#endif
-
-#ifndef FALSE
-#define FALSE (1 != 1)
-#endif
-
-#define FAIL(msg) { \
-		{ test_failed(msg, __FILE__, __LINE__); return TEST_FAIL; } \
-	}
-
-__BEGIN_DECLS
-
-int display_test_results(int result, const char *label);
-
-void log_error(const char *error);
-
-const char *get_result_string(int result);
-
-void test_failed(const char *msg, const char *file, int lineNumber);
-
-time_t time(time_t *t);
-__END_DECLS
+	return 0;
+}
