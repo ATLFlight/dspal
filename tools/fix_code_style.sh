@@ -8,7 +8,8 @@ case $i in
 	shift
 	;;
 	-p)
-	PRUNE_DIRS="${i#*=}"
+	shift
+	PRUNE_DIRS="${1}"
 	shift
 	;;
 	*)
@@ -18,7 +19,7 @@ shift
 done
 
 for d in ${PRUNE_DIRS}; do
-PRUNE_CMD="${PRUNE_CMD} -path '$d' -prune -o "
+	PRUNE_CMD="${PRUNE_CMD} -path '$d' -prune -o "
 done
 
 TOOLSDIR=$( dirname "${BASH_SOURCE[0]}" )
