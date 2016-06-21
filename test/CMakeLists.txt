@@ -29,35 +29,25 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ############################################################################
 
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+
+set(version_major 0)
+set(version_minor 1)
+set(version_patch 0)
+set(version "${version_major}.${version_minor}.${version_patch}")
+set(package-contact "charlebm@gmail.com")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_hexagon")
+include(bundle)
+
 include_directories(
+	../include
 	include
 	)
 
-QURT_BUNDLE(APP_NAME dspal_tester
-	DSP_SOURCES
-		adsp_proc/gpio_test_imp.c
-		adsp_proc/i2c_test_imp.c
-		adsp_proc/posix_file_tests.c
-		adsp_proc/posix_pthread_tests.c
-		adsp_proc/posix_semaphore_tests.c
-		adsp_proc/posix_time_tests.c
-		adsp_proc/serial_test_imp.c
-		adsp_proc/spi_test_imp.c
-		adsp_proc/cxx_tests.cpp
-		adsp_proc/misc_tests.c
-		adsp_proc/qurt_stubs.cpp
-		common/test_utils.c
-	APPS_SOURCES
-		apps_proc/dspal_tester_main.c
-		apps_proc/io_test_suite.c
-		apps_proc/io_test_suite.h
-		apps_proc/posix_test_suite.c
-		apps_proc/posix_test_suite.h
-		common/test_utils.c
-	APPS_INCS
-		-Iinclude
-		-I../include
-	APPS_COMPILER arm-linux-gnueabihf-gcc
-	)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -g -fno-strict-aliasing -fdata-sections -fno-zero-initialized-in-bss -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable -Wno-gnu-array-member-paren-init -Wno-cast-align -Wno-missing-braces -Wno-strict-aliasing") 
+
+add_subdirectory(dspal_tester)
+add_subdirectory(version_test)
 
 # vim: set noet fenc=utf-8 ff=unix ft=cmake :
