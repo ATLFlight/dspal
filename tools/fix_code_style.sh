@@ -19,7 +19,7 @@ shift
 done
 
 for d in ${PRUNE_DIRS}; do
-	PRUNE_CMD="${PRUNE_CMD} -path '$d' -prune -o "
+	PRUNE_CMD="${PRUNE_CMD} -path ./$d -prune -o"
 done
 
 TOOLSDIR=$( dirname "${BASH_SOURCE[0]}" )
@@ -33,7 +33,7 @@ for f in $(find . ${PRUNE_CMD} -path "*.git/*" -prune -o -name '*.c' -print -o -
 		then
 			echo $f "bad formatting"
 		RESULT=1
-	fi
+		fi
 
 	else
 		astyle --options=${TOOLSDIR}/astylerc --preserve-date $f | grep "Formatted"
