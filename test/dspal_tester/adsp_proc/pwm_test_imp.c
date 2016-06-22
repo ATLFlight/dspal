@@ -69,7 +69,7 @@ int dspal_tester_pwm_test(void)
 		struct dspal_pwm pwm_gpio;
 		struct dspal_pwm_ioctl_signal_definition signal_definition;
 
-		pwm_gpio.gpio_id = 3;
+		pwm_gpio.gpio_id = 5;
 		pwm_gpio.pulse_width_in_usecs = 100;
 		signal_definition.num_gpios = 1;
 		signal_definition.period_in_usecs = 1000;
