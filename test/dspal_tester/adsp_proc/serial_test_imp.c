@@ -112,6 +112,28 @@ int dspal_tester_serial_multi_port_open(void)
 
 	return result;
 }
+void dspal_tester_serial_read_callback(void *context, char *buffer, size_t num_bytes)
+{
+	int rx_dev_id = (int)context;
+	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
+
+	if ((buffer != NULL ) && (num_bytes > 0)) {
+		memcpy(rx_buffer, buffer, num_bytes);
+		rx_buffer[0] = 0;
+		LOG_ERR("/dev/tty-%d read callback received bytes: %d",
+			 rx_dev_id, num_bytes);
+
+        for (int i = 0; i < (int)num_bytes; i++) 
+        {
+            //LOG_ERR("buffer[%d]=%x", i , buffer[i]);
+        }
+		if (num_bytes != 12)
+			LOG_ERR("!!!!!!!!!!!!!!!!!!available bytes %d", num_bytes);
+
+	} else {
+		LOG_ERR("error: read callback with no data in the buffer");
+	}
+}
 
 void* dspal_tester_serial_write(void* esc_fd)
 {
@@ -175,6 +197,17 @@ int dspal_tester_serial_open_write(void)
         result = ERROR; 
         goto exit;
     }
+	
+	struct dspal_serial_ioctl_receive_data_callback receive_callback;
+	receive_callback.rx_data_callback_func_ptr = dspal_tester_serial_read_callback;
+	receive_callback.context = NULL;
+	result = ioctl(esc_fd, 
+		       SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK,
+		       (void *)&receive_callback);
+	if (result < SUCCESS) {
+		close(esc_fd);
+		esc_fd = -1;
+	}
 
     pthread_t thread;
     pthread_attr_t attr;
