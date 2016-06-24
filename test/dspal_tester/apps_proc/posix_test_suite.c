@@ -38,6 +38,8 @@
 int run_posix_test_suite(void)
 {
 	int test_results = TEST_PASS;
+	LOG_INFO("testing malloc size limit");
+	test_results |= display_test_results(dspal_tester_test_malloc(), "malloc size test");
 
 	LOG_INFO("testing time.h");
 	test_results |= display_test_results(dspal_tester_test_clockid(), "clockid values exist");

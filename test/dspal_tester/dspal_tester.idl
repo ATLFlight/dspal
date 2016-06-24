@@ -94,5 +94,6 @@ interface dspal_tester
 
    long test_cxx_heap();
    long test_cxx_static();
+   long test_malloc();
 };
 

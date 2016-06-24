@@ -41,9 +41,9 @@ int run_io_test_suite(void)
 	LOG_INFO("testing device path access");
 	//test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
 
+#if 0
 	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
 
-#if 0
 	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
 
 	LOG_INFO("testing GPIO");

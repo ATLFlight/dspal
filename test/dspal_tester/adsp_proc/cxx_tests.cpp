@@ -196,4 +196,21 @@ int dspal_tester_test_cxx_heap()
 
 	return rv;
 }
+int dspal_tester_test_malloc()
+{
+	int rv = TEST_PASS;
+    uint32_t malloc_size = 1024, total_loop = 2*1024;  // max is 2M;
+    for (uint32_t i = 1; i <= total_loop; i ++)
+	{
+		uint8_t * ptr = (uint8_t *) malloc(malloc_size * i);
+        if (ptr == NULL)
+		{
+			LOG_ERR("malloc failed with size %dKB", i);
+			rv = TEST_FAIL;
+			break;
+		}
+		free(ptr);
+	}
+	return rv;
+}
 
