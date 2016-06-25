@@ -53,9 +53,13 @@
 * SUCCESS ------ Test Passes
 * ERROR ------ Test Failed
 */
+
+#define PWM_TEST_PULSE_WIDTH_INCREMENTS 150
+
 int dspal_tester_pwm_test(void)
 {
 	int ret = SUCCESS;
+	int pulse_width;
 	/*
 	 * Open PWM device
 	 */
@@ -68,6 +72,8 @@ int dspal_tester_pwm_test(void)
 		 */
 		struct dspal_pwm pwm_gpio;
 		struct dspal_pwm_ioctl_signal_definition signal_definition;
+		struct dspal_pwm_ioctl_update_buffer *update_buffer;
+		struct dspal_pwm *pwm;
 
 		pwm_gpio.gpio_id = 5;
 		pwm_gpio.pulse_width_in_usecs = 100;
@@ -79,11 +85,32 @@ int dspal_tester_pwm_test(void)
 			ret = ERROR;
 		}
 
+		if (ioctl(fd, PWM_IOCTL_GET_UPDATE_BUFFER, &update_buffer) != 0)
+		{
+			ret = ERROR;
+		}
+		pwm = &update_buffer->pwm_signal[0];
+
+		while (TRUE)
+		{
+			for (pulse_width = PWM_TEST_PULSE_WIDTH_INCREMENTS; pulse_width < (int)signal_definition.period_in_usecs; pulse_width += PWM_TEST_PULSE_WIDTH_INCREMENTS)
+			{
+				pwm->pulse_width_in_usecs = pulse_width;
+				usleep(1000 * 1);
+			}
+
+			for (pulse_width = signal_definition.period_in_usecs - PWM_TEST_PULSE_WIDTH_INCREMENTS; pulse_width > 0; pulse_width -= PWM_TEST_PULSE_WIDTH_INCREMENTS)
+			{
+				pwm->pulse_width_in_usecs = pulse_width;
+				usleep(1000 * 1);
+			}
+		}
+
 		/*
 		 * Close the device ID
 		 */
-		close(fd);
-
+		// TODO-JYW: This does not appear to be working.
+		// close(fd);
 	} else {
 		ret = ERROR;
 	}
