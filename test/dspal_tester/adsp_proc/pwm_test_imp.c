@@ -77,9 +77,11 @@ int dspal_tester_pwm_test(void)
 
 		pwm_gpio[0].gpio_id = 5;
 		pwm_gpio[0].pulse_width_in_usecs = 100;
-		pwm_gpio[1].gpio_id = 6;
+		pwm_gpio[1].gpio_id = 4;
 		pwm_gpio[1].pulse_width_in_usecs = 100;
 
+// TODO-JYW: TESTING-TESTING:
+		signal_definition.num_gpios = 1;
 		signal_definition.num_gpios = 2;
 		signal_definition.period_in_usecs = 1000;
 		signal_definition.pwm_signal = &pwm_gpio[0];
@@ -99,6 +101,7 @@ int dspal_tester_pwm_test(void)
 			for (pulse_width = PWM_TEST_PULSE_WIDTH_INCREMENTS; pulse_width < (int)signal_definition.period_in_usecs; pulse_width += PWM_TEST_PULSE_WIDTH_INCREMENTS)
 			{
 				pwm[0].pulse_width_in_usecs = pulse_width;
+				// TODO-JYW: TESTING-TESTING:
 				pwm[1].pulse_width_in_usecs = pulse_width;
 				usleep(1000 * 1);
 			}
@@ -106,6 +109,7 @@ int dspal_tester_pwm_test(void)
 			for (pulse_width = signal_definition.period_in_usecs - PWM_TEST_PULSE_WIDTH_INCREMENTS; pulse_width > 0; pulse_width -= PWM_TEST_PULSE_WIDTH_INCREMENTS)
 			{
 				pwm[0].pulse_width_in_usecs = pulse_width;
+				// TODO-JYW: TESTING-TESTING:
 				pwm[1].pulse_width_in_usecs = pulse_width;
 				usleep(1000 * 1);
 			}
