@@ -54,7 +54,8 @@
 * ERROR ------ Test Failed
 */
 
-#define PWM_TEST_PULSE_WIDTH_INCREMENTS 150
+#define PWM_TEST_PULSE_WIDTH_INCREMENTS 20
+#define INCREMENT_PULSE_WIDTH(x,y) ((x + PWM_TEST_PULSE_WIDTH_INCREMENTS) >= y ? PWM_TEST_PULSE_WIDTH_INCREMENTS : x + PWM_TEST_PULSE_WIDTH_INCREMENTS)
 
 int dspal_tester_pwm_test(void)
 {
@@ -70,26 +71,34 @@ int dspal_tester_pwm_test(void)
 		/*
 		 * Configure PWM device
 		 */
-		struct dspal_pwm pwm_gpio[2];
+		struct dspal_pwm pwm_gpio[4];
 		struct dspal_pwm_ioctl_signal_definition signal_definition;
 		struct dspal_pwm_ioctl_update_buffer *update_buffer;
 		struct dspal_pwm *pwm;
 
+		// Define the initial pulse width and number of the GPIO to
+		// use for this signal definition.
 		pwm_gpio[0].gpio_id = 5;
-		pwm_gpio[0].pulse_width_in_usecs = 100;
+		pwm_gpio[0].pulse_width_in_usecs = 200;
 		pwm_gpio[1].gpio_id = 4;
-		pwm_gpio[1].pulse_width_in_usecs = 100;
+		pwm_gpio[1].pulse_width_in_usecs = 220;
+		pwm_gpio[2].gpio_id = 30;
+		pwm_gpio[2].pulse_width_in_usecs = 240;
+		pwm_gpio[3].gpio_id = 29;
+		pwm_gpio[3].pulse_width_in_usecs = 260;
 
-// TODO-JYW: TESTING-TESTING:
-		signal_definition.num_gpios = 1;
-		signal_definition.num_gpios = 2;
+		// Describe the overall signal and reference the above array.
+		signal_definition.num_gpios = 4;
 		signal_definition.period_in_usecs = 1000;
 		signal_definition.pwm_signal = &pwm_gpio[0];
 
+		// Send the signal definition to the DSP.
 		if (ioctl(fd, PWM_IOCTL_SIGNAL_DEFINITION, &signal_definition) != 0) {
 			ret = ERROR;
 		}
 
+		// Retrieve the shared buffer which will be used below to update the desired
+		// pulse width.
 		if (ioctl(fd, PWM_IOCTL_GET_UPDATE_BUFFER, &update_buffer) != 0)
 		{
 			ret = ERROR;
@@ -98,21 +107,11 @@ int dspal_tester_pwm_test(void)
 
 		while (TRUE)
 		{
-			for (pulse_width = PWM_TEST_PULSE_WIDTH_INCREMENTS; pulse_width < (int)signal_definition.period_in_usecs; pulse_width += PWM_TEST_PULSE_WIDTH_INCREMENTS)
-			{
-				pwm[0].pulse_width_in_usecs = pulse_width;
-				// TODO-JYW: TESTING-TESTING:
-				pwm[1].pulse_width_in_usecs = pulse_width;
-				usleep(1000 * 1);
-			}
-
-			for (pulse_width = signal_definition.period_in_usecs - PWM_TEST_PULSE_WIDTH_INCREMENTS; pulse_width > 0; pulse_width -= PWM_TEST_PULSE_WIDTH_INCREMENTS)
-			{
-				pwm[0].pulse_width_in_usecs = pulse_width;
-				// TODO-JYW: TESTING-TESTING:
-				pwm[1].pulse_width_in_usecs = pulse_width;
-				usleep(1000 * 1);
-			}
+			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
+			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
+			pwm[2].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[2].pulse_width_in_usecs, signal_definition.period_in_usecs);
+			pwm[3].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[3].pulse_width_in_usecs, signal_definition.period_in_usecs);
+			usleep(1000);
 		}
 
 		/*
