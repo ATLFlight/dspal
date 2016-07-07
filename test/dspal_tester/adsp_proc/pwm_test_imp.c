@@ -53,9 +53,14 @@
 * SUCCESS ------ Test Passes
 * ERROR ------ Test Failed
 */
+
+#define PWM_TEST_PULSE_WIDTH_INCREMENTS 1
+#define INCREMENT_PULSE_WIDTH(x,y) ((x + PWM_TEST_PULSE_WIDTH_INCREMENTS) >= y ? PWM_TEST_PULSE_WIDTH_INCREMENTS : x + PWM_TEST_PULSE_WIDTH_INCREMENTS)
+
 int dspal_tester_pwm_test(void)
 {
 	int ret = SUCCESS;
+	int pulse_width;
 	/*
 	 * Open PWM device
 	 */
@@ -66,24 +71,54 @@ int dspal_tester_pwm_test(void)
 		/*
 		 * Configure PWM device
 		 */
-		struct dspal_pwm pwm_gpio;
+		struct dspal_pwm pwm_gpio[4];
 		struct dspal_pwm_ioctl_signal_definition signal_definition;
+		struct dspal_pwm_ioctl_update_buffer *update_buffer;
+		struct dspal_pwm *pwm;
 
-		pwm_gpio.gpio_id = 3;
-		pwm_gpio.pulse_width_in_usecs = 100;
-		signal_definition.num_gpios = 1;
+		// Define the initial pulse width and number of the GPIO to
+		// use for this signal definition.
+		pwm_gpio[0].gpio_id = 5;
+		pwm_gpio[0].pulse_width_in_usecs = 200;
+		pwm_gpio[1].gpio_id = 4;
+		pwm_gpio[1].pulse_width_in_usecs = 220;
+		pwm_gpio[2].gpio_id = 30;
+		pwm_gpio[2].pulse_width_in_usecs = 240;
+		pwm_gpio[3].gpio_id = 29;
+		pwm_gpio[3].pulse_width_in_usecs = 260;
+
+		// Describe the overall signal and reference the above array.
+		signal_definition.num_gpios = 4;
 		signal_definition.period_in_usecs = 1000;
-		signal_definition.pwm_signal = &pwm_gpio;
+		signal_definition.pwm_signal = &pwm_gpio[0];
 
+		// Send the signal definition to the DSP.
 		if (ioctl(fd, PWM_IOCTL_SIGNAL_DEFINITION, &signal_definition) != 0) {
 			ret = ERROR;
+		}
+
+		// Retrieve the shared buffer which will be used below to update the desired
+		// pulse width.
+		if (ioctl(fd, PWM_IOCTL_GET_UPDATE_BUFFER, &update_buffer) != 0)
+		{
+			ret = ERROR;
+		}
+		pwm = &update_buffer->pwm_signal[0];
+
+		while (TRUE)
+		{
+			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
+			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
+			pwm[2].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[2].pulse_width_in_usecs, signal_definition.period_in_usecs);
+			pwm[3].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[3].pulse_width_in_usecs, signal_definition.period_in_usecs);
+			usleep(1000);
 		}
 
 		/*
 		 * Close the device ID
 		 */
-		close(fd);
-
+		// TODO-JYW: This does not appear to be working.
+		// close(fd);
 	} else {
 		ret = ERROR;
 	}

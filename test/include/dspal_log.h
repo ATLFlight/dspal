@@ -32,39 +32,22 @@
 
 #pragma once
 
-#include <sys/cdefs.h>
-#include <time.h>
-#include <stdint.h>
-#include <errno.h>
-#include "dspal_log.h"
+#ifdef __hexagon__
+/* Use the following macro for debug output on the aDSP. */
+#include <HAP_farf.h>
 
-#include "test_status.h"
+/* Enable medium level debugging. */
+//#define FARF_HIGH   1    /* Use a value of 0 to disable the specified debug level. */
+//#define FARF_MEDIUM 1
+//#define FARF_LOW    1
 
-#define TEST_PASS  0x00
-#define TEST_FAIL  0x01
-#define TEST_SKIP  0x02
-
-#ifndef TRUE
-#define TRUE (1 == 1)
+#define LOG_INFO(...) FARF(ALWAYS, __VA_ARGS__);
+#define LOG_ERR(...) FARF(ALWAYS, __VA_ARGS__);
+#define LOG_DEBUG(...) FARF(MEDIUM, __VA_ARGS__);
+#else
+/* Use the following macro for debug output on the Application Processor. */
+#include <stdio.h>
+#define LOG_INFO(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#define LOG_ERR(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#define LOG_DEBUG(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
 #endif
-
-#ifndef FALSE
-#define FALSE (1 != 1)
-#endif
-
-#define FAIL(msg) { \
-		{ test_failed(msg, __FILE__, __LINE__); return TEST_FAIL; } \
-	}
-
-__BEGIN_DECLS
-
-int display_test_results(int result, const char *label);
-
-void log_error(const char *error);
-
-const char *get_result_string(int result);
-
-void test_failed(const char *msg, const char *file, int lineNumber);
-
-time_t time(time_t *t);
-__END_DECLS

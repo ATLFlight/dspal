@@ -31,7 +31,7 @@
 #
 ############################################################################
 
-all: dspal_tester
+all: dspal_tester version_test
 
 .PHONY: ENV_VARS
 ENV_VARS:
@@ -43,13 +43,13 @@ cmake_hexagon/bundle.cmake:
 	cd ../../ && git submodule init
 	cd ../../ && git submodule update
 
-.PHONY: dspal_tester
+.PHONY: dspal_tester version_test
 dspal_tester: ENV_VARS cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	mkdir -p build && cd build && cmake -Wno-dev .. -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	cd build && make
 	
 load: dspal_tester
-	cd build && make dspal_tester-load
+	cd build && make dspal_tester-load && make version_test-load
 
 clean:
 	rm -rf build
