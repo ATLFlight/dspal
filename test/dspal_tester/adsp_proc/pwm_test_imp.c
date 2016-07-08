@@ -89,7 +89,7 @@ int dspal_tester_pwm_test(void)
 
 		// Describe the overall signal and reference the above array.
 		signal_definition.num_gpios = 4;
-		signal_definition.period_in_usecs = 1000;
+		signal_definition.period_in_usecs = 2000;
 		signal_definition.pwm_signal = &pwm_gpio[0];
 
 		// Send the signal definition to the DSP.
