@@ -19,8 +19,9 @@ export PATH=${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux
 
 ```
 git clone https://github.com/ATLFlight/dspal
+cd dspal
 git submodule update --init --recursive
-cd dspal/test
+cd test
 make
 ```
 
