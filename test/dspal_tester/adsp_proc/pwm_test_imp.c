@@ -54,8 +54,9 @@
 * ERROR ------ Test Failed
 */
 
-#define PWM_TEST_PULSE_WIDTH_INCREMENTS 1
-#define INCREMENT_PULSE_WIDTH(x,y) ((x + PWM_TEST_PULSE_WIDTH_INCREMENTS) >= y ? PWM_TEST_PULSE_WIDTH_INCREMENTS : x + PWM_TEST_PULSE_WIDTH_INCREMENTS)
+#define PWM_TEST_PULSE_WIDTH_INCREMENTS 30
+#define PWM_TEST_MINIMUM_PULSE_WIDTH 1050
+#define INCREMENT_PULSE_WIDTH(x,y) ((x + PWM_TEST_PULSE_WIDTH_INCREMENTS) >= y ? PWM_TEST_MINIMUM_PULSE_WIDTH : x + PWM_TEST_PULSE_WIDTH_INCREMENTS)
 
 int dspal_tester_pwm_test(void)
 {
@@ -79,13 +80,13 @@ int dspal_tester_pwm_test(void)
 		// Define the initial pulse width and number of the GPIO to
 		// use for this signal definition.
 		pwm_gpio[0].gpio_id = 5;
-		pwm_gpio[0].pulse_width_in_usecs = 200;
+		pwm_gpio[0].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
 		pwm_gpio[1].gpio_id = 4;
-		pwm_gpio[1].pulse_width_in_usecs = 220;
+		pwm_gpio[1].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
 		pwm_gpio[2].gpio_id = 30;
-		pwm_gpio[2].pulse_width_in_usecs = 240;
+		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
 		pwm_gpio[3].gpio_id = 29;
-		pwm_gpio[3].pulse_width_in_usecs = 260;
+		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
 
 		// Describe the overall signal and reference the above array.
 		signal_definition.num_gpios = 4;
@@ -105,13 +106,23 @@ int dspal_tester_pwm_test(void)
 		}
 		pwm = &update_buffer->pwm_signal[0];
 
+		// Wait for the ESC's to ARM:
+		usleep(1000000 * 5); // wait 5 seconds
+
+		// TODO-JYW: TESTING-TESTING
+//		pwm[0].pulse_width_in_usecs = 1100;
+//		pwm[1].pulse_width_in_usecs = 1800;
+//		pwm[2].pulse_width_in_usecs = 1800;
+//		pwm[3].pulse_width_in_usecs = 1800;
+
+		// TODO-JYW: TESTING-TESTING: Change this test to run a finite period of time.
 		while (TRUE)
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
 			pwm[2].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[2].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[3].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[3].pulse_width_in_usecs, signal_definition.period_in_usecs);
-			usleep(1000);
+			usleep(1000 * 500);
 		}
 
 		/*
