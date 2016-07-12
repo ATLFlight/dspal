@@ -62,6 +62,8 @@ int dspal_tester_pwm_test(void)
 {
 	int ret = SUCCESS;
 	int pulse_width;
+	int test_count;
+
 	/*
 	 * Open PWM device
 	 */
@@ -109,14 +111,8 @@ int dspal_tester_pwm_test(void)
 		// Wait for the ESC's to ARM:
 		usleep(1000000 * 5); // wait 5 seconds
 
-		// TODO-JYW: TESTING-TESTING
-//		pwm[0].pulse_width_in_usecs = 1100;
-//		pwm[1].pulse_width_in_usecs = 1800;
-//		pwm[2].pulse_width_in_usecs = 1800;
-//		pwm[3].pulse_width_in_usecs = 1800;
-
-		// TODO-JYW: TESTING-TESTING: Change this test to run a finite period of time.
-		while (TRUE)
+		// Change the speed of the motor, every 500 msecs.
+		for (test_count = 0; test_count < 5; test_count++)
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
@@ -128,8 +124,7 @@ int dspal_tester_pwm_test(void)
 		/*
 		 * Close the device ID
 		 */
-		// TODO-JYW: This does not appear to be working.
-		// close(fd);
+		close(fd);
 	} else {
 		ret = ERROR;
 	}
