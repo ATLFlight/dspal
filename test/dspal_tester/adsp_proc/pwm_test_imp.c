@@ -81,14 +81,15 @@ int dspal_tester_pwm_test(void)
 
 		// Define the initial pulse width and number of the GPIO to
 		// use for this signal definition.
-		pwm_gpio[0].gpio_id = 5;
+		// 45,46,47,48
+		pwm_gpio[0].gpio_id = 45;
 		pwm_gpio[0].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
-		pwm_gpio[1].gpio_id = 4;
-		pwm_gpio[1].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
-		pwm_gpio[2].gpio_id = 30;
-		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
-		pwm_gpio[3].gpio_id = 29;
-		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
+		pwm_gpio[1].gpio_id = 46;
+		pwm_gpio[1].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
+		pwm_gpio[2].gpio_id = 47;
+		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
+		pwm_gpio[3].gpio_id = 48;
+		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
 
 		// Describe the overall signal and reference the above array.
 		signal_definition.num_gpios = 4;
@@ -107,18 +108,21 @@ int dspal_tester_pwm_test(void)
 			ret = ERROR;
 		}
 		pwm = &update_buffer->pwm_signal[0];
+		update_buffer->reserved_1 = 0;
 
 		// Wait for the ESC's to ARM:
 		usleep(1000000 * 5); // wait 5 seconds
 
 		// Change the speed of the motor, every 500 msecs.
-		for (test_count = 0; test_count < 5; test_count++)
+		for (test_count = 0; test_count < 30; test_count++)
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
 			pwm[2].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[2].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[3].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[3].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			usleep(1000 * 500);
+
+			LOG_INFO("reserved_1 count: %d", update_buffer->reserved_1);
 		}
 
 		/*

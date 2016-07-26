@@ -132,5 +132,7 @@ struct dspal_pwm_ioctl_signal_definition {
 struct dspal_pwm_ioctl_update_buffer {
 	uint32_t num_gpios; /**< the number of PWM's specified in the following array */
 	struct dspal_pwm *pwm_signal; /**< array defining the GPIO lines and pulse widths to be used by the signal generator, can only be specified once after the device is first opened */
+	uint32_t reserved_1; /**< reserved value used for debugging. */
+	uint32_t reserved_2; /**< reserved value used for debugging. */
 };
 
