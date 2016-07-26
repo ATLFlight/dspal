@@ -35,7 +35,9 @@
 #include <stdint.h>
 #include <sys/ioctl.h>
 #include <dev_fs_lib_pwm.h>
-#include <test_status.h>
+
+#include "test_status.h"
+#include "test_utils.h"
 
 /**
 * @brief
@@ -54,7 +56,7 @@
 * ERROR ------ Test Failed
 */
 
-#define PWM_TEST_PULSE_WIDTH_INCREMENTS 30
+#define PWM_TEST_PULSE_WIDTH_INCREMENTS 10
 #define PWM_TEST_MINIMUM_PULSE_WIDTH 1050
 #define INCREMENT_PULSE_WIDTH(x,y) ((x + PWM_TEST_PULSE_WIDTH_INCREMENTS) >= y ? PWM_TEST_MINIMUM_PULSE_WIDTH : x + PWM_TEST_PULSE_WIDTH_INCREMENTS)
 
@@ -114,7 +116,9 @@ int dspal_tester_pwm_test(void)
 		usleep(1000000 * 5); // wait 5 seconds
 
 		// Change the speed of the motor, every 500 msecs.
-		for (test_count = 0; test_count < 30; test_count++)
+		// TODO-JYW: TESTING-TESTING
+		while (TRUE)
+//		for (test_count = 0; test_count < 30; test_count++)
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
