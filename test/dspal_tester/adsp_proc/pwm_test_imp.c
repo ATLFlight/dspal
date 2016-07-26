@@ -37,6 +37,11 @@
 #include <dev_fs_lib_pwm.h>
 #include <test_status.h>
 
+<<<<<<< HEAD
+=======
+// TODO-JYW: LEFT-OFF: Make sure that this builds.
+
+>>>>>>> origin/pwm_demo_flight_merged
 /**
 * @brief
 * Test to define PWM signals at a specified period and vary the pulse width.
@@ -81,6 +86,7 @@ int dspal_tester_pwm_test(void)
 
 		// Define the initial pulse width and number of the GPIO to
 		// use for this signal definition.
+<<<<<<< HEAD
 		// 45,46,47,48
 		pwm_gpio[0].gpio_id = 45;
 		pwm_gpio[0].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
@@ -90,6 +96,16 @@ int dspal_tester_pwm_test(void)
 		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
 		pwm_gpio[3].gpio_id = 48;
 		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
+=======
+		pwm_gpio[0].gpio_id = 5;
+		pwm_gpio[0].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
+		pwm_gpio[1].gpio_id = 4;
+		pwm_gpio[1].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
+		pwm_gpio[2].gpio_id = 30;
+		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
+		pwm_gpio[3].gpio_id = 29;
+		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH;
+>>>>>>> origin/pwm_demo_flight_merged
 
 		// Describe the overall signal and reference the above array.
 		signal_definition.num_gpios = 4;
@@ -108,21 +124,31 @@ int dspal_tester_pwm_test(void)
 			ret = ERROR;
 		}
 		pwm = &update_buffer->pwm_signal[0];
+<<<<<<< HEAD
 		update_buffer->reserved_1 = 0;
+=======
+>>>>>>> origin/pwm_demo_flight_merged
 
 		// Wait for the ESC's to ARM:
 		usleep(1000000 * 5); // wait 5 seconds
 
 		// Change the speed of the motor, every 500 msecs.
+<<<<<<< HEAD
 		for (test_count = 0; test_count < 30; test_count++)
+=======
+		for (test_count = 0; test_count < 5; test_count++)
+>>>>>>> origin/pwm_demo_flight_merged
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
 			pwm[2].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[2].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[3].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[3].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			usleep(1000 * 500);
+<<<<<<< HEAD
 
 			LOG_INFO("reserved_1 count: %d", update_buffer->reserved_1);
+=======
+>>>>>>> origin/pwm_demo_flight_merged
 		}
 
 		/*
