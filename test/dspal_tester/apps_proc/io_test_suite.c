@@ -34,36 +34,36 @@
 #include "dspal_tester.h"
 #include "test_utils.h"
 
+#define VERSION_PREFIX "DSPAL-"
+
 int run_io_test_suite(void)
 {
 	int test_results = TEST_PASS;
 
 	LOG_INFO("testing device path access");
-// TODO-JYW: TESTING-TESTING
-//	test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
-//
-//	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
-//
-//	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
+	test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
+	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
+	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
 
+	LOG_INFO("testing PWM signaling");
 	test_results |= display_test_results(dspal_tester_pwm_test(), "pwm_test");
 
-//	LOG_INFO("testing GPIO");
-//	test_results |= display_test_results(dspal_tester_test_gpio_open_close(), "gpio open/close test");
-//	test_results |= display_test_results(dspal_tester_test_gpio_ioctl_io(), "gpio ioctl I/O mode test");
-//	test_results |= display_test_results(dspal_tester_test_gpio_read_write(), "gpio read/write test");
-//	test_results |= display_test_results(dspal_tester_test_gpio_int(), "gpio INT test");
-//
-//	LOG_INFO("testing file I/O");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_open_close(), "file open/close");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_open_trunc(), "file open_trunc");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_open_append(), "file open_append");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_ioctl(), "file ioctl");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_fsync(), "file fsync");
-//	test_results |= display_test_results(dspal_tester_test_posix_file_remove(), "file remove");
-//	test_results |= display_test_results(dspal_tester_test_fopen_fclose(), "fopen/fclose test");
-//	test_results |= display_test_results(dspal_tester_test_fwrite_fread(), "fwrite/fread test");
+	LOG_INFO("testing GPIO");
+	test_results |= display_test_results(dspal_tester_test_gpio_open_close(), "gpio open/close test");
+	test_results |= display_test_results(dspal_tester_test_gpio_ioctl_io(), "gpio ioctl I/O mode test");
+	test_results |= display_test_results(dspal_tester_test_gpio_read_write(), "gpio read/write test");
+	test_results |= display_test_results(dspal_tester_test_gpio_int(), "gpio INT test");
+
+	LOG_INFO("testing file I/O");
+	test_results |= display_test_results(dspal_tester_test_posix_file_open_close(), "file open/close");
+	test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
+	test_results |= display_test_results(dspal_tester_test_posix_file_open_trunc(), "file open_trunc");
+	test_results |= display_test_results(dspal_tester_test_posix_file_open_append(), "file open_append");
+	test_results |= display_test_results(dspal_tester_test_posix_file_ioctl(), "file ioctl");
+	test_results |= display_test_results(dspal_tester_test_posix_file_fsync(), "file fsync");
+	test_results |= display_test_results(dspal_tester_test_posix_file_remove(), "file remove");
+	test_results |= display_test_results(dspal_tester_test_fopen_fclose(), "fopen/fclose test");
+	test_results |= display_test_results(dspal_tester_test_fwrite_fread(), "fwrite/fread test");
 
 	return test_results;
 }

@@ -33,8 +33,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <dev_fs_lib_pwm.h>
+#include <dspal_version.h>
 
 #include "test_status.h"
 #include "test_utils.h"
@@ -65,6 +68,21 @@ int dspal_tester_pwm_test(void)
 	int ret = SUCCESS;
 	int pulse_width;
 	int test_count;
+	struct dspal_version_info version;
+	int major_version, minor_version;
+
+	dspal_get_version_info_ext(&version);
+	strtok(version.version_string, "-.");
+	major_version = atoi(strtok(NULL, "-."));
+	minor_version = atoi(strtok(NULL, "-."));
+
+	if (major_version < 1 || (major_version == 1 && minor_version < 1))
+	{
+		LOG_INFO("unable to test PWM signaling, current version: %d.%d, requires version 1.1 or above",
+				major_version, minor_version);
+		return ERROR;
+	}
+	LOG_INFO("testing PWM signaling, DSPAL version: %d.%d", major_version, minor_version);
 
 	/*
 	 * Open PWM device
@@ -89,9 +107,9 @@ int dspal_tester_pwm_test(void)
 		pwm_gpio[1].gpio_id = 46;
 		pwm_gpio[1].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
 		pwm_gpio[2].gpio_id = 47;
-		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
+		pwm_gpio[2].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 20;
 		pwm_gpio[3].gpio_id = 48;
-		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 10;
+		pwm_gpio[3].pulse_width_in_usecs = PWM_TEST_MINIMUM_PULSE_WIDTH + 21;
 
 		// Describe the overall signal and reference the above array.
 		signal_definition.num_gpios = 4;
@@ -116,9 +134,7 @@ int dspal_tester_pwm_test(void)
 		usleep(1000000 * 5); // wait 5 seconds
 
 		// Change the speed of the motor, every 500 msecs.
-		// TODO-JYW: TESTING-TESTING
-		while (TRUE)
-//		for (test_count = 0; test_count < 30; test_count++)
+		for (test_count = 0; test_count < 30; test_count++)
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
