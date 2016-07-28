@@ -269,15 +269,16 @@ int dspal_tester_test_usleep(void)
 }
 int dspal_tester_test_usleep_ext(void)
 {
-	int fail = 0;
+	int fail = 0, sleep_tolerance = 100;
+	
 	for (int i = 0; i < 50; i ++) {
 		uint64_t start_time = dspal_get_time_1us();
 		int delay_us = 500;
 		usleep(delay_us);
 		int elapsed_time = dspal_get_time_1us()-start_time;
-		if(elapsed_time > delay_us + 200)
+		if(elapsed_time > delay_us + sleep_tolerance)
 			{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
-		if(elapsed_time < delay_us - 200)
+		if(elapsed_time < delay_us - sleep_tolerance)
 			{ LOG_ERR("usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
 		usleep(1000000);
 	}
