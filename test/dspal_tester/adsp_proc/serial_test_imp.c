@@ -156,6 +156,7 @@ void* dspal_tester_serial_write(void* esc_fd)
         }
 
         usleep(10000); 
+		//usleep(1000*1000); //added for serial TX debug;
     }
 
 #if 0 
@@ -182,6 +183,30 @@ void* dspal_tester_serial_write(void* esc_fd)
 #endif
 
     return NULL; 
+}
+int dspal_tester_serial_open_close_multi_times(void)
+{
+	LOG_INFO("beginning serial device open/close test");
+	int result = SUCCESS;
+
+	for (int i = 0; i < 100; i ++)
+	{
+		int esc_fd = open("/dev/tty-2", O_RDWR);
+		LOG_INFO("open /dev/tty-2 O_RDWR mode %s", 
+				 (esc_fd < SUCCESS) ? "fail" : "succeed");
+
+		if (esc_fd < SUCCESS) {
+			result = ERROR; 
+			goto exit;
+		}
+		close(esc_fd);
+	}	
+		
+	exit:
+		LOG_INFO("serial open/close test %s",
+	 	result == SUCCESS ? "PASSED" : "FAILED");
+	
+	return result;
 }
 
 int dspal_tester_serial_open_write(void)
@@ -710,6 +735,10 @@ int dspal_tester_serial_test(void)
         return result;
     }
 #endif
+    result = dspal_tester_serial_open_close_multi_times(); 
+    if (result < SUCCESS) {
+		return result;
+	}
 
     result = dspal_tester_serial_open_write(); 
     if (result < SUCCESS) {

@@ -44,6 +44,12 @@
 #include "posix_test_suite.h"
 #include "io_test_suite.h"
 
+#if 0
+#include "remote.h"
+#define ITRANSPORT_PREFIX "'\":;./\\"
+remote_handle64 fd;
+#endif
+
 
 /**
  * @brief Runs all the tests, the io tests and the posix tests.
@@ -63,9 +69,12 @@ int main(int argc, char *argv[])
 	LOG_INFO("");
 
 	LOG_INFO("Starting DSPAL tests");
+	
+	//remote_handle64_open(ITRANSPORT_PREFIX "attachuserpd&_dom=sdsp", &fd);
+	
 	//dspal_tester_test_dspal_get_version_info();
 	status = run_posix_test_suite();
-	status |= run_io_test_suite();
+	//status |= run_io_test_suite();
 
 	if ((status & TEST_FAIL) == TEST_FAIL) {
 		LOG_INFO("DSPAL test failed.");

@@ -200,7 +200,7 @@ int dspal_tester_test_malloc()
 {
 	int rv = TEST_PASS;
     uint32_t malloc_size = 1024, total_loop = 2*1024;  // max is 2M;
-    for (uint32_t i = 1; i <= total_loop; i ++)
+    for (uint32_t i = 297; i <= total_loop; i ++)
 	{
 		uint8_t * ptr = (uint8_t *) malloc(malloc_size * i);
         if (ptr == NULL)
@@ -209,6 +209,7 @@ int dspal_tester_test_malloc()
 			rv = TEST_FAIL;
 			break;
 		}
+		LOG_ERR("malloc success with size %dKB", i);
 		free(ptr);
 	}
 	return rv;

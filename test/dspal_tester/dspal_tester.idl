@@ -48,6 +48,7 @@ interface dspal_tester
    long test_time_return_value();
    long test_time_param();
    long test_usleep();
+   long test_usleep_ext();
    long test_clock_getres();
    long test_clock_gettime();
    long test_clock_settime();

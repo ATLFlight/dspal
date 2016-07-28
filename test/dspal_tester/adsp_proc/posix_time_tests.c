@@ -242,6 +242,14 @@ int dspal_tester_test_time_param(void)
 
 	return TEST_PASS;
 }
+uint64_t dspal_get_time_1us()
+{
+  // grab device time, convert to microseconds
+  struct timespec time_struct;
+  clock_gettime(0,&time_struct);
+  uint64_t time_1us = (time_struct.tv_nsec)/1000 + ((uint64_t) time_struct.tv_sec)*1000000;
+  return time_1us;
+}
 
 int dspal_tester_test_usleep(void)
 {
@@ -257,8 +265,25 @@ int dspal_tester_test_usleep(void)
 		LOG_ERR("usleep run length: %d", length);
 		FAIL("usleep returned too fast");
 	}
-
 	return TEST_PASS;
+}
+int dspal_tester_test_usleep_ext(void)
+{
+	int fail = 0;
+	for (int i = 0; i < 50; i ++) {
+		uint64_t start_time = dspal_get_time_1us();
+		int delay_us = 500;
+		usleep(delay_us);
+		int elapsed_time = dspal_get_time_1us()-start_time;
+		if(elapsed_time > delay_us + 200)
+			{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
+		if(elapsed_time < delay_us - 200)
+			{ LOG_ERR("usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
+		usleep(1000000);
+	}
+	if (fail == 1) FAIL("usleep fails");
+	return TEST_PASS;
+
 }
 
 int dspal_tester_test_clock_getres(void)

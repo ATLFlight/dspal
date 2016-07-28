@@ -41,8 +41,8 @@ int run_io_test_suite(void)
 	LOG_INFO("testing device path access");
 	//test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
 
-#if 1
-	//test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
+	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
+#if 0
 
 	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
 
@@ -52,11 +52,9 @@ int run_io_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_gpio_read_write(), "gpio read/write test");
 	test_results |= display_test_results(dspal_tester_test_gpio_read_write_extern_loopback(), "gpio read/write external loopback test");
 	test_results |= display_test_results(dspal_tester_test_gpio_int(), "gpio INT test");
-#endif
 	LOG_INFO("testing file I/O");
 	test_results |= display_test_results(dspal_tester_test_posix_file_open_close(), "file open/close");
 	test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
-#if 1
 	LOG_INFO(" more testing file I/O");
 	test_results |= display_test_results(dspal_tester_test_posix_file_open_trunc(), "file open_trunc");
 	test_results |= display_test_results(dspal_tester_test_posix_file_open_append(), "file open_append");
@@ -65,10 +63,10 @@ int run_io_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_posix_file_remove(), "file remove");
 	test_results |= display_test_results(dspal_tester_test_fopen_fclose(), "fopen/fclose test");
 	test_results |= display_test_results(dspal_tester_test_fwrite_fread(), "fwrite/fread test");
-#endif
 	LOG_INFO(" more testing file I/O with threading");
 	test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
 	test_results |= display_test_results(dspal_tester_test_posix_file_threading(), "file read/write in a different thread");
+#endif
 	return test_results;
 }
 

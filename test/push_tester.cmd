@@ -44,6 +44,8 @@ adb shell chmod 755 /home/root/dspal_tester
 
 adb push \\crate\adsp-platform\contexthub\scripts\testsig-0x0.so  %adsp_lib_dir%/
 adb push C:\Qualcomm\Hexagon_SDK\2.0\tools\elfsigner\testsigs\testsig-0xf1ee91f3.so %adsp_lib_dir%/
+adb push C:\Qualcomm\Hexagon_SDK\2.0\tools\elfsigner\testsigs\testsig-0xe998edb0.so %adsp_lib_dir%/
+
 adb push \\armory\atlanticus\builds\OE_0510\fastrpc_shell_0  %adsp_lib_dir%/
 adb shell chmod 755   %adsp_lib_dir%/fastrpc_shell_0
 
