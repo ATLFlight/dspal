@@ -34,16 +34,19 @@
 #include "dspal_tester.h"
 #include "test_utils.h"
 
+#define VERSION_PREFIX "DSPAL-"
+
 int run_io_test_suite(void)
 {
 	int test_results = TEST_PASS;
 
 	LOG_INFO("testing device path access");
 	test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
-
 	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
-
 	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
+
+	LOG_INFO("testing PWM signaling");
+	test_results |= display_test_results(dspal_tester_pwm_test(), "pwm_test");
 
 	LOG_INFO("testing GPIO");
 	test_results |= display_test_results(dspal_tester_test_gpio_open_close(), "gpio open/close test");

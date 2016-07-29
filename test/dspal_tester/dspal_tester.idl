@@ -85,6 +85,8 @@ interface dspal_tester
    long serial_test();
 
    long i2c_test();
+   
+   long pwm_test();
 
    long test_gpio_open_close();
    long test_gpio_ioctl_io();

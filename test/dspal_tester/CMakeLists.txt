@@ -37,6 +37,7 @@ QURT_BUNDLE(APP_NAME dspal_tester
 	DSP_SOURCES
 		adsp_proc/gpio_test_imp.c
 		adsp_proc/i2c_test_imp.c
+		adsp_proc/pwm_test_imp.c
 		adsp_proc/posix_file_tests.c
 		adsp_proc/posix_pthread_tests.c
 		adsp_proc/posix_semaphore_tests.c
