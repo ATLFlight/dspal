@@ -279,26 +279,94 @@ static void test_dspal_get_time_1us()
 	LOG_ERR("total %d dspal_get_time_1us calls takes %d, each %f", counter, elapsed_time, elapsed_time*1.0/counter);
 	
 }
-int dspal_tester_test_usleep_ext(void)
+int test_usleep_worker(int flag)
 {
 	int fail = 0, sleep_tolerance = 150; //us
-	int delay_us = 500;
-	test_dspal_get_time_1us();
+	int delay_us = 150;
 	for (int i = 0; i < 50; i ++) {
 		uint64_t start_time = dspal_get_time_1us();
-		usleep(delay_us);
+		delay_us = delay_us + 40;	// 150 --> 2150
+		usleep(delay_us); 
 		int elapsed_time = dspal_get_time_1us()-start_time;
-		if((elapsed_time > delay_us) &&
-			(elapsed_time - delay_us > sleep_tolerance))
+		if((elapsed_time > delay_us) &&	(elapsed_time - delay_us > sleep_tolerance)) {
+		if (flag == 0)
 			{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
-		if((elapsed_time < delay_us) &&
-			( delay_us - elapsed_time > sleep_tolerance))
+		else
+			{ LOG_ERR("in thread: usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
+		}
+			
+		if((delay_us > elapsed_time) && ( delay_us - elapsed_time > sleep_tolerance)) {
+		if (flag == 0)
 			{ LOG_ERR("usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
-		usleep(1000000);
+		else
+			{ LOG_ERR("in thread: usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}			
+		}
+		usleep(50000);
 	}
-	if (fail == 1) FAIL("usleep fails");
+	
+	if (fail == 1) {
+		LOG_ERR("flag %d", flag); FAIL("usleep fails in test worker");
+	}
+	else
+		LOG_ERR("usleep test passed!!!, flag %d", flag)
+	return fail;
+
+}
+void * test_usleep_thread_helper(void * param)
+{	
+	int *fail = (int *)param;
+	*fail = test_usleep_worker(1);
+	return NULL;
+}
+int tester_test_usleep_async(void)
+{
+	int rv = 0, fail = 0;
+
+	int test_value = 0;
+	pthread_t thread;
+	pthread_attr_t thread_attr;
+	if (pthread_attr_init(&thread_attr) != 0)
+	{
+	  	FAIL("failed to init thread attribute");
+	}
+	thread_attr.priority = 255 - 20;
+	if (pthread_attr_setstacksize(&thread_attr, 4*1024) != 0)
+	{
+		FAIL("failed to set thread stack size");
+	}
+	pthread_attr_setthreadname(&thread_attr, "sleep_tester");
+
+	rv = pthread_create(&thread, &thread_attr, test_usleep_thread_helper, &fail);
+
+	if (rv != 0) { FAIL("thread_create returned error"); }
+
+	rv = pthread_join(thread, NULL);
+
+	if (rv != 0) { FAIL("thread_join returned error"); }
+	
+	if (fail != 0)
+		FAIL("tester_test_usleep_async fails");
+
 	return TEST_PASS;
 
+}
+int dspal_tester_test_usleep_ext(void)
+{
+	int fail = 0;
+	test_dspal_get_time_1us();
+	fail = test_usleep_worker(0);
+	if (fail != 0)
+		FAIL("usleep test fails");
+	return TEST_PASS;
+
+}
+int dspal_tester_test_usleep_thread(void)
+{
+	int fail = 0;
+	fail = tester_test_usleep_async();
+	if (fail != 0)
+		FAIL("usleep test in a seperate thread fails");
+	return TEST_PASS;
 }
 
 int dspal_tester_test_clock_getres(void)

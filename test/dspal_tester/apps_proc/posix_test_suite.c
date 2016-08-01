@@ -55,6 +55,8 @@ int run_posix_test_suite(void)
 #endif
 	test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
 	test_results |= display_test_results(dspal_tester_test_usleep_ext(), "more usleep testing");
+	test_results |= display_test_results(dspal_tester_test_usleep_thread(), "more usleep testing in a seperate thread");
+#if 0
 	test_results |= display_test_results(dspal_tester_test_clock_getres(), "clock_getres");
 	test_results |= display_test_results(dspal_tester_test_clock_gettime(), "clock_gettime");
 	test_results |= display_test_results(dspal_tester_test_clock_settime(), "clock_settime");
@@ -62,6 +64,7 @@ int run_posix_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_cb(), "periodic timer cb");
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_signal_cb(), "periodic timer signal cb");
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_sigwait(), "periodic timer sigwait");
+#endif
 #if 0
 	LOG_INFO("testing pthread.h");
 
