@@ -267,18 +267,32 @@ int dspal_tester_test_usleep(void)
 	}
 	return TEST_PASS;
 }
+
+static void test_dspal_get_time_1us()
+{
+	uint64_t start_time = dspal_get_time_1us();
+	int counter = 5000;
+	for (int i = 0; i < counter; i ++) {		
+		uint64_t curr_time = dspal_get_time_1us();
+	}
+	int elapsed_time = dspal_get_time_1us() - start_time;
+	LOG_ERR("total %d dspal_get_time_1us calls takes %d, each %f", counter, elapsed_time, elapsed_time*1.0/counter);
+	
+}
 int dspal_tester_test_usleep_ext(void)
 {
-	int fail = 0, sleep_tolerance = 100;
-	
+	int fail = 0, sleep_tolerance = 150; //us
+	int delay_us = 500;
+	test_dspal_get_time_1us();
 	for (int i = 0; i < 50; i ++) {
 		uint64_t start_time = dspal_get_time_1us();
-		int delay_us = 500;
 		usleep(delay_us);
 		int elapsed_time = dspal_get_time_1us()-start_time;
-		if(elapsed_time > delay_us + sleep_tolerance)
+		if((elapsed_time > delay_us) &&
+			(elapsed_time - delay_us > sleep_tolerance))
 			{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
-		if(elapsed_time < delay_us - sleep_tolerance)
+		if((elapsed_time < delay_us) &&
+			( delay_us - elapsed_time > sleep_tolerance))
 			{ LOG_ERR("usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
 		usleep(1000000);
 	}

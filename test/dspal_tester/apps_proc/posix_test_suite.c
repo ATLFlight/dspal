@@ -39,8 +39,8 @@ int run_posix_test_suite(void)
 {
 	int test_results = TEST_PASS;
 	LOG_INFO("testing malloc size limit");
+#if 0
 	test_results |= display_test_results(dspal_tester_test_malloc(), "malloc size test");
-#if 1
 
 	LOG_INFO("testing time.h");
 	test_results |= display_test_results(dspal_tester_test_clockid(), "clockid values exist");
@@ -52,6 +52,7 @@ int run_posix_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_timer_thread_cputime_sig_none(), "timer thread cputime");
 	test_results |= display_test_results(dspal_tester_test_time_return_value(), "time return value");
 	test_results |= display_test_results(dspal_tester_test_time_param(), "time parameter");
+#endif
 	test_results |= display_test_results(dspal_tester_test_usleep(), "usleep for two seconds");
 	test_results |= display_test_results(dspal_tester_test_usleep_ext(), "more usleep testing");
 	test_results |= display_test_results(dspal_tester_test_clock_getres(), "clock_getres");
@@ -61,7 +62,7 @@ int run_posix_test_suite(void)
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_cb(), "periodic timer cb");
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_signal_cb(), "periodic timer signal cb");
 	test_results |= display_test_results(dspal_tester_test_periodic_timer_sigwait(), "periodic timer sigwait");
-
+#if 0
 	LOG_INFO("testing pthread.h");
 
 	test_results |= display_test_results(dspal_tester_test_pthread_attr_init(), "pthread attr init");
