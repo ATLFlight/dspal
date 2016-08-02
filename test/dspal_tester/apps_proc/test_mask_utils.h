@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2016 James Wilson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,33 +30,35 @@
  *
  ****************************************************************************/
 
-#ifndef IO_TEST_SUITE_H_
-#define IO_TEST_SUITE_H_
+#ifndef TEST_MASK_UTILS_H_
+#define TEST_MASK_UTILS_H_
 
+#define NUM_DSPAL_POSIX_TESTS 33
+#define NUM_DSPAL_IO_TESTS 23
+#define TOTAL_NUM_DSPAL_TESTS 56
 
 /**
- * @brief Runs all the io tests.
- *
- * @par
- * Tests that are run (in order)
- * 1) dspal_tester_spi_test
- * 2) dspal_tester_serial_test
- * 3) dspal_tester_i2c_test
- * 4) dspal_tester_test_farf
- * 5) dspal_tester_test_gpio_open_close
- * 6) dspal_tester_test_gpio_ioctl_io
- * 7) dspal_tester_test_gpio_read_write
- * 8) dspal_tester_test_gpio_int
- * 9) dspal_tester_test_posix_file_open
- * 10) dspal_tester_test_posix_file_close
- * 11) dspal_tester_test_posix_file_read
- * 12) dspal_tester_test_posix_file_write
- * 13) dspal_tester_test_posix_file_ioctl
- *
- * @return
- * TEST_PASS ------ All tests passed
- * TEST_FAIL ------ One or more tests failed
-*/
-int run_io_test_suite(char test_mask[]);
+ * @brief Prints help information.
+ */
+void test_mask_utils_print_help();
 
-#endif /* IO_TEST_SUITE_H_ */
+/**
+ * @brief Processes command line arguments.
+ *
+ * @param   argc[in]         number of arguments
+ * @param   argv[in]         array of parameters (each is a char array)
+ * @param   test_mask[out]   output test mask from cli arguments
+ */
+void test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[]);
+
+/**
+ * @brief Runs the provided test if its enabled in the test mask
+ *
+ * @param test_mask Mask of which tests are to be run
+ * @param test_to_run Pointer to the test function to be run
+ * @param test_name Human-readable test name
+ * @return Return value of the test function if it is run
+ */
+int test_mask_utils_run_dspal_test(char** test_mask, int (*test_to_run)(void), char test_name[]);
+
+#endif /* TEST_MASK_UTILS_H_ */

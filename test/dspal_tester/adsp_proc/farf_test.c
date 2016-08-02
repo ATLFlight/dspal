@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2016 James Wilson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,33 +30,57 @@
  *
  ****************************************************************************/
 
-#ifndef IO_TEST_SUITE_H_
-#define IO_TEST_SUITE_H_
+#include <dspal_version.h>
+#include <unistd.h>
+#include "test_utils.h"
+#include "dspal_tester.h"
 
+int dspal_tester_test_farf_log_info()
+{
+	const int NUM_MESSAGE_PERIODS = 5;
+	const int NUM_MESSAGES_PER_PERIOD = 20;
+	int message_periods[NUM_MESSAGE_PERIODS] = { 1e5, 1e4, 1e3, 1e2, 1e1 };
 
-/**
- * @brief Runs all the io tests.
- *
- * @par
- * Tests that are run (in order)
- * 1) dspal_tester_spi_test
- * 2) dspal_tester_serial_test
- * 3) dspal_tester_i2c_test
- * 4) dspal_tester_test_farf
- * 5) dspal_tester_test_gpio_open_close
- * 6) dspal_tester_test_gpio_ioctl_io
- * 7) dspal_tester_test_gpio_read_write
- * 8) dspal_tester_test_gpio_int
- * 9) dspal_tester_test_posix_file_open
- * 10) dspal_tester_test_posix_file_close
- * 11) dspal_tester_test_posix_file_read
- * 12) dspal_tester_test_posix_file_write
- * 13) dspal_tester_test_posix_file_ioctl
- *
- * @return
- * TEST_PASS ------ All tests passed
- * TEST_FAIL ------ One or more tests failed
-*/
-int run_io_test_suite(char test_mask[]);
+	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++) {
+		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++) {
+			LOG_INFO("[%d] LOG_INFO test at %d us period", j,
+					message_periods[i]);
+			usleep(message_periods[i]);
+		}
+	}
 
-#endif /* IO_TEST_SUITE_H_ */
+	return 0;
+}
+
+int dspal_tester_test_farf_log_err()
+{
+	const int NUM_MESSAGE_PERIODS = 5;
+	const int NUM_MESSAGES_PER_PERIOD = 20;
+	int message_periods[NUM_MESSAGE_PERIODS] = { 1e5, 1e4, 1e3, 1e2, 1e1 };
+
+	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++) {
+		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++) {
+			LOG_ERR("[%d] LOG_ERR test at %d us period", j, message_periods[i]);
+			usleep(message_periods[i]);
+		}
+	}
+
+	return 0;
+}
+
+int dspal_tester_test_farf_log_debug()
+{
+	const int NUM_MESSAGE_PERIODS = 5;
+	const int NUM_MESSAGES_PER_PERIOD = 20;
+	int message_periods[NUM_MESSAGE_PERIODS] = { 1e5, 1e4, 1e3, 1e2, 1e1 };
+
+	for (int i = 0; i < NUM_MESSAGE_PERIODS; i++) {
+		for (int j = 0; j < NUM_MESSAGES_PER_PERIOD; j++) {
+			LOG_DEBUG("[%d] LOG_DEBUG test at %d us period", j,
+					message_periods[i]);
+			usleep(message_periods[i]);
+		}
+	}
+
+	return 0;
+}

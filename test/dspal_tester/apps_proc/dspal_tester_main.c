@@ -32,6 +32,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -43,7 +44,7 @@
 #include "dspal_tester.h"
 #include "posix_test_suite.h"
 #include "io_test_suite.h"
-
+#include "test_mask_utils.h"
 
 /**
  * @brief Runs all the tests, the io tests and the posix tests.
@@ -62,11 +63,14 @@ int main(int argc, char *argv[])
 
 	LOG_INFO("");
 
+	char test_mask[255];
+	test_mask_utils_process_cli_args(argc, argv, test_mask);
+
 	LOG_INFO("Starting DSPAL tests");
 
 	dspal_tester_test_dspal_get_version_info();
-	status = run_posix_test_suite();
-	status |= run_io_test_suite();
+	status = run_posix_test_suite(test_mask);
+	status |= run_io_test_suite(test_mask + NUM_DSPAL_POSIX_TESTS);
 
 	if ((status & TEST_FAIL) == TEST_FAIL) {
 		LOG_INFO("DSPAL test failed.");
