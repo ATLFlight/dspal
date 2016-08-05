@@ -3,6 +3,10 @@
 The DSP Abstraction Layer (DSPAL) provides a standard interface for porting
 code to the Hexagon processor.
 
+## Change Log
+
+The DSPAL change log is located [here](CHANGE_LOG.md).
+
 ## Setup Development Environment
 
 See [GettingStarted](https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md)
