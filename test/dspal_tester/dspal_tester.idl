@@ -95,7 +95,6 @@ interface dspal_tester
    long test_gpio_open_close();
    long test_gpio_ioctl_io();
    long test_gpio_read_write();
-   long test_gpio_read_write_extern_loopback();
 
    long test_gpio_int();
 
