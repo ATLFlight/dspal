@@ -64,7 +64,10 @@ int main(int argc, char *argv[])
 	LOG_INFO("");
 
 	char test_mask[255];
-	test_mask_utils_process_cli_args(argc, argv, test_mask);
+	if (test_mask_utils_process_cli_args(argc, argv, test_mask) != 0)
+	{
+		return 0;
+	}
 
 	LOG_INFO("Starting DSPAL tests");
 

@@ -49,10 +49,10 @@ int run_io_test_suite(char test_mask[])
 	LOG_INFO("testing PWM signaling");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_pwm_test, "pwm_test");
 
-        LOG_INFO("testing FARF");
-        test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_info, "farf log_info test");
-        test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_err, "farf log_err test");
-        test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_debug, "farf log_debug test");
+    LOG_INFO("testing FARF");
+    test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_info, "farf log_info test");
+    test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_err, "farf log_err test");
+    test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_debug, "farf log_debug test");
 
 	LOG_INFO("testing GPIO");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_open_close, "gpio open/close test");

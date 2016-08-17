@@ -33,9 +33,9 @@
 #ifndef TEST_MASK_UTILS_H_
 #define TEST_MASK_UTILS_H_
 
-#define NUM_DSPAL_POSIX_TESTS 33
-#define NUM_DSPAL_IO_TESTS 23
-#define TOTAL_NUM_DSPAL_TESTS 56
+#define NUM_DSPAL_POSIX_TESTS (32)
+#define NUM_DSPAL_IO_TESTS (20)
+#define TOTAL_NUM_DSPAL_TESTS (NUM_DSPAL_POSIX_TESTS + NUM_DSPAL_IO_TESTS)
 
 /**
  * @brief Prints help information.
@@ -48,8 +48,9 @@ void test_mask_utils_print_help();
  * @param   argc[in]         number of arguments
  * @param   argv[in]         array of parameters (each is a char array)
  * @param   test_mask[out]   output test mask from cli arguments
+ * @return 0, Do not exit immediately.
  */
-void test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[]);
+int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[]);
 
 /**
  * @brief Runs the provided test if its enabled in the test mask

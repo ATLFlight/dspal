@@ -45,7 +45,6 @@ void test_mask_utils_print_help()
   printf("dspal_tester [-h|--help] [test_mask]\n\n");
   printf("test_mask: string containing 0 in position of disabled tests, 1 in position of enabled tests\n\n");
   printf("List of tests:\n");
-  printf(" 0) test_malloc\n");
   printf(" 1) test_clockid\n");
   printf(" 2) test_sigevent\n");
   printf(" 3) test_time\n");
@@ -98,11 +97,9 @@ void test_mask_utils_print_help()
   printf("50) test_posix_file_remove\n");
   printf("51) test_fopen_fclose\n");
   printf("52) test_fwrite_fread\n");
-  printf("53) test_posix_file_read_write\n");
-  printf("54) test_posix_file_threading\n");
 }
 
-void test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
+int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
 {
   if (argc < 2)
   {
@@ -116,7 +113,7 @@ void test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
   else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
   {
     test_mask_utils_print_help();
-    exit(0);
+    return -1;
   }
   else
   {
@@ -126,12 +123,14 @@ void test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
     {
       fprintf(stderr, "Argument error: Test mask is not %d characters long\n\n", TOTAL_NUM_DSPAL_TESTS);
       test_mask_utils_print_help();
+      return -1;
     }
     else
     {
       memcpy(test_mask, argv[1], i + 1);
     }
   }
+  return 0;
 }
 
 int test_mask_utils_run_dspal_test(char** test_mask, int (*test_to_run)(void), char test_name[])
