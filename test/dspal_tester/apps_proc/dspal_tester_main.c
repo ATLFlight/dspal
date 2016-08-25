@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	
 	//dspal_tester_test_dspal_get_version_info();
 	status = run_posix_test_suite();
-	//status |= run_io_test_suite();
+	status |= run_io_test_suite();
 
 	if ((status & TEST_FAIL) == TEST_FAIL) {
 		LOG_INFO("DSPAL test failed.");

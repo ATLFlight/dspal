@@ -39,6 +39,8 @@
 #include <pthread.h>
 #include "test_utils.h"
 #include "dspal_tester.h"
+#include "HAP_farf.h"
+#include "HAP_power.h"
 
 
 enum DSPAL_TESTER_THREAD_EXIT_STATUS {
@@ -281,29 +283,34 @@ static void test_dspal_get_time_1us()
 }
 int test_usleep_worker(int flag)
 {
-	int fail = 0, sleep_tolerance = 150; //us
-	int delay_us = 150;
-	for (int i = 0; i < 50; i ++) {
+	int fail = 0, sleep_tolerance = 100; //us
+	int delay_us = 50;
+	int total_delta = 0, loops = 100, max_delta = 0;
+	for (int i = 0; i < loops; i ++) {
 		uint64_t start_time = dspal_get_time_1us();
 		delay_us = delay_us + 40;	// 150 --> 2150
 		usleep(delay_us); 
 		int elapsed_time = dspal_get_time_1us()-start_time;
-		if((elapsed_time > delay_us) &&	(elapsed_time - delay_us > sleep_tolerance)) {
-		if (flag == 0)
-			{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
-		else
-			{ LOG_ERR("in thread: usleep() slept too long. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
+		int delta = (elapsed_time - delay_us >= 0)?(elapsed_time - delay_us):(delay_us - elapsed_time);
+		total_delta += delta;
+		if (delta > max_delta) max_delta = delta;
+		if((elapsed_time >= delay_us) && (elapsed_time - delay_us > sleep_tolerance)) {
+			if (flag == 0)
+				{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d, delta %d",delay_us,elapsed_time, delta); fail = 1;}
+			else
+				{ LOG_ERR("usleep() slept too long. Des: %d. Act: %d, delta %d",delay_us,elapsed_time, delta); fail = 1;}
 		}
 			
 		if((delay_us > elapsed_time) && ( delay_us - elapsed_time > sleep_tolerance)) {
-		if (flag == 0)
-			{ LOG_ERR("usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}
-		else
-			{ LOG_ERR("in thread: usleep() slept too short. Des: %d. Act: %d",delay_us,elapsed_time); fail = 1;}			
+			if (flag == 0)
+				{ LOG_ERR("usleep() slept too short. Des: %d. Act: %d, delta %d",delay_us,elapsed_time, delta); fail = 1;}
+			else
+				{ LOG_ERR("in thread: usleep() slept too short. Des: %d. Act: %d, delta %d",delay_us,elapsed_time, delta); fail = 1;}			
 		}
-		usleep(50000);
+		//usleep(50000);
 	}
 	
+	LOG_ERR("%d, average delta is %f, max is %d", total_delta, total_delta*1.0/loops, max_delta);
 	if (fail == 1) {
 		LOG_ERR("flag %d", flag); FAIL("usleep fails in test worker");
 	}
