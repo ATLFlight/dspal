@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2016 James Wilson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,63 +30,36 @@
  *
  ****************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#ifndef TEST_MASK_UTILS_H_
+#define TEST_MASK_UTILS_H_
 
-#include "adspmsgd.h"
-#include "rpcmem.h"
-
-#include "test_utils.h"
-#include "dspal_tester.h"
-#include "posix_test_suite.h"
-#include "io_test_suite.h"
-#include "test_mask_utils.h"
+#define NUM_DSPAL_POSIX_TESTS (32)
+#define NUM_DSPAL_IO_TESTS (20)
+#define TOTAL_NUM_DSPAL_TESTS (NUM_DSPAL_POSIX_TESTS + NUM_DSPAL_IO_TESTS)
 
 /**
- * @brief Runs all the tests, the io tests and the posix tests.
+ * @brief Prints help information.
+ */
+void test_mask_utils_print_help();
+
+/**
+ * @brief Processes command line arguments.
  *
- * @param   argc[in]    number of arguments
- * @param   argv[in]    array of parameters (each is a char array)
+ * @param   argc[in]         number of arguments
+ * @param   argv[in]         array of parameters (each is a char array)
+ * @param   test_mask[out]   output test mask from cli arguments
+ * @return 0, Do not exit immediately.
+ */
+int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[]);
+
+/**
+ * @brief Runs the provided test if its enabled in the test mask
  *
- * @return
- * TEST_PASS ------ All tests passed
- * TEST_FAIL ------ A test has failed
-*/
+ * @param test_mask Mask of which tests are to be run
+ * @param test_to_run Pointer to the test function to be run
+ * @param test_name Human-readable test name
+ * @return Return value of the test function if it is run
+ */
+int test_mask_utils_run_dspal_test(char** test_mask, int (*test_to_run)(void), char test_name[]);
 
-int main(int argc, char *argv[])
-{
-	int status = TEST_PASS;
-
-	LOG_INFO("");
-
-	char test_mask[255];
-	if (test_mask_utils_process_cli_args(argc, argv, test_mask) != 0)
-	{
-		return 0;
-	}
-
-	LOG_INFO("Starting DSPAL tests");
-
-	dspal_tester_test_dspal_get_version_info();
-	status = run_posix_test_suite(test_mask);
-	status |= run_io_test_suite(test_mask + NUM_DSPAL_POSIX_TESTS);
-
-	if ((status & TEST_FAIL) == TEST_FAIL) {
-		LOG_INFO("DSPAL test failed.");
-
-	} else {
-		if ((status & TEST_SKIP) == TEST_SKIP) {
-			LOG_INFO("DSPAL some tests skipped.");
-		}
-
-		LOG_INFO("DSPAL tests succeeded.");
-	}
-
-	LOG_INFO("");
-	return status;
-}
-
+#endif /* TEST_MASK_UTILS_H_ */

@@ -33,34 +33,43 @@
 #include <stdio.h>
 #include "dspal_tester.h"
 #include "test_utils.h"
+#include "test_mask_utils.h"
 
-int run_io_test_suite(void)
+#define VERSION_PREFIX "DSPAL-"
+
+int run_io_test_suite(char test_mask[])
 {
 	int test_results = TEST_PASS;
 
 	LOG_INFO("testing device path access");
-	test_results |= display_test_results(dspal_tester_spi_test(), "spi loopback test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_spi_test, "spi loopback test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_serial_test, "serial I/O test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_i2c_test, "i2c test");
 
-	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
+	LOG_INFO("testing PWM signaling");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_pwm_test, "pwm_test");
 
-	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
+    LOG_INFO("testing FARF");
+    test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_info, "farf log_info test");
+    test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_err, "farf log_err test");
+    test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_debug, "farf log_debug test");
 
 	LOG_INFO("testing GPIO");
-	test_results |= display_test_results(dspal_tester_test_gpio_open_close(), "gpio open/close test");
-	test_results |= display_test_results(dspal_tester_test_gpio_ioctl_io(), "gpio ioctl I/O mode test");
-	test_results |= display_test_results(dspal_tester_test_gpio_read_write(), "gpio read/write test");
-	test_results |= display_test_results(dspal_tester_test_gpio_int(), "gpio INT test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_open_close, "gpio open/close test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_ioctl_io, "gpio ioctl I/O mode test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_read_write, "gpio read/write test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_int, "gpio INT test");
 
 	LOG_INFO("testing file I/O");
-	test_results |= display_test_results(dspal_tester_test_posix_file_open_close(), "file open/close");
-	test_results |= display_test_results(dspal_tester_test_posix_file_read_write(), "file read/write");
-	test_results |= display_test_results(dspal_tester_test_posix_file_open_trunc(), "file open_trunc");
-	test_results |= display_test_results(dspal_tester_test_posix_file_open_append(), "file open_append");
-	test_results |= display_test_results(dspal_tester_test_posix_file_ioctl(), "file ioctl");
-	test_results |= display_test_results(dspal_tester_test_posix_file_fsync(), "file fsync");
-	test_results |= display_test_results(dspal_tester_test_posix_file_remove(), "file remove");
-	test_results |= display_test_results(dspal_tester_test_fopen_fclose(), "fopen/fclose test");
-	test_results |= display_test_results(dspal_tester_test_fwrite_fread(), "fwrite/fread test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_open_close, "file open/close");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_read_write, "file read/write");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_open_trunc, "file open_trunc");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_open_append, "file open_append");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_ioctl, "file ioctl");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_fsync, "file fsync");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_remove, "file remove");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_fopen_fclose, "fopen/fclose test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_fwrite_fread, "fwrite/fread test");
 
 	return test_results;
 }
