@@ -31,3 +31,36 @@
 #include <sys/cdefs.h>
 #include <machine/_types.h>
 
+/*
+ * Standard type definitions.
+ */
+typedef	__int32_t	__blksize_t;	/* file block size */
+typedef	__int64_t	__blkcnt_t;	/* file block count */
+typedef	__int32_t	__clockid_t;	/* clock_gettime()... */
+typedef	__uint32_t	__fflags_t;	/* file flags */
+typedef	__uint64_t	__fsblkcnt_t;
+typedef	__uint64_t	__fsfilcnt_t;
+typedef	__uint32_t	__gid_t;
+typedef	__int64_t	__id_t;		/* can hold a gid_t, pid_t, or uid_t */
+typedef	__uint32_t	__ino_t;	/* inode number */
+typedef	long		__key_t;	/* IPC key (for Sys V IPC) */
+typedef	__int32_t	__lwpid_t;	/* Thread ID (a.k.a. LWP) */
+typedef	__uint32_t	__mode_t;	/* permissions */
+typedef	int		__accmode_t;	/* access permissions */
+typedef	int		__nl_item;
+typedef	__uint16_t	__nlink_t;	/* link count */
+typedef	__int64_t	__off_t;	/* file offset */
+typedef	__int32_t	__pid_t;	/* process [group] */
+typedef	__int64_t	__rlim_t;	/* resource limit - intentionally */
+					/* signed, because of legacy code */
+					/* that uses -1 for RLIM_INFINITY */
+typedef	__uint8_t	__sa_family_t;
+typedef	__uint32_t	__socklen_t;
+typedef	long		__suseconds_t;	/* microseconds (signed) */
+typedef	struct __timer	*__timer_t;	/* timer_gettime()... */
+typedef	struct __mq	*__mqd_t;	/* mq_open()... */
+typedef	__uint32_t	__uid_t;
+typedef	unsigned int	__useconds_t;	/* microseconds (unsigned) */
+typedef	int		__cpuwhich_t;	/* which parameter for cpuset. */
+typedef	int		__cpulevel_t;	/* level parameter for cpuset. */
+typedef int		__cpusetid_t;	/* cpuset identifier. */
