@@ -40,40 +40,43 @@
  *
  * @par
  * Tests that are run (in order)
- * 1) dspal_tester_test_clockid
- * 2) dspal_tester_test_sigevent
- * 3) dspal_tester_test_time
- * 4) dspal_tester_test_timer_realtime_sig_none
- * 5) dspal_tester_test_timer_monotonic_sig_none
- * 6) dspal_tester_test_timer_process_cputime_sig_none
- * 7) dspal_tester_test_timer_thread_cputime_sig_none
- * 8) dspal_tester_test_time_return_value
- * 9) dspal_tester_test_time_param
- * 10) dspal_tester_test_usleep
- * 11) dspal_tester_test_clock_getres
- * 12) dspal_tester_test_clock_gettime
- * 13) dspal_tester_test_clock_settime
- * 14) dspal_tester_test_one_shot_timer_cb
- * 15) dspal_tester_test_periodic_timer_cb
- * 16) dspal_tester_test_periodic_timer_signal_cb
- * 17) dspal_tester_test_periodic_timer_sigwait
- * 18) dspal_tester_test_pthread_attr_init
- * 19) dspal_tester_test_pthread_create
- * 20) dspal_tester_test_pthread_cancel
- * 21) dspal_tester_test_pthread_self
- * 22) dspal_tester_test_pthread_exit
- * 23) dspal_tester_test_pthread_kill
- * 24) dspal_tester_test_pthread_mutex_lock
- * 25) dspal_tester_test_pthread_mutex_lock_thread
- * 26) dspal_tester_test_pthread_stack
- * 27) dspal_tester_test_pthread_heap
- * 28) dspal_tester_test_usleep
- * 29) dspal_tester_test_semaphore_wait
+ *  1)clockid values exist (dspal_tester_test_clockid)
+ *  2)sigevent values exist (dspal_tester_test_sigevent)
+ *  3)time returns good value (dspal_tester_test_time)
+ *  4)timer realtime (dspal_tester_test_timer_realtime_sig_none)
+ *  5)timer monotonic (dspal_tester_test_timer_monotonic_sig_none)
+ *  6)timer process cputime (dspal_tester_test_timer_process_cputime_sig_none)
+ *  7)timer thread cputime (dspal_tester_test_timer_thread_cputime_sig_none)
+ *  8)time return value (dspal_tester_test_time_return_value)
+ *  9)time parameter (dspal_tester_test_time_param)
+ * 10)usleep for two seconds (dspal_tester_test_usleep)
+ * 11)clock_getres (dspal_tester_test_clock_getres)
+ * 12)clock_gettime (dspal_tester_test_clock_gettime)
+ * 13)clock_settime (dspal_tester_test_clock_settime)
+ * 14)one shot timer cb (dspal_tester_test_one_shot_timer_cb)
+ * 15)periodic timer cb (dspal_tester_test_periodic_timer_cb)
+ * 16)periodic timer signal cb (dspal_tester_test_periodic_timer_signal_cb)
+ * 17)periodic timer sigwait (dspal_tester_test_periodic_timer_sigwait)
+ * 18)pthread attr init (dspal_tester_test_pthread_attr_init)
+ * 19)pthread create (dspal_tester_test_pthread_create)
+ * 20)pthread cancel (dspal_tester_test_pthread_cancel)
+ * 21)pthread self (dspal_tester_test_pthread_self)
+ * 22)pthread exit (dspal_tester_test_pthread_exit)
+ * 23)pthread kill (dspal_tester_test_pthread_kill)
+ * 24)pthread condition timed wait (dspal_tester_test_pthread_cond_timedwait)
+ * 25)pthread mutex lock (dspal_tester_test_pthread_mutex_lock)
+ * 26)thread mutex lock thread (dspal_tester_test_pthread_mutex_lock_thread)
+ * 27)thread large allocation on stack (dspal_tester_test_pthread_stack)
+ * 28)thread large allocation on heap (dspal_tester_test_pthread_heap)
+ * 29)usleep for two seconds (dspal_tester_test_usleep)
+ * 30)semaphore wait (dspal_tester_test_semaphore_wait)
+ * 31)test C++ heap (dspal_tester_test_cxx_heap)
+ * 32)test C++ static initialization (dspal_tester_test_cxx_static)
  *
  * @return
  * TEST_PASS ------ All tests passed
  * TEST_FAIL ------ One or more tests failed
 */
-int run_posix_test_suite();
+int run_posix_test_suite(char test_mask[]);
 
 #endif // POSIX_TEST_SUITE_H

@@ -3,6 +3,10 @@
 The DSP Abstraction Layer (DSPAL) provides a standard interface for porting
 code to the Hexagon processor.
 
+## Change Log
+
+The DSPAL change log is located [here](CHANGE_LOG.md).
+
 ## Setup Development Environment
 
 See [GettingStarted](https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md)
@@ -19,8 +23,9 @@ export PATH=${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux
 
 ```
 git clone https://github.com/ATLFlight/dspal
+cd dspal
 git submodule update --init --recursive
-cd dspal/test
+cd test
 make
 ```
 
