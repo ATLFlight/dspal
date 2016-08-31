@@ -44,6 +44,7 @@ QURT_BUNDLE(APP_NAME dspal_tester
 		adsp_proc/posix_semaphore_tests.c
 		adsp_proc/posix_time_tests.c
 		adsp_proc/serial_test_imp.c
+		adsp_proc/termios_test_imp.c
 		adsp_proc/spi_test_imp.c
 		adsp_proc/cxx_tests.cpp
 		adsp_proc/misc_tests.c

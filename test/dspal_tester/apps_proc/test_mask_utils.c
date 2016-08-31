@@ -79,24 +79,25 @@ void test_mask_utils_print_help()
   printf("32) test_cxx_static\n");
   printf("33) spi_test\n");
   printf("34) serial_test\n");
-  printf("35) i2c_test\n");
-  printf("36) pwm_test\n");
-  printf("37) test_farf_log_info\n");
-  printf("38) test_farf_log_err\n");
-  printf("39) test_farf_log_debug\n");
-  printf("40) test_gpio_open_close\n");
-  printf("41) test_gpio_ioctl_io\n");
-  printf("42) test_gpio_read_write\n");
-  printf("43) test_gpio_int\n");
-  printf("44) test_posix_file_open_close\n");
-  printf("45) test_posix_file_read_write\n");
-  printf("46) test_posix_file_open_trunc\n");
-  printf("47) test_posix_file_open_append\n");
-  printf("48) test_posix_file_ioctl\n");
-  printf("49) test_posix_file_fsync\n");
-  printf("50) test_posix_file_remove\n");
-  printf("51) test_fopen_fclose\n");
-  printf("52) test_fwrite_fread\n");
+  printf("35) termios_test\n");
+  printf("36) i2c_test\n");
+  printf("37) pwm_test\n");
+  printf("38) test_farf_log_info\n");
+  printf("39) test_farf_log_err\n");
+  printf("40) test_farf_log_debug\n");
+  printf("41) test_gpio_open_close\n");
+  printf("42) test_gpio_ioctl_io\n");
+  printf("43) test_gpio_read_write\n");
+  printf("44) test_gpio_int\n");
+  printf("45) test_posix_file_open_close\n");
+  printf("46) test_posix_file_read_write\n");
+  printf("47) test_posix_file_open_trunc\n");
+  printf("48) test_posix_file_open_append\n");
+  printf("49) test_posix_file_ioctl\n");
+  printf("50) test_posix_file_fsync\n");
+  printf("51) test_posix_file_remove\n");
+  printf("52) test_fopen_fclose\n");
+  printf("53) test_fwrite_fread\n");
 }
 
 int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])

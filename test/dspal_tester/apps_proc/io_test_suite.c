@@ -44,6 +44,7 @@ int run_io_test_suite(char test_mask[])
 	LOG_INFO("testing device path access");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_spi_test, "spi loopback test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_serial_test, "serial I/O test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_termios_test, "termios test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_i2c_test, "i2c test");
 
 	LOG_INFO("testing PWM signaling");
