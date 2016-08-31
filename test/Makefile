@@ -31,25 +31,25 @@
 #
 ############################################################################
 
-all: dspal_tester
+all: dspal_tester version_test
 
 .PHONY: ENV_VARS
 ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
-	@[ `which arm-linux-gnueabihf-gcc` ] || (echo "Add ${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux/bin to PATH" && false)
+	@[ `which arm-linux-gnueabihf-gcc` ] || (echo "Add ${HEXAGON_SDK_ROOT}/gcc-linaro-4.9-2014.11-x86_64_arm-linux-gnueabihf_linux/bin to PATH" && false)
 
 cmake_hexagon/bundle.cmake:
-	cd ../../ && git submodule init
-	cd ../../ && git submodule update
+	cd ../ && git submodule init
+	cd ../ && git submodule update
 
-.PHONY: dspal_tester
+.PHONY: dspal_tester version_test
 dspal_tester: ENV_VARS cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	mkdir -p build && cd build && cmake -Wno-dev .. -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	cd build && make
 	
 load: dspal_tester
-	cd build && make dspal_tester-load
+	cd build && make dspal_tester-load && make version_test-load
 
 clean:
 	rm -rf build

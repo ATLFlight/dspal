@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2015 Mark Charlebois. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,63 +30,24 @@
  *
  ****************************************************************************/
 
-#include <stdlib.h>
+#pragma once
+
+#ifdef __hexagon__
+/* Use the following macro for debug output on the aDSP. */
+#include <HAP_farf.h>
+
+/* Enable medium level debugging. */
+//#define FARF_HIGH   1    /* Use a value of 0 to disable the specified debug level. */
+//#define FARF_MEDIUM 1
+//#define FARF_LOW    1
+
+#define LOG_INFO(...) FARF(ALWAYS, __VA_ARGS__);
+#define LOG_ERR(...) FARF(ALWAYS, __VA_ARGS__);
+#define LOG_DEBUG(...) FARF(MEDIUM, __VA_ARGS__);
+#else
+/* Use the following macro for debug output on the Application Processor. */
 #include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-#include "adspmsgd.h"
-#include "rpcmem.h"
-
-#include "test_utils.h"
-#include "dspal_tester.h"
-#include "posix_test_suite.h"
-#include "io_test_suite.h"
-#include "test_mask_utils.h"
-
-/**
- * @brief Runs all the tests, the io tests and the posix tests.
- *
- * @param   argc[in]    number of arguments
- * @param   argv[in]    array of parameters (each is a char array)
- *
- * @return
- * TEST_PASS ------ All tests passed
- * TEST_FAIL ------ A test has failed
-*/
-
-int main(int argc, char *argv[])
-{
-	int status = TEST_PASS;
-
-	LOG_INFO("");
-
-	char test_mask[255];
-	if (test_mask_utils_process_cli_args(argc, argv, test_mask) != 0)
-	{
-		return 0;
-	}
-
-	LOG_INFO("Starting DSPAL tests");
-
-	dspal_tester_test_dspal_get_version_info();
-	status = run_posix_test_suite(test_mask);
-	status |= run_io_test_suite(test_mask + NUM_DSPAL_POSIX_TESTS);
-
-	if ((status & TEST_FAIL) == TEST_FAIL) {
-		LOG_INFO("DSPAL test failed.");
-
-	} else {
-		if ((status & TEST_SKIP) == TEST_SKIP) {
-			LOG_INFO("DSPAL some tests skipped.");
-		}
-
-		LOG_INFO("DSPAL tests succeeded.");
-	}
-
-	LOG_INFO("");
-	return status;
-}
-
+#define LOG_INFO(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#define LOG_ERR(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#define LOG_DEBUG(...)	do{ printf(__VA_ARGS__); printf("\n"); }while(0)
+#endif

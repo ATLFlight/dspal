@@ -30,63 +30,67 @@
  *
  ****************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
+// dspal_version.h cannot be included here because it would cause the build
+// to pick up all the DSP specific types. Instead use --include dspal_version.h
+
+#include "stdbool.h"
 #include "adspmsgd.h"
 #include "rpcmem.h"
+#include "version_test.h"
+#include "dspal_log.h"
 
-#include "test_utils.h"
-#include "dspal_tester.h"
-#include "posix_test_suite.h"
-#include "io_test_suite.h"
-#include "test_mask_utils.h"
 
 /**
- * @brief Runs all the tests, the io tests and the posix tests.
- *
- * @param   argc[in]    number of arguments
- * @param   argv[in]    array of parameters (each is a char array)
+ * @brief Display the DSP version information
  *
  * @return
- * TEST_PASS ------ All tests passed
- * TEST_FAIL ------ A test has failed
+ * 0 ------ Version information retrieved
+ * 1 ------ An error occured
 */
 
-int main(int argc, char *argv[])
+int main()
 {
-	int status = TEST_PASS;
+	int status = 0;
+	const int heap_id = 22; 	// FIXME - no idea how these are allocated
+	const int fastrpc_flags = 0;
+	const int buf_size = DSPAL_MAX_LEN_VERSION_INFO_STR * 3;
 
-	LOG_INFO("");
+	rpcmem_init();
 
-	char test_mask[255];
-	if (test_mask_utils_process_cli_args(argc, argv, test_mask) != 0)
-	{
-		return 0;
+        char *versionBuffer = (char *) rpcmem_alloc(heap_id, fastrpc_flags, buf_size);
+
+        int ret = (versionBuffer != NULL) ? true : false;
+
+        if (!ret) {
+                LOG_ERR("%s rpcmem_alloc failed! for version string buffer");
+                rpcmem_free(versionBuffer);
+                return 1;
+        }
+
+	char *version_string = &versionBuffer[0];
+	char *build_date_string = &versionBuffer[DSPAL_MAX_LEN_VERSION_INFO_STR];
+	char *build_time_string = &versionBuffer[DSPAL_MAX_LEN_VERSION_INFO_STR*2];
+
+	status = version_test_get_version_info(
+		version_string, DSPAL_MAX_LEN_VERSION_INFO_STR,
+		build_date_string, DSPAL_MAX_LEN_VERSION_INFO_STR,
+		build_time_string, DSPAL_MAX_LEN_VERSION_INFO_STR);
+
+	if (status != 0) {
+		LOG_INFO("Failed to get DSP image version information.");
+	}
+	else {
+		LOG_INFO("version: %s", version_string);
+		LOG_INFO("build date: %s", build_date_string);
+		LOG_INFO("build time: %s", build_time_string);
 	}
 
-	LOG_INFO("Starting DSPAL tests");
+	if (versionBuffer != NULL) {
+                rpcmem_free(versionBuffer);
+                versionBuffer = 0;
+        }
 
-	dspal_tester_test_dspal_get_version_info();
-	status = run_posix_test_suite(test_mask);
-	status |= run_io_test_suite(test_mask + NUM_DSPAL_POSIX_TESTS);
-
-	if ((status & TEST_FAIL) == TEST_FAIL) {
-		LOG_INFO("DSPAL test failed.");
-
-	} else {
-		if ((status & TEST_SKIP) == TEST_SKIP) {
-			LOG_INFO("DSPAL some tests skipped.");
-		}
-
-		LOG_INFO("DSPAL tests succeeded.");
-	}
-
-	LOG_INFO("");
 	return status;
 }
 
