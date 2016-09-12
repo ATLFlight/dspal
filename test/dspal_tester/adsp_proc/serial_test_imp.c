@@ -74,6 +74,8 @@ const char *serial_device_path2[MAX_UART_DEVICE_NUM] = {
 
 int serial_fildes[MAX_UART_DEVICE_NUM] = { -1};
 int serial_i2c_fildes; 
+uint8_t tx_data[] = {0xAF, 0x0F, 0x01, 0x51, 0x00, 0x50, 0x00, 0x50, 0x00, 0x50, 0x00, 0xFF, 0x0F, 0x3F, 0xF6}; 
+
 
 /**
 * @brief Test serial device open and close
@@ -112,6 +114,31 @@ int dspal_tester_serial_multi_port_open(void)
 
 	return result;
 }
+void dspal_tester_serial_loopback_read_callback(void *context, char *buffer, size_t num_bytes)
+{
+	int * result = (int *)context;
+	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
+	LOG_INFO("dspal_tester_serial_loopback_read_callback");
+
+	if ((buffer != NULL ) && (num_bytes > 0)) {
+		memcpy(rx_buffer, buffer, num_bytes);
+		LOG_ERR("uart read callback received bytes: %d",
+			 num_bytes);
+
+        for (int i = 0; i < (int)num_bytes; i++) 
+        {
+			if (tx_data[i] != rx_buffer[i])
+			{
+            	LOG_ERR("data mismatch: rx_buffer[%d]=%x, tx_data[%d] = %x", i , rx_buffer[i], i, tx_data[i]);
+				*result = ERROR;
+			}
+        }
+
+	} else {
+		LOG_ERR("error: read callback with no data in the buffer");
+		*result = ERROR;
+	}
+}
 void dspal_tester_serial_read_callback(void *context, char *buffer, size_t num_bytes)
 {
 	int rx_dev_id = (int)context;
@@ -135,17 +162,18 @@ void dspal_tester_serial_read_callback(void *context, char *buffer, size_t num_b
 	}
 }
 
+
 void* dspal_tester_serial_write(void* esc_fd)
 {
     int fd = (int)esc_fd; 
 
     /*Spin motor*/
-    uint8_t out[] = {0xAF, 0x0F, 0x01, 0x51, 0x00, 0x50, 0x00, 0x50, 0x00, 0x50, 0x00, 0xFF, 0x0F, 0x3F, 0xF6}; 
-    int packet_size = sizeof(out); 
+    //uint8_t out[] = {0xAF, 0x0F, 0x01, 0x51, 0x00, 0x50, 0x00, 0x50, 0x00, 0x50, 0x00, 0xFF, 0x0F, 0x3F, 0xF6}; 
+    int packet_size = sizeof(tx_data); 
 
     for (int i = 0; i < 10000; i++) 
     {
-        int num_bytes_written = write(fd,(const char *)out,packet_size);
+        int num_bytes_written = write(fd,(const char *)tx_data,packet_size);
 
         if (num_bytes_written == packet_size) {
             LOG_INFO("written %d bytes for i = %d ", num_bytes_written,i);
@@ -526,7 +554,7 @@ int dspal_tester_serial_read_with_small_buffer(void)
 	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
 	int fd;
 	int max_read_bytes = 20;
-	int devid = 1;
+	int devid = 0;
 
 	LOG_INFO("beginning serial read with small buffer test");
 
@@ -711,6 +739,60 @@ int dspal_tester_serial_i2c_write(void)
 		 result == SUCCESS ? "PASSED" : "FAILED");
 
 	return result;
+}
+/**
+* @brief Runs serial loopback test, and return result.
+*
+* @return
+* SUCCESS ------ All tests pass
+* ERROR -------- One or more tests failed
+*/
+int dspal_tester_serial_loopback(int uart_port)
+{
+	int result = SUCCESS;
+	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
+
+    int packet_size = sizeof(tx_data); 
+	char dev_path[100];
+	strcpy(dev_path, serial_device_path[0]);
+
+	dev_path[9] = '0' + uart_port;
+	
+    int fd = open(dev_path, O_RDWR);
+    LOG_INFO("open %s O_RDWR mode %s", dev_path,
+             (fd < SUCCESS) ? "fail" : "succeed");
+	
+    if (fd < SUCCESS) {
+        result = ERROR; 
+        goto exit;
+    }
+	struct dspal_serial_ioctl_receive_data_callback receive_callback;
+	receive_callback.rx_data_callback_func_ptr = dspal_tester_serial_loopback_read_callback;
+	receive_callback.context = (void *)&result;
+	result = ioctl(fd, 
+		       SERIAL_IOCTL_SET_RECEIVE_DATA_CALLBACK,
+		       (void *)&receive_callback);
+	if (result < SUCCESS) {
+		close(fd);
+		fd = -1;
+	}
+    for (int i = 0; i < 10; i++) 
+    {
+        int num_bytes_written = write(fd,(const char *)tx_data,packet_size);
+
+        if (num_bytes_written == packet_size) {
+            LOG_INFO("written %d bytes for i = %d ", num_bytes_written,i);
+
+        } else {
+            LOG_ERR("failed to write");
+            return NULL; 
+        }
+        usleep(1000000); 
+    }
+exit:
+	close(fd);
+	return result;
+
 }
 
 /**
