@@ -72,6 +72,7 @@ interface dspal_tester
 
    long test_posix_file_open_close();
    long test_posix_file_read_write();
+   long test_posix_file_threading();
    long test_posix_file_open_trunc();
    long test_posix_file_open_append();
    long test_posix_file_ioctl();

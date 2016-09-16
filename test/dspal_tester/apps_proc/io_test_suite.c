@@ -70,6 +70,7 @@ int run_io_test_suite(char test_mask[])
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_remove, "file remove");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_fopen_fclose, "fopen/fclose test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_fwrite_fread, "fwrite/fread test");
+	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_threading, "fwrite/fread in a different thread test");
 
 	return test_results;
 }
