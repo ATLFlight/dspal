@@ -41,8 +41,26 @@
 #include "test_status.h"
 #include "test_utils.h"
 
-#define SPI_DEVICE_PATH "/dev/spi-8"
+#define SPI_DEVICE_PATH "/dev/spi-1"
 #define SPI_TEST_CYCLES 10
+
+#define MPU_SPI_BUF_LEN   512
+/**
+ * Supported SPI frequency to talk to MPU9x50 slave device
+ * MPU9x50 SPI interface supports upto 20MHz frequency. However 20MHz is not
+ * reliable in our test and corrupted data is observed.
+ */
+enum MPU_SPI_FREQUENCY
+{
+   MPU_SPI_FREQUENCY_1MHZ = 1000000UL,
+   MPU_SPI_FREQUENCY_5MHZ = 5000000UL,
+   MPU_SPI_FREQUENCY_10MHZ = 10000000UL,
+   MPU_SPI_FREQUENCY_15MHZ = 15000000UL,
+   MPU_SPI_FREQUENCY_20MHZ = 20000000UL,
+};
+
+static uint8_t spiTxBuf[MPU_SPI_BUF_LEN];
+static uint8_t spiRxBuf[MPU_SPI_BUF_LEN];
 
 /**
  * NOTE: DO NOT send more than 64 bytes in loopback test. SPI bus automatically
@@ -92,6 +110,49 @@ void init_write_buffer(uint8_t *buffer, int length)
 
 		c++;
 	}
+}
+
+int mpu_spi_configure_speed(int fd, enum MPU_SPI_FREQUENCY freq)
+{
+   struct dspal_spi_ioctl_set_bus_frequency bus_freq;
+
+   bus_freq.bus_frequency_in_hz = freq;
+
+   return ioctl(fd, SPI_IOCTL_SET_BUS_FREQUENCY_IN_HZ, &bus_freq);
+}
+
+
+int mpu_spi_get_reg(int fd, int reg, uint8_t* val)
+{
+   int retVal;
+   struct dspal_spi_ioctl_read_write read_write;
+
+
+   retVal = mpu_spi_configure_speed(fd, MPU_SPI_FREQUENCY_1MHZ);
+   if (retVal != 0)
+   {
+      LOG_ERR("mpu_spi_get_reg: error configuring speed %d", retVal);
+      return retVal;
+   }
+
+   spiTxBuf[0] = reg | 0x80; //register high bit=1 for read
+
+   read_write.read_buffer = spiRxBuf;
+   read_write.read_buffer_length = 2;
+   read_write.write_buffer = spiTxBuf;
+   read_write.write_buffer_length = 2;
+   retVal = ioctl(fd, SPI_IOCTL_RDWR, &read_write);
+   if (retVal != 2)
+   {
+      FARF(ALWAYS, "mpu_spi_get_reg error read/write ioctl: %d", retVal);
+      return retVal;
+   }
+
+   *val = spiRxBuf[1];
+
+   FARF(LOW, "mpu_spi_get_reg %d=%d", reg, *val);
+
+   return 0;
 }
 
 /**
@@ -270,6 +331,52 @@ exit:
 	return result;
 }
 
+#define MPU9250_REG_WHOAMI		 117
+
+int dspal_tester_spi_whoami_test(void)
+{
+	int spi_fildes = SUCCESS;
+	int result = SUCCESS;
+	uint8_t write_data_buffer[DSPAL_SPI_TRANSMIT_BUFFER_LENGTH + 1];
+	uint8_t read_data_buffer[DSPAL_SPI_RECEIVE_BUFFER_LENGTH + 1];
+	struct dspal_spi_ioctl_loopback loopback;
+	struct dspal_spi_ioctl_read_write read_write;
+	struct dspal_spi_ioctl_set_spi_mode bus_mode;
+
+	LOG_DEBUG("testing spi open for: %s", SPI_DEVICE_PATH);
+	spi_fildes = open(SPI_DEVICE_PATH, 0);
+
+	if (spi_fildes < SUCCESS) {
+		LOG_ERR("error: failed to open spi device path: %s", SPI_DEVICE_PATH);
+		result = ERROR;
+		goto exit;
+	}
+
+	int retry = 0;
+	uint8_t b = 0;
+	while (retry < 10)
+	{
+	   // get version (expecting 0x71 for the 9250)
+	   mpu_spi_get_reg(spi_fildes, MPU9250_REG_WHOAMI, &b);
+	   if ((b == 0x70) || (b == 0x71)) {
+		  break;
+	   }
+	   retry++;
+	}
+
+	if (retry >= 10)
+		result = ERROR;
+
+
+exit:
+
+	if (spi_fildes > SUCCESS) {
+		close(spi_fildes);
+	}
+
+	return result;
+}
+
 /**
  * Main entry point for the SPI automated test.
  * @return
@@ -291,6 +398,11 @@ int dspal_tester_spi_test(void)
 
 	if ((result = dspal_tester_spi_exceed_max_length_test()) < SUCCESS) {
 		LOG_ERR("error: spi exceed max write length test failed: %d", result);
+		return result;
+	}
+	LOG_INFO("beginning whoami test");
+	if ((result = dspal_tester_spi_whoami_test()) < SUCCESS) {
+		LOG_ERR("error: spi whoami test failed: %d", result);
 		return result;
 	}
 
