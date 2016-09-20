@@ -41,7 +41,8 @@
 #include "test_status.h"
 #include "test_utils.h"
 
-#define SPI_DEVICE_PATH "/dev/spi-1"
+#include "platform.h"
+
 #define SPI_TEST_CYCLES 10
 
 #define MPU_SPI_BUF_LEN   512
@@ -405,6 +406,5 @@ int dspal_tester_spi_test(void)
 		LOG_ERR("error: spi whoami test failed: %d", result);
 		return result;
 	}
-
 	return SUCCESS;
 }

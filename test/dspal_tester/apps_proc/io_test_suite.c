@@ -45,10 +45,10 @@ int run_io_test_suite(char test_mask[])
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_spi_test, "spi loopback test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_serial_test, "serial I/O test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_i2c_test, "i2c test");
-
+#if defined(DSP_TYPE_ADSP)
 	LOG_INFO("testing PWM signaling");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_pwm_test, "pwm_test");
-
+#endif
     LOG_INFO("testing FARF");
     test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_info, "farf log_info test");
     test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_farf_log_err, "farf log_err test");
@@ -58,7 +58,10 @@ int run_io_test_suite(char test_mask[])
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_open_close, "gpio open/close test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_ioctl_io, "gpio ioctl I/O mode test");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_read_write, "gpio read/write test");
+
+#if !defined(DSP_TYPE_SLPI)	
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_gpio_int, "gpio INT test");
+#endif
 
 	LOG_INFO("testing file I/O");
 	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_posix_file_open_close, "file open/close");

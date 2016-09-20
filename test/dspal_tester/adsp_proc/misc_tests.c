@@ -40,8 +40,8 @@ int dspal_tester_test_dspal_get_version_info()
 	char *build_date_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
 	char *build_time_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
 
-	dspal_get_version_info((char *)version_string, (char *)build_date_string,
-			       (char *)build_time_string);
+	//dspal_get_version_info((char *)version_string, (char *)build_date_string,
+		//	       (char *)build_time_string);
 
 	LOG_INFO("version: %s", version_string);
 	LOG_INFO("build date: %s", build_date_string);

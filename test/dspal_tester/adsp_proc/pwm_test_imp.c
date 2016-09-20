@@ -71,7 +71,7 @@ int dspal_tester_pwm_test(void)
 	struct dspal_version_info version;
 	int major_version, minor_version;
 
-	dspal_get_version_info_ext(&version);
+	//dspal_get_version_info_ext(&version);
 	strtok(version.version_string, "-.");
 	major_version = atoi(strtok(NULL, "-."));
 	minor_version = atoi(strtok(NULL, "-."));
