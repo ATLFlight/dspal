@@ -7,31 +7,12 @@ echo start QDSPs
 rem call start_dsp.cmd 3
 rem sleep 5
 rem
-rem adb push p:\poky\build\tmp\work\armv7a-vfp-neon-pokymllib32-linux-gnueabi\lib32-adsprpc\0.1-r0\image\usr\bin\sdsprpcd /usr/bin/.
-rem adb push P:\poky\build\tmp\sysroots\lib32-qcom-bsp\usr\lib\libadsprpc.so /usr/lib/.
-rem adb push P:\poky\build\tmp\sysroots\lib32-qcom-bsp\usr\lib\libsdsprpc.so /usr/lib/.
-rem adb shell chmod 755 /usr/lib/libadsprpc.so
-rem adb shell chmod 755 /usr/lib/libsdsprpc.so
-rem adb shell chmod 755 /usr/bin/sdsprpcd
-rem adb shell "/usr/bin/adsprpcd&"
 
-rem adb push  P:\poky\build\tmp\sysroots\lib32-qcom-bsp\usr\lib\libstdc++.so /usr/lib/
-rem adb push  P:\poky\build\tmp\sysroots\lib32-qcom-bsp\lib\libgcc_s.so.1 /lib/
-
-rem adb push  P:\poky\build\tmp\sysroots\lib32-qcom-bsp\usr\lib /usr/lib
-rem adb push  P:\poky\build\tmp\sysroots\lib32-qcom-bsp\lib /lib
-
-
-rem adb shell chmod 755 /usr/lib/*.so
-rem adb shell chmod 755 /lib/*.so
-rem adb shell ln -sf /lib/ld-2.22.so   /lib/ld-linux-armhf.so.3
-
-rem ///////////////////////
 
 set adsp_lib_dir=/system/vendor/lib/rfsa/adsp
 set user_lib_dir=/system/vendor/lib
-set adsp_lib_dir_bad=/usr/share/data/adsp
-adb shell rm %adsp_lib_dir_bad%/*
+set adsp_lib_dir=/usr/share/data/adsp
+rem adb shell rm %adsp_lib_dir_bad%/*
 adb shell rm -rf  %adsp_lib_dir_bad%
 
 adb shell mkdir -p  %adsp_lib_dir%

@@ -86,7 +86,7 @@ struct dspal_version_info {
  * BUILD_TIME_STRING=[hh:mm:ss]. May be left NULL.
  * e.g.: BUILD_TIME_STRING=[23:59:01]
  */
-//void dspal_get_version_info(char *out_version_string, char *out_build_date, char *out_build_time);
+void dspal_get_version_info(char *out_version_string, char *out_build_date, char *out_build_time);
 
 /**
  * @brief
@@ -97,4 +97,4 @@ struct dspal_version_info {
  * version information structure, each member will be populated
  * according to structure description
  */
-//void dspal_get_version_info_ext(struct dspal_version_info *out_version_info);
+void dspal_get_version_info_ext(struct dspal_version_info* out_version_info);
