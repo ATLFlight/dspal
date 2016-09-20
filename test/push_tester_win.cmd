@@ -11,7 +11,7 @@ rem
 
 set adsp_lib_dir=/system/vendor/lib/rfsa/adsp
 set user_lib_dir=/system/vendor/lib
-set adsp_lib_dir=/usr/share/data/adsp
+rem set adsp_lib_dir=/usr/share/data/adsp
 rem adb shell rm %adsp_lib_dir_bad%/*
 adb shell rm -rf  %adsp_lib_dir_bad%
 

@@ -48,8 +48,8 @@
 #define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-11"
 #define GPIO_INT_DEVICE_PATH  "/dev/gpio-11"
 #elif defined(DSP_TYPE_SLPI)
-#define GPIO_DEVICE_PATH  "/dev/gpio-56"
-#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-55"
-#define GPIO_INT_DEVICE_PATH  "/dev/gpio-55"
+#define GPIO_DEVICE_PATH  "/dev/gpio-14"
+#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-15"
+#define GPIO_INT_DEVICE_PATH  "/dev/gpio-15"
 #endif
 

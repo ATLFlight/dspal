@@ -70,6 +70,7 @@ struct dspal_version_info {
 	char build_time[DSPAL_MAX_LEN_VERSION_INFO_STR];
 };
 
+#if defined(DSP_TYPE_ADSP)
 /**
  * Returns version information strings formatted as key/value pairs in each
  * of the out variables defined below.
@@ -98,3 +99,4 @@ void dspal_get_version_info(char *out_version_string, char *out_build_date, char
  * according to structure description
  */
 void dspal_get_version_info_ext(struct dspal_version_info* out_version_info);
+#endif
