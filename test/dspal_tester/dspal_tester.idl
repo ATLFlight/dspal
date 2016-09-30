@@ -86,6 +86,7 @@ interface dspal_tester
    long spi_test();
 
    long serial_test();
+   long serial_loopback(in long uart_port);
 
    long i2c_test();
 
