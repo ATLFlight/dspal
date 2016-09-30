@@ -118,9 +118,10 @@ void dspal_tester_serial_loopback_read_callback(void *context, char *buffer, siz
 {
 	int * result = (int *)context;
 	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
-	LOG_INFO("dspal_tester_serial_loopback_read_callback");
+	LOG_INFO("dspal_tester_serial_loopback_read_callback %d", num_bytes);
 
 	if ((buffer != NULL ) && (num_bytes > 0)) {
+		*result = SUCCESS;
 		memcpy(rx_buffer, buffer, num_bytes);
 		LOG_ERR("uart read callback received bytes: %d",
 			 num_bytes);
@@ -749,7 +750,7 @@ int dspal_tester_serial_i2c_write(void)
 */
 int dspal_tester_serial_loopback(int uart_port)
 {
-	int result = SUCCESS;
+	int result = ERROR;
 	char rx_buffer[SERIAL_SIZE_OF_DATA_BUFFER];
 
     int packet_size = sizeof(tx_data); 
@@ -775,8 +776,10 @@ int dspal_tester_serial_loopback(int uart_port)
 	if (result < SUCCESS) {
 		close(fd);
 		fd = -1;
+		goto exit;
 	}
-    for (int i = 0; i < 10; i++) 
+    result = ERROR;
+    for (int i = 0; i < 5; i++) 
     {
         int num_bytes_written = write(fd,(const char *)tx_data,packet_size);
 
@@ -787,10 +790,15 @@ int dspal_tester_serial_loopback(int uart_port)
             LOG_ERR("failed to write");
             return NULL; 
         }
+	
+		int max_read_bytes = 20;
+		int num_bytes_read = read(fd, rx_buffer, max_read_bytes);
+		LOG_INFO("read %d bytes for i = %d ", num_bytes_read, i);
         usleep(1000000); 
     }
 exit:
 	close(fd);
+	LOG_INFO("result is %d", result);
 	return result;
 
 }

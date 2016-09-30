@@ -46,6 +46,10 @@ int run_io_test_suite(void)
 	test_results |= display_test_results(dspal_tester_serial_loopback(3), "serial I/O loopback test");
 	//test_results |= display_test_results(dspal_tester_serial_read_with_small_buffer(), "serial I/O read_with_small_buffer");
 #if 0
+<<<<<<< HEAD
+=======
+	test_results |= display_test_results(dspal_tester_serial_test(), "serial I/O test");
+>>>>>>> fmt_sw
 
 	test_results |= display_test_results(dspal_tester_i2c_test(), "i2c test");
 

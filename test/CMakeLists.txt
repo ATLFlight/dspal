@@ -38,6 +38,7 @@ set(version "${version_major}.${version_minor}.${version_patch}")
 set(package-contact "charlebm@gmail.com")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_hexagon")
+include(qurt_flags)
 include(bundle)
 
 include_directories(

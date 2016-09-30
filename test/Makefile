@@ -33,6 +33,8 @@
 
 all: dspal_tester version_test
 
+QC_SOC_TARGET?=APQ8074
+
 .PHONY: ENV_VARS
 ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
@@ -45,7 +47,7 @@ cmake_hexagon/bundle.cmake:
 
 .PHONY: dspal_tester version_test
 dspal_tester: ENV_VARS cmake_hexagon/toolchain/Toolchain-qurt.cmake
-	mkdir -p build && cd build && cmake -Wno-dev .. -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
+	mkdir -p build && cd build && cmake -Wno-dev .. -DQC_SOC_TARGET=${QC_SOC_TARGET}  -DCMAKE_TOOLCHAIN_FILE=cmake_hexagon/toolchain/Toolchain-qurt.cmake
 	cd build && make
 	
 load: dspal_tester
