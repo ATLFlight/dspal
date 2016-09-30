@@ -56,17 +56,17 @@ adb shell ldconfig
 adb shell export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:%user_lib_dir%:/usr/lib:/lib:/home/root
 adb shell export ADSP_LIBRARY_PATH=%adsp_lib_dir%
 
-rem adb shell "echo 73 > /sys/class/gpio/export"
-rem adb shell "echo out > /sys/class/gpio/gpio73/direction"
-rem adb shell "echo 1 > /sys/class/gpio/gpio73/value"
-rem adb shell "cat /sys/class/gpio/gpio73/direction"
-rem adb shell "cat /sys/class/gpio/gpio73/value  "
+adb shell "echo 73 > /sys/class/gpio/export"
+adb shell "echo out > /sys/class/gpio/gpio73/direction"
+adb shell "echo 1 > /sys/class/gpio/gpio73/value"
+adb shell "cat /sys/class/gpio/gpio73/direction"
+adb shell "cat /sys/class/gpio/gpio73/value  "
 
-rem adb shell "echo 110 > /sys/class/gpio/export"
-rem adb shell "echo out > /sys/class/gpio/gpio110/direction"
-rem adb shell "echo 1 > /sys/class/gpio/gpio110/value"
-rem adb shell "cat /sys/class/gpio/gpio110/direction"
-rem adb shell "cat /sys/class/gpio/gpio110/value  "
+adb shell "echo 110 > /sys/class/gpio/export"
+adb shell "echo out > /sys/class/gpio/gpio110/direction"
+adb shell "echo 1 > /sys/class/gpio/gpio110/value"
+adb shell "cat /sys/class/gpio/gpio110/direction"
+adb shell "cat /sys/class/gpio/gpio110/value  "
 
 
 adb shell /home/root/dspal_tester 0 1 100
