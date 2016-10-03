@@ -843,11 +843,22 @@ int dspal_tester_test_pthread_cond_timedwait(void)
 	int test_value = TEST_FAIL;
 	pthread_t thread;
 
+	pthread_attr_t attr;
+	size_t stacksize = 2 * 1024; // need to set larger stack size for SLPI
+
+	rv = pthread_attr_init(&attr);
+
+	if (rv != 0) { FAIL("pthread_attr_init returned error"); }
+
+	rv = pthread_attr_setstacksize(&attr, stacksize);
+
+	if (rv != 0) { FAIL("pthread_attr_setstacksize returned error"); }
+
 	/*
 	 * Create the thread passing a reference to the cond structure
 	 * just initialized.
 	 */
-	rv = pthread_create(&thread, NULL, test_pthread_cond_timedwait_helper, &cond);
+	rv = pthread_create(&thread, &attr, test_pthread_cond_timedwait_helper, &cond);
 
 	if (rv != 0) {
 		LOG_ERR("error pthread_create: %d", rv);

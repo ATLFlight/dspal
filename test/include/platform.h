@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2016 James Wilson. All rights reserved.
+ *   Copyright (c) 2016 Larry Wang. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,40 +32,24 @@
 
 #pragma once
 
-/**
- * @file
- * API to retrieve the current version of the DSPAL API.
- */
+// SPI port definition for the board
+#define SPI_DEVICE_PATH "/dev/spi-1"
 
-#include "noarch/dspal_version_types.h"
-
+// I2C port definition
 #if defined(DSP_TYPE_ADSP)
-/**
- * Returns version information strings formatted as key/value pairs in each
- * of the out variables defined below.
- * @param out_version_string
- * The version information of the DSPAL implementation currently in use, formatted as a key/value pair:
- * DSPAL_VERSION_STRING=[major.minor.update.build_number]. May be left NULL.
- * e.g.: DSPAL_VERSION_STRING=DSPAL-1.0.1.4242
- * @param out_build_date
- * The build date of the DSPAL implementation currently in use, formatted as a key/value pair:
- * DSPAL_DATE_STRING=[Mmm dd yyyy]. May be left NULL.
- * e.g.: DSPAL_DATE_STRING=Jan 01 2016
- * @param out_build_time
- * The build time of the DSPAL implementation currently in use, formatted as a key/value pair:
- * BUILD_TIME_STRING=[hh:mm:ss]. May be left NULL.
- * e.g.: BUILD_TIME_STRING=[23:59:01]
- */
-void dspal_get_version_info(char *out_version_string, char *out_build_date, char *out_build_time);
-
-/**
- * @brief
- * Returns version information strings formatted as key/value
- * pairs inside the dispal_version_info structure
- *
- * @param out_version_info
- * version information structure, each member will be populated
- * according to structure description
- */
-void dspal_get_version_info_ext(struct dspal_version_info* out_version_info);
+#define I2C_DEVICE_PATH "/dev/i2c-8"
+#elif defined(DSP_TYPE_SLPI)
+#define I2C_DEVICE_PATH "/dev/i2c-3"
 #endif
+
+// GPIO port definitoin
+#if defined(DSP_TYPE_ADSP)
+#define GPIO_DEVICE_PATH  "/dev/gpio-10"
+#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-11"
+#define GPIO_INT_DEVICE_PATH  "/dev/gpio-11"
+#elif defined(DSP_TYPE_SLPI)
+#define GPIO_DEVICE_PATH  "/dev/gpio-14"
+#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-15"
+#define GPIO_INT_DEVICE_PATH  "/dev/gpio-15"
+#endif
+
