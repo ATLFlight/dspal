@@ -196,4 +196,23 @@ int dspal_tester_test_cxx_heap()
 
 	return rv;
 }
+// Test QDSP malloc heap size, up to 2MB
+int dspal_tester_test_malloc()
+{
+    int rv = TEST_PASS;
+    uint32_t malloc_size = 1024, total_loop = 2*1024;  // max is 2M;
+    for (uint32_t i = 300; i <= total_loop; i ++)   // SLPI default is 300KB
+    {
+        uint8_t * ptr = (uint8_t *) malloc(malloc_size * i);
+        if (ptr == NULL)
+        {
+            LOG_ERR("malloc failed with size %dKB", i);
+            rv = TEST_FAIL;
+            break;
+        }
+        LOG_ERR("malloc success with size %dKB", i);
+        free(ptr);
+    }
+    return rv;
+}
 

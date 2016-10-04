@@ -71,6 +71,7 @@ int dspal_tester_pwm_test(void)
 	struct dspal_version_info version;
 	int major_version, minor_version;
 
+#if defined(DSP_TYPE_ADSP)// to be enabled after SLPI support
 	dspal_get_version_info_ext(&version);
 	strtok(version.version_string, "-.");
 	major_version = atoi(strtok(NULL, "-."));
@@ -83,7 +84,7 @@ int dspal_tester_pwm_test(void)
 		return ERROR;
 	}
 	LOG_INFO("testing PWM signaling, DSPAL version: %d.%d", major_version, minor_version);
-
+#endif
 	/*
 	 * Open PWM device
 	 */
