@@ -39,6 +39,8 @@
 int run_posix_test_suite(char test_mask[])
 {
 	int test_results = TEST_PASS;
+	LOG_INFO("testing malloc size");
+        test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_malloc, "malloc size test");
 
 	LOG_INFO("testing time.h");
 

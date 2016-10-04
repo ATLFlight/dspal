@@ -40,8 +40,7 @@
 #include "test_status.h"
 #include "test_utils.h"
 
-#define GPIO_DEVICE_PATH  "/dev/gpio-56"
-#define GPIO_INT_DEVICE_PATH  "/dev/gpio-55"
+#include "platform.h"
 
 bool isr_called = false;
 
@@ -216,6 +215,100 @@ exit:
 	return result;
 }
 
+/**
+* @brief This test toggles one GPIO pin at read from another GPIO pin which it is connected by wire externally
+*
+* @par Tests:
+* This tests uses 2 GPIO pins. It toggles one GPIO pin at 10Hz. After each write, we read the value
+* from this GPIO port to validate the write result, and also read from the other GPIO pin connected externally
+* Test:
+* 1) Opens file for GPIO device  (gpio-10), and the other GPIO device (gpio-11)
+* 2) Uses ioctl to set the two GPIO pin to me in IO mode and checks that this succeeds
+* 3) Write the value LOW to the GPIO pin (exit if fails to write)
+* 4) Read the value of these two GPIO pins back to see if the value from step 3 has been
+*    written (exit if fails to read or if the value read was not the same as the value
+*    written in step 3)
+* 5) Loop steps 3-4 100 times at 100 milliseconds per loop, invert signal to write to GPIO Pin
+*
+* @return
+* TEST_PASS ------ Test Passes
+* TEST_FAIL ------ Test Failed
+*/
+int dspal_tester_test_gpio_read_write_extern_loopback(void)
+{
+	int result = TEST_PASS;
+	int fd, fd_loopback;
+	int bytes, bytes2;
+	enum DSPAL_GPIO_VALUE_TYPE value_written = DSPAL_GPIO_LOW_VALUE;
+	enum DSPAL_GPIO_VALUE_TYPE value_read, value_read2;
+	struct dspal_gpio_ioctl_config_io config = {
+		.direction = DSPAL_GPIO_DIRECTION_OUTPUT,
+		.pull = DSPAL_GPIO_NO_PULL,
+		.drive = DSPAL_GPIO_2MA,
+	};
+	struct dspal_gpio_ioctl_config_io config2 = {
+		.direction = DSPAL_GPIO_DIRECTION_INPUT,
+		.pull = DSPAL_GPIO_NO_PULL,
+		.drive = DSPAL_GPIO_2MA,
+	};
+
+	// Open GPIO device
+	fd = open(GPIO_DEVICE_PATH, 0);
+	fd_loopback = open(GPIO_DEVICE_PATH_LOOPBACK, 0);
+	if (fd == -1 || fd == -1) {
+		LOG_ERR("open gpio device failed.");
+		result = TEST_FAIL;
+		goto exit;
+	}
+
+	// Configure GPIO device into general purpose I/O mode
+	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS ||
+		(ioctl(fd_loopback, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config2) != SUCCESS)) {
+		LOG_ERR("ioctl gpio device failed");
+		result = TEST_FAIL;
+		goto exit;
+	}
+
+	// Toggle GPIO device output value for a number of repetitions
+	for (int i = 0; i < 100; i++) {
+		value_written = value_written ^ 0x01;
+
+		LOG_DEBUG("write GPIO %s: %d", GPIO_DEVICE_PATH, value_written);
+
+		// set output value
+		bytes = write(fd, &value_written, 1);
+
+		if (bytes != 1) {
+			LOG_ERR("error: write failed");
+			result = TEST_FAIL;
+			goto exit;
+		}
+
+		// verify the write result by reading the output from the same GPIO
+		bytes = read(fd, &value_read, 1);
+		bytes2 = read(fd_loopback, &value_read2, 1);
+		if (bytes != 1 || bytes2 != 1) {
+			LOG_ERR("error: read failed");
+			result = TEST_FAIL;
+			goto exit;
+		}
+
+		LOG_DEBUG("read from GPIO %s: %d, %s: %d", GPIO_DEVICE_PATH, value_read, GPIO_DEVICE_PATH_LOOPBACK, value_read2);
+
+		if (value_read != value_written || value_read != value_read2) {
+			LOG_ERR("error: read inconsistent value");
+			result = TEST_FAIL;
+			goto exit;
+		}
+
+		// sleep between each toggle
+		usleep(100000);
+	}
+
+exit:
+	close(fd);
+	return result;
+}
 
 /**
 * @brief Interrupt service routine for the GPIO interrupt test.

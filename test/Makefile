@@ -31,9 +31,9 @@
 #
 ############################################################################
 
-QC_SOC_TARGET?=APQ8074
-
 all: dspal_tester version_test
+
+QC_SOC_TARGET?=APQ8074
 
 .PHONY: ENV_VARS
 ENV_VARS:

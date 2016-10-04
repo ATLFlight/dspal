@@ -1,5 +1,5 @@
 /****************************************************************************
- *   Copyright (c) 2015 James Wilson. All rights reserved.
+ *   Copyright (c) 2016 Larry Wang. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,60 +30,26 @@
  *
  ****************************************************************************/
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdint.h>
-#include <sys/ioctl.h>
-#include <dev_fs_lib_i2c.h>
-#include <test_status.h>
+#pragma once
 
-#include <platform.h>
-/**
-* @brief Test to see i2c device can be opened and configured.
-*
-* @par
-* Test:
-* 1) Open the i2c device (/dev/i2c-8)
-* 2) Configure the i2c device to have (using ioctl):
-*     -Slave address: 0x70
-*     -Bus Frequency in khz: 400
-*     -Transfer timeout in usec: 9000
-* 3) Close the i2c device
-*
-* @return
-* SUCCESS ------ Test Passes
-* ERROR ------ Test Failed
-*/
-int dspal_tester_i2c_test(void)
-{
-	int ret = SUCCESS;
-	/*
-	 * Open i2c device
-	 */
-	int fd = -1;
-	fd = open(I2C_DEVICE_PATH, 0);
+// SPI port definition for the board
+#define SPI_DEVICE_PATH "/dev/spi-1"
 
-	if (fd > 0) {
-		/*
-		 * Configure I2C device
-		 */
-		struct dspal_i2c_ioctl_slave_config slave_config;
-		slave_config.slave_address = 0x70;
-		slave_config.bus_frequency_in_khz = 400;
-		slave_config.byte_transer_timeout_in_usecs = 9000;
+// I2C port definition
+#if defined(DSP_TYPE_ADSP)
+#define I2C_DEVICE_PATH "/dev/i2c-8"
+#elif defined(DSP_TYPE_SLPI)
+#define I2C_DEVICE_PATH "/dev/i2c-3"
+#endif
 
-		if (ioctl(fd, I2C_IOCTL_CONFIG, &slave_config) != 0) {
-			ret = ERROR;
-		}
+// GPIO port definitoin
+#if defined(DSP_TYPE_ADSP)
+#define GPIO_DEVICE_PATH  "/dev/gpio-10"
+#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-11"
+#define GPIO_INT_DEVICE_PATH  "/dev/gpio-11"
+#elif defined(DSP_TYPE_SLPI)
+#define GPIO_DEVICE_PATH  "/dev/gpio-14"
+#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-15"
+#define GPIO_INT_DEVICE_PATH  "/dev/gpio-15"
+#endif
 
-		/*
-		 * Close the device ID
-		 */
-		close(fd);
-
-	} else {
-		ret = ERROR;
-	}
-
-	return ret;
-}

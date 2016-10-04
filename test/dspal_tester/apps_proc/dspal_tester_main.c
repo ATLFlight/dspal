@@ -71,7 +71,9 @@ int main(int argc, char *argv[])
 
 	LOG_INFO("Starting DSPAL tests");
 
+#if defined(DSP_TYPE_ADSP) // TODO: to be enabled after the API is supported on SLPI
 	dspal_tester_test_dspal_get_version_info();
+#endif
 	status = run_posix_test_suite(test_mask);
 	status |= run_io_test_suite(test_mask + NUM_DSPAL_POSIX_TESTS);
 

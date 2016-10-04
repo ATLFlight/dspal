@@ -39,7 +39,7 @@
 #include "rpcmem.h"
 #include "version_test.h"
 #include "dspal_log.h"
-#include "dspal_version_types.h"
+
 
 /**
  * @brief Display the DSP version information
