@@ -59,8 +59,8 @@ QURT_BUNDLE(APP_NAME dspal_tester
                 apps_proc/test_mask_utils.h
 		common/test_utils.c
 	APPS_INCS
-		-Iinclude
-		-I../include
+		include
+		../include
 	APPS_COMPILER arm-linux-gnueabihf-gcc
 	)
 
