@@ -14,6 +14,11 @@ Date: 08/31/2016
 
 - Addition of support for the POSIX termios API to perform UART configuration.
 
+Version Number: 1.3
+
+- Adds support for dlopen, dlclose, dlsym, and dlerror.  This allows dynamic modules (.so's) to load other dynamic modules. 
+
+
 
 
 
