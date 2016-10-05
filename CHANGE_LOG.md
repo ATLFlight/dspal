@@ -14,6 +14,10 @@ Date: 08/31/2016
 
 - Addition of support for the POSIX termios API to perform UART configuration.
 
+Version Number: 1.3
 
+Date: 10/04/2016
+
+- Addition of support for dlopen, dlclose, dlsym and dlerror to support the loading of dynamic libraries from other dynamic libriaries running on the Hexagon processor.
 
 
