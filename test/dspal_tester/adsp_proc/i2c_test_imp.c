@@ -37,6 +37,7 @@
 #include <dev_fs_lib_i2c.h>
 #include <test_status.h>
 
+#include <platform.h>
 /**
 * @brief Test to see i2c device can be opened and configured.
 *
@@ -60,7 +61,7 @@ int dspal_tester_i2c_test(void)
 	 * Open i2c device
 	 */
 	int fd = -1;
-	fd = open("/dev/i2c-8", 0);
+	fd = open(I2C_DEVICE_PATH, 0);
 
 	if (fd > 0) {
 		/*

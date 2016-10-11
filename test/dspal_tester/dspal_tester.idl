@@ -72,6 +72,7 @@ interface dspal_tester
 
    long test_posix_file_open_close();
    long test_posix_file_read_write();
+   long test_posix_file_threading();
    long test_posix_file_open_trunc();
    long test_posix_file_open_append();
    long test_posix_file_ioctl();
@@ -95,10 +96,13 @@ interface dspal_tester
    long test_gpio_open_close();
    long test_gpio_ioctl_io();
    long test_gpio_read_write();
-
+   long test_gpio_read_write_extern_loopback();
    long test_gpio_int();
 
    long test_cxx_heap();
    long test_cxx_static();
+   long test_malloc();
+
+   long termios_test();
 };
 

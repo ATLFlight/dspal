@@ -57,7 +57,7 @@ typedef int timer_t;
 #endif
 
 /* have to move #include here to solve circular include problems between time.h and signal.h */
-#include <dspal_signal.h>
+#include "dspal_signal.h"
 
 #ifdef __cplusplus
 extern "C" {

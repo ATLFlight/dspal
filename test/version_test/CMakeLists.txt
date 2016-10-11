@@ -40,8 +40,8 @@ QURT_BUNDLE(APP_NAME version_test
 	APPS_SOURCES
 		apps_proc/version_test_main.c
 	APPS_INCS
-		--include ../../include/dspal_version.h
-		-I../include
+		../include
+		../../include/noarch
 	APPS_COMPILER arm-linux-gnueabihf-gcc
 	)
 
