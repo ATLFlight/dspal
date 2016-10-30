@@ -43,7 +43,8 @@
 void test_mask_utils_print_help()
 {
   printf("dspal_tester [-h|--help] [test_mask]\n\n");
-  printf("test_mask: string containing 0 in position of disabled tests, 1 in position of enabled tests\n\n");
+  printf("test_mask: binary: string containing 0 in position of disabled tests, 1 in position of enabled tests\n");
+  printf("test_mask:    hex: hex string equivalent to binary test_mask. must begin with 0x\n\n");
   printf("List of tests:\n");
   printf(" 1) test_clockid\n");
   printf(" 2) test_sigevent\n");
