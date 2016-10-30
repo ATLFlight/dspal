@@ -100,6 +100,31 @@ void test_mask_utils_print_help()
   printf("53) test_fwrite_fread\n");
 }
 
+void test_mask_utils_process_binary_mask(char test_mask[], char arg[])
+{
+    int i = strlen(arg[i]);
+    if (i != TOTAL_NUM_DSPAL_TESTS)
+    {
+      fprintf(stderr, "Argument error: Test mask is not %d characters long\n\n", TOTAL_NUM_DSPAL_TESTS);
+      test_mask_utils_print_help();
+      return -1;
+    }
+    else
+    {
+      memcpy(test_mask, argv[1], i + 1);
+    }
+}
+
+void test_mask_utils_process_hex_mask(char test_mask[], char arg[])
+{
+    uint arg_as_num = (uint)strtoul(arg, NULL, 0);
+    for (int i = 0; i < TOTAL_NUM_DSPAL_TESTS; i++)
+    {
+        test_mask[i] = ((arg_as_num & 0x1) == 1) ? '1' : '0';
+    }
+    test_mask[i] = '\0';
+}
+
 int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
 {
   if (argc < 2)
@@ -118,18 +143,14 @@ int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
   }
   else
   {
-    int i;
-    for (i = 0; argv[1][i] != '\0'; i++);
-    if (i != TOTAL_NUM_DSPAL_TESTS)
-    {
-      fprintf(stderr, "Argument error: Test mask is not %d characters long\n\n", TOTAL_NUM_DSPAL_TESTS);
-      test_mask_utils_print_help();
-      return -1;
-    }
-    else
-    {
-      memcpy(test_mask, argv[1], i + 1);
-    }
+      if ((strlen(argv[1]) >= 3) && argv[1][0] == '0' && argv[1][1] == 'x') /* Begins with 0x */
+      {
+          test_mask_utils_process_hex_mask(test_mask, argv[1]);
+      }
+      else
+      {
+          test_mask_utils_process_binary_mask(test_mask, argv[1]);
+      }
   }
   return 0;
 }
