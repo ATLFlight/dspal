@@ -43,7 +43,8 @@
 void test_mask_utils_print_help()
 {
   printf("dspal_tester [-h|--help] [test_mask]\n\n");
-  printf("test_mask: string containing 0 in position of disabled tests, 1 in position of enabled tests\n\n");
+  printf("test_mask: binary: string containing 0 in position of disabled tests, 1 in position of enabled tests\n");
+  printf("test_mask:    hex: hex string equivalent to binary test_mask. must begin with 0x\n\n");
   printf("List of tests:\n");
   printf(" 1) test_clockid\n");
   printf(" 2) test_sigevent\n");
@@ -100,6 +101,33 @@ void test_mask_utils_print_help()
   printf("53) test_fwrite_fread\n");
 }
 
+int test_mask_utils_process_binary_mask(char test_mask[], char arg[])
+{
+    int i = strlen(arg[i]);
+    if (i != TOTAL_NUM_DSPAL_TESTS)
+    {
+      fprintf(stderr, "Argument error: Test mask is not %d characters long\n\n", TOTAL_NUM_DSPAL_TESTS);
+      test_mask_utils_print_help();
+      return -1;
+    }
+    else
+    {
+      memcpy(test_mask, argv[1], i + 1);
+    }
+
+    return 0;
+}
+
+void test_mask_utils_process_hex_mask(char test_mask[], char arg[])
+{
+    uint arg_as_num = (uint)strtoul(arg, NULL, 0);
+    for (int i = 0; i < TOTAL_NUM_DSPAL_TESTS; i++)
+    {
+        test_mask[i] = ((arg_as_num & 0x1) == 1) ? '1' : '0';
+    }
+    test_mask[i] = '\0';
+}
+
 int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
 {
   if (argc < 2)
@@ -118,18 +146,14 @@ int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
   }
   else
   {
-    int i;
-    for (i = 0; argv[1][i] != '\0'; i++);
-    if (i != TOTAL_NUM_DSPAL_TESTS)
-    {
-      fprintf(stderr, "Argument error: Test mask is not %d characters long\n\n", TOTAL_NUM_DSPAL_TESTS);
-      test_mask_utils_print_help();
-      return -1;
-    }
-    else
-    {
-      memcpy(test_mask, argv[1], i + 1);
-    }
+      if ((strlen(argv[1]) >= 3) && argv[1][0] == '0' && argv[1][1] == 'x') /* Begins with 0x */
+      {
+          test_mask_utils_process_hex_mask(test_mask, argv[1]);
+      }
+      else
+      {
+          return test_mask_utils_process_binary_mask(test_mask, argv[1]);
+      }
   }
   return 0;
 }
