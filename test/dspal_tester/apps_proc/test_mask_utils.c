@@ -101,7 +101,7 @@ void test_mask_utils_print_help()
   printf("53) test_fwrite_fread\n");
 }
 
-void test_mask_utils_process_binary_mask(char test_mask[], char arg[])
+int test_mask_utils_process_binary_mask(char test_mask[], char arg[])
 {
     int i = strlen(arg[i]);
     if (i != TOTAL_NUM_DSPAL_TESTS)
@@ -114,6 +114,8 @@ void test_mask_utils_process_binary_mask(char test_mask[], char arg[])
     {
       memcpy(test_mask, argv[1], i + 1);
     }
+
+    return 0;
 }
 
 void test_mask_utils_process_hex_mask(char test_mask[], char arg[])
@@ -150,7 +152,7 @@ int test_mask_utils_process_cli_args(int argc, char* argv[], char test_mask[])
       }
       else
       {
-          test_mask_utils_process_binary_mask(test_mask, argv[1]);
+          return test_mask_utils_process_binary_mask(test_mask, argv[1]);
       }
   }
   return 0;
