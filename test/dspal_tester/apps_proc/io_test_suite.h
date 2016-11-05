@@ -64,6 +64,6 @@
  * TEST_PASS ------ All tests passed
  * TEST_FAIL ------ One or more tests failed
 */
-int run_io_test_suite(char test_mask[]);
+int run_io_test_suite();
 
 #endif /* IO_TEST_SUITE_H_ */

@@ -56,8 +56,6 @@ QURT_BUNDLE(APP_NAME dspal_tester
 		apps_proc/io_test_suite.h
 		apps_proc/posix_test_suite.c
 		apps_proc/posix_test_suite.h
-                apps_proc/test_mask_utils.c
-                apps_proc/test_mask_utils.h
 		common/test_utils.c
 	APPS_INCS
 		include

@@ -77,6 +77,7 @@
  * TEST_PASS ------ All tests passed
  * TEST_FAIL ------ One or more tests failed
 */
-int run_posix_test_suite(char test_mask[]);
+int run_pthreads_test_suite();
+int run_timers_test_suite();
 
 #endif // POSIX_TEST_SUITE_H

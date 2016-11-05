@@ -36,7 +36,6 @@
 
 int dspal_tester_test_dspal_get_version_info()
 {
-#if defined(DSP_TYPE_ADSP)// to be enabled after SLPI support
 	char *version_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
 	char *build_date_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
 	char *build_time_string[DSPAL_MAX_LEN_VERSION_INFO_STR];
@@ -45,9 +44,6 @@ int dspal_tester_test_dspal_get_version_info()
 	LOG_INFO("version: %s", version_string);
 	LOG_INFO("build date: %s", build_date_string);
 	LOG_INFO("build time: %s", build_time_string);
-#else
-	LOG_INFO("dspal_get_version_info is currently supported on ADSP only");
-#endif
 
 	return 0;
 }

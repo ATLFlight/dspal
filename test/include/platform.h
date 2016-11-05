@@ -38,11 +38,13 @@
 // I2C port definition
 #if defined(DSP_TYPE_ADSP)
 #define I2C_DEVICE_PATH "/dev/i2c-8"
+#define I2C_SLAVE_ADDRESS 0x70
 #elif defined(DSP_TYPE_SLPI)
-#define I2C_DEVICE_PATH "/dev/i2c-3"
+#define I2C_DEVICE_PATH "/dev/i2c-2"
+#define I2C_SLAVE_ADDRESS 0x76 
 #endif
 
-// GPIO port definitoin
+// GPIO port definition
 #if defined(DSP_TYPE_ADSP)
 #define GPIO_DEVICE_PATH  "/dev/gpio-10"
 #define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-11"
@@ -53,3 +55,10 @@
 #define GPIO_INT_DEVICE_PATH  "/dev/gpio-15"
 #endif
 
+
+// UART port definition
+#if defined(DSP_TYPE_ADSP)
+#define NUM_UART_DEVICE_ENABLED  4
+#elif defined(DSP_TYPE_SLPI)
+#define NUM_UART_DEVICE_ENABLED  3
+#endif
