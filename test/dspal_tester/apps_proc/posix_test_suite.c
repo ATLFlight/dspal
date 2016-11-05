@@ -31,62 +31,112 @@
  ****************************************************************************/
 
 #include <stdio.h>
+#include <string.h>
 
 #include "test_utils.h"
 #include "dspal_tester.h"
-#include "test_mask_utils.h"
 
-int run_posix_test_suite(char test_mask[])
+
+#include <rpcmem.h>
+/* Flags applied to the allocation of the shared memory for RPC */
+#define FASTRPC_MEM_FLAGS         0
+
+int run_rpcmem_test()
+{
+    int test_result = TEST_PASS;
+    unsigned char test_string[] = "12345"; 
+    unsigned char upd_string[sizeof(test_string)];
+    int data_len = sizeof(test_string); 
+    int i = 0; 
+
+    rpcmem_init(); 
+    unsigned char* data = (unsigned char*)rpcmem_alloc(22, FASTRPC_MEM_FLAGS, data_len);
+    
+    if (!data) {
+        LOG_INFO("tests failed - cannot allocate rpc mem");
+        test_result = TEST_FAIL;
+        return test_result;
+    }
+  
+    memcpy(data, test_string, data_len);
+    dspal_tester_test_rpcmem(data, data_len);
+
+    for (i = 0; i < data_len; i++) {
+        upd_string[i] = test_string[i]+1; 
+    }
+
+    if ( memcmp(data, upd_string, data_len) != 0 ){
+        LOG_INFO("tests failed - not matching expected string");
+        test_result = TEST_FAIL;
+    }
+    
+    rpcmem_free(data); 
+    return test_result;
+}
+
+int run_pthreads_test_suite()
 {
 	int test_results = TEST_PASS;
+
 	LOG_INFO("testing malloc size");
-        test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_malloc, "malloc size test");
-
-	LOG_INFO("testing time.h");
-
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_clockid, "clockid values exist");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_sigevent, "sigevent values exist");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_time, "time returns good value");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_timer_realtime_sig_none, "timer realtime");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_timer_monotonic_sig_none, "timer monotonic");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_timer_process_cputime_sig_none, "timer process cputime");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_timer_thread_cputime_sig_none, "timer thread cputime");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_time_return_value, "time return value");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_time_param, "time parameter");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_usleep, "usleep for two seconds");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_clock_getres, "clock_getres");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_clock_gettime, "clock_gettime");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_clock_settime, "clock_settime");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_one_shot_timer_cb, "one shot timer cb");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_periodic_timer_cb, "periodic timer cb");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_periodic_timer_signal_cb, "periodic timer signal cb");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_periodic_timer_sigwait, "periodic timer sigwait");
+    test_results |= display_test_results( dspal_tester_test_malloc(), "malloc size test");
 
 	LOG_INFO("testing pthread.h");
 
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_attr_init, "pthread attr init");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_create, "pthread create");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_cancel, "pthread cancel");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_self, "pthread self");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_exit, "pthread exit");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_kill, "pthread kill");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_cond_timedwait, "pthread condition timed wait");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_mutex_lock, "pthread mutex lock");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_mutex_lock_thread, "thread mutex lock thread");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_stack, "thread large allocation on stack");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_pthread_heap, "thread large allocation on heap");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_usleep, "usleep for two seconds");
+	test_results |= display_test_results( dspal_tester_test_pthread_attr_init(), "pthread attr init");
+	test_results |= display_test_results( dspal_tester_test_pthread_create(), "pthread create");
+	test_results |= display_test_results( dspal_tester_test_pthread_cancel(), "pthread cancel");
+	test_results |= display_test_results( dspal_tester_test_pthread_self(), "pthread self");
+	test_results |= display_test_results( dspal_tester_test_pthread_exit(), "pthread exit");
+	test_results |= display_test_results( dspal_tester_test_pthread_kill(), "pthread kill");
+	test_results |= display_test_results( dspal_tester_test_pthread_cond_timedwait(), "pthread condition timed wait");
+	test_results |= display_test_results( dspal_tester_test_pthread_mutex_lock(), "pthread mutex lock");
+	test_results |= display_test_results( dspal_tester_test_pthread_mutex_lock_thread(), "thread mutex lock thread");
+	test_results |= display_test_results( dspal_tester_test_pthread_stack(), "thread large allocation on stack");
+	test_results |= display_test_results( dspal_tester_test_pthread_heap(), "thread large allocation on heap");
+	test_results |= display_test_results( dspal_tester_test_usleep(), "usleep for two seconds");
 
 	LOG_INFO("testing semaphore.h");
 
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_semaphore_wait, "semaphore wait");
+	test_results |= display_test_results( dspal_tester_test_semaphore_wait(), "semaphore wait");
 
 	LOG_INFO("testing C++");
 
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_cxx_heap, "test C++ heap");
-	test_results |= test_mask_utils_run_dspal_test(&test_mask, dspal_tester_test_cxx_static, "test C++ static initialization");
+	test_results |= display_test_results( dspal_tester_test_cxx_heap(), "test C++ heap");
+	test_results |= display_test_results( dspal_tester_test_cxx_static(), "test C++ static initialization");
 
-	LOG_INFO("tests complete");
+    LOG_INFO("testing rpcmem");
+    test_results |= display_test_results( run_rpcmem_test(), "RPC memory test"); 
 
+	LOG_INFO("pthread tests complete");
+
+	return test_results;
+}
+
+int run_timers_test_suite()
+{
+    int test_results = TEST_PASS;
+	LOG_INFO("testing time.h");
+
+	test_results |= display_test_results( dspal_tester_test_clockid(), "clockid values exist");
+	test_results |= display_test_results( dspal_tester_test_sigevent(), "sigevent values exist");
+	test_results |= display_test_results( dspal_tester_test_time(), "time returns good value");
+	test_results |= display_test_results( dspal_tester_test_timer_realtime_sig_none(), "timer realtime");
+	test_results |= display_test_results( dspal_tester_test_timer_monotonic_sig_none(), "timer monotonic");
+	test_results |= display_test_results( dspal_tester_test_timer_process_cputime_sig_none(), "timer process cputime");
+	test_results |= display_test_results( dspal_tester_test_timer_thread_cputime_sig_none(), "timer thread cputime");
+	test_results |= display_test_results( dspal_tester_test_time_return_value(), "time return value");
+	test_results |= display_test_results( dspal_tester_test_time_param(), "time parameter");
+	test_results |= display_test_results( dspal_tester_test_usleep(), "usleep for two seconds");
+	test_results |= display_test_results( dspal_tester_test_clock_getres(), "clock_getres");
+	test_results |= display_test_results( dspal_tester_test_clock_gettime(), "clock_gettime");
+	test_results |= display_test_results( dspal_tester_test_clock_settime(), "clock_settime");
+	test_results |= display_test_results( dspal_tester_test_one_shot_timer_cb(), "one shot timer cb");
+	test_results |= display_test_results( dspal_tester_test_periodic_timer_cb(), "periodic timer cb");
+	test_results |= display_test_results( dspal_tester_test_periodic_timer_signal_cb(), "periodic timer signal cb");
+	test_results |= display_test_results( dspal_tester_test_periodic_timer_sigwait(), "periodic timer sigwait");
+
+	LOG_INFO("timer tests complete");
+    
 	return test_results;
 }

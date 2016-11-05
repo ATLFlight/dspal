@@ -104,5 +104,7 @@ interface dspal_tester
    long test_malloc();
 
    long termios_test();
+
+   long test_rpcmem(rout sequence<octet> data);
 };
 
