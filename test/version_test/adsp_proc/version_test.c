@@ -35,15 +35,11 @@
 
 int version_test_get_version_info(char* version_string, int version_stringLen, char* build_date_string, int build_date_stringLen, char* build_time_string, int build_time_stringLen)
 {
-#if !defined(DSP_TYPE_SLPI)  // to be enabled after the API is added for SLPI
 	dspal_get_version_info(version_string, build_date_string,
 			       build_time_string);
 	LOG_INFO("version: %s", version_string);
 	LOG_INFO("build date: %s", build_date_string);
 	LOG_INFO("build time: %s", build_time_string);
-#else
-	LOG_INFO("dspal_get_version_info is currently supported on ADSP only");
-#endif
 
 	return 0;
 }

@@ -45,6 +45,7 @@
 #define SKIP_PTHREAD_KILL
 #define DSPAL_TESTER_COND_WAIT_TIMEOUT_IN_SECS 3
 
+
 /**
  * @brief Test if pthread_attr_init and pthread_attr_destroy work.
  * Errors printed to log.
@@ -844,7 +845,12 @@ int dspal_tester_test_pthread_cond_timedwait(void)
 	pthread_t thread;
 
 	pthread_attr_t attr;
-	size_t stacksize = 2 * 1024; // need to set larger stack size for SLPI
+
+    /* 
+     * Stack increase is necessary for the newer DSP because of changes 
+     * in the timer structures  
+     */
+	size_t stacksize = 2 * 1024; 
 
 	rv = pthread_attr_init(&attr);
 
@@ -904,3 +910,15 @@ exit:
 
 	return test_value;
 }
+
+int dspal_tester_test_rpcmem(unsigned char* data, int dataLen)
+{
+    LOG_ERR("Got call: data %x data_len %d", data, dataLen);
+
+    for (int i = 0; i < dataLen; i++) {
+        data[i] = data[i]+1; 
+    }
+
+    return TEST_PASS;
+}
+

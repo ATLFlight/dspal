@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <dev_fs_lib_serial.h>
+#include <platform.h>
 
 #include "test_utils.h"
 #include "test_status.h"
@@ -57,13 +58,13 @@
  *   See snapdragon flight user guide for details.
  */
 #define MAX_UART_DEVICE_NUM      6
-#define NUM_UART_DEVICE_ENABLED  4
 
 const char *serial_device_path[MAX_UART_DEVICE_NUM] = {
 	"/dev/tty-1", "/dev/tty-2", "/dev/tty-3",
 	"/dev/tty-4", "/dev/tty-5", "/dev/tty-6"
 };
 int serial_fildes[MAX_UART_DEVICE_NUM] = { -1};
+
 
 /**
 * @brief Test serial device open and close
