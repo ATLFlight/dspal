@@ -50,27 +50,29 @@ int run_rpcmem_test()
     int i = 0; 
 
     rpcmem_init(); 
-    unsigned char* data = (unsigned char*)rpcmem_alloc(22, FASTRPC_MEM_FLAGS, data_len);
-    
-    if (!data) {
+    unsigned char* out_data = (unsigned char*)rpcmem_alloc(22, FASTRPC_MEM_FLAGS, data_len);
+
+    if (!out_data) {
         LOG_INFO("tests failed - cannot allocate rpc mem");
         test_result = TEST_FAIL;
         return test_result;
     }
   
-    memcpy(data, test_string, data_len);
-    dspal_tester_test_rpcmem(data, data_len);
+    dspal_tester_test_rpcmem(test_string, data_len, out_data, data_len);
 
     for (i = 0; i < data_len; i++) {
         upd_string[i] = test_string[i]+1; 
     }
 
-    if ( memcmp(data, upd_string, data_len) != 0 ){
+    if ( memcmp(out_data, upd_string, data_len) != 0 ){
         LOG_INFO("tests failed - not matching expected string");
+        for (i = 0; i < data_len; i++) {
+            LOG_INFO("out_data[%d]: 0x%X, upd_string[%d]: 0x%X\n", i, out_data[i], i, upd_string[i]);
+        }
         test_result = TEST_FAIL;
     }
     
-    rpcmem_free(data); 
+    rpcmem_free(out_data);
     return test_result;
 }
 
