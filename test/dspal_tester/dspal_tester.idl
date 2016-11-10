@@ -105,6 +105,6 @@ interface dspal_tester
 
    long termios_test();
 
-   long test_rpcmem(rout sequence<octet> data);
+   long test_rpcmem(inrout sequence<octet> data);
 };
 
