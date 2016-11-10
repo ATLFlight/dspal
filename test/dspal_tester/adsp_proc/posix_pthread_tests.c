@@ -911,12 +911,12 @@ exit:
 	return test_value;
 }
 
-int dspal_tester_test_rpcmem(unsigned char* data, int dataLen)
+int dspal_tester_test_rpcmem(const unsigned char *in_data, int in_data_len, unsigned char *out_data, int out_data_len)
 {
-    LOG_ERR("Got call: data %x data_len %d", data, dataLen);
+    LOG_ERR("Testing new rpcmem call: out_data %x data_len %d", out_data, out_data_len);
 
-    for (int i = 0; i < dataLen; i++) {
-        data[i] = data[i]+1; 
+    for (int i = 0; i < in_data_len; i++) {
+        out_data[i] = in_data[i]+1;
     }
 
     return TEST_PASS;
