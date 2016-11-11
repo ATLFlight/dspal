@@ -36,10 +36,7 @@
 #include "test_utils.h"
 #include "dspal_tester.h"
 
-
 #include <rpcmem.h>
-/* Flags applied to the allocation of the shared memory for RPC */
-#define FASTRPC_MEM_FLAGS         0
 
 int run_rpcmem_test()
 {
@@ -49,8 +46,8 @@ int run_rpcmem_test()
     int data_len = sizeof(test_string); 
     int i = 0; 
 
-    rpcmem_init(); 
-    unsigned char* data = (unsigned char*)rpcmem_alloc(22, FASTRPC_MEM_FLAGS, data_len);
+    rpcmem_init();
+    unsigned char* data = (unsigned char*)rpcmem_alloc(22, RPCMEM_FLAG_UNCACHED, data_len);
     
     if (!data) {
         LOG_INFO("tests failed - cannot allocate rpc mem");
