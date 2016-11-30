@@ -42,7 +42,7 @@ QURT_BUNDLE(APP_NAME version_test
 	APPS_INCS
 		../include
 		../../include/noarch
-	APPS_COMPILER arm-linux-gnueabihf-gcc
+	APPS_COMPILER ${ARM-LINUX-GNUEABIHF-GCC}
 	)
 
 # vim: set noet fenc=utf-8 ff=unix ft=cmake :

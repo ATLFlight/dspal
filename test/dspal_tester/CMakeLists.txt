@@ -60,7 +60,7 @@ QURT_BUNDLE(APP_NAME dspal_tester
 	APPS_INCS
 		include
 		../include
-	APPS_COMPILER arm-linux-gnueabihf-gcc
+	APPS_COMPILER ${ARM-LINUX-GNUEABIHF-GCC}
 	)
 
 # vim: set noet fenc=utf-8 ff=unix ft=cmake :

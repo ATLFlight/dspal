@@ -39,7 +39,6 @@ QC_SOC_TARGET?=APQ8074
 ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
-	@[ `which arm-linux-gnueabihf-gcc` ] || (echo "Add ${HEXAGON_SDK_ROOT}/gcc-linaro-4.9-2014.11-x86_64_arm-linux-gnueabihf_linux/bin to PATH" && false)
 
 cmake_hexagon/bundle.cmake:
 	cd ../ && git submodule init
