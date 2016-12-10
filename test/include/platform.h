@@ -31,9 +31,12 @@
  ****************************************************************************/
 
 #pragma once
-
-// SPI port definition for the board
+#if defined(DSP_TYPE_ADSP)
+// Use spi-8 on the ADSP to avoid conflicts with the serial I/O tests.
+#define SPI_DEVICE_PATH "/dev/spi-8"
+#elif defined(DSP_TYPE_SLPI)
 #define SPI_DEVICE_PATH "/dev/spi-1"
+#endif
 
 // I2C port definition
 #if defined(DSP_TYPE_ADSP)
