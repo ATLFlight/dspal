@@ -401,10 +401,17 @@ int dspal_tester_spi_test(void)
 		LOG_ERR("error: spi exceed max write length test failed: %d", result);
 		return result;
 	}
+
+// This test is disabled for the ADSP since it causes conflicts with the serial I/O test
+// when executed multiple times in succession.  This is most likely
+// related to a known issue with the serial driver which must remain
+// open even after the close function is executed.
+#if defined(DSP_TYPE_SLPI)
 	LOG_INFO("beginning whoami test");
 	if ((result = dspal_tester_spi_whoami_test()) < SUCCESS) {
 		LOG_ERR("error: spi whoami test failed: %d", result);
 		return result;
 	}
+#endif
 	return SUCCESS;
 }
