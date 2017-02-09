@@ -35,13 +35,21 @@ all: dspal_tester version_test
 
 QC_SOC_TARGET?=APQ8074
 
+UPDATE_SUB_MODULE_2_LATEST?=0
+
+ifeq (${UPDATE_SUB_MODULE_2_LATEST},1)
+        SUBMODULE_FLAG=--remote
+else
+        SUBMODULE_FLAG=--init
+endif
+
 .PHONY: ENV_VARS
 ENV_VARS:
 	@[ ! -z "${HEXAGON_SDK_ROOT}" ] || (echo "HEXAGON_SDK_ROOT not set" && false)
 	@[ ! -z "${HEXAGON_TOOLS_ROOT}" ] || (echo "HEXAGON_TOOLS_ROOT not set" && false)
 
 .PHONY submodules:
-	cd ../ && git submodule update --init
+	cd ../ && git submodule init && git submodule update ${SUBMODULE_FLAG}
 
 .PHONY: dspal_tester version_test
 dspal_tester: ENV_VARS submodules
