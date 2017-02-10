@@ -80,6 +80,7 @@
  * by the SoC.  Using /dev/i2c-{number} is deprecated.
  */
 #define DEV_FS_I2C_DEVICE_TYPE_STRING  "/dev/iic-"
+#define DEV_FS_I2C_SSC_DEVICE_TYPE_STRING  "/dev/iic_ssc-"
 
 /**
  * @brief

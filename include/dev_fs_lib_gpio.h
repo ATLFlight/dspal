@@ -91,6 +91,7 @@
  * been mapped to a different function.
  */
 #define DEV_FS_GPIO_DEVICE_TYPE_STRING  "/dev/gpio-"
+#define DEV_FS_GPIO_SSC_DEVICE_TYPE_STRING  "/dev/gpio_ssc-"
 
 /**
  * @brief

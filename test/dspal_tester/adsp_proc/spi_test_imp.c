@@ -87,9 +87,9 @@ bool dpsal_tester_is_memory_matching(uint8_t *buffer1, uint8_t *buffer2, int len
 {
 	if (memcmp(buffer1, buffer2, length) != 0) {
 		LOG_ERR("error: the bytes read to not match the bytes written");
-		LOG_ERR("bytes read: %c, %c, %c, %c, %c", buffer1[0], buffer1[1], buffer1[2],
+		LOG_ERR("bytes written: %c, %c, %c, %c, %c", buffer1[0], buffer1[1], buffer1[2],
 			buffer1[3], buffer1[4]);
-		LOG_ERR("bytes written: %c, %c, %c, %c, %c", buffer2[0], buffer2[1], buffer2[2],
+		LOG_ERR("bytes read: %c, %c, %c, %c, %c", buffer2[0], buffer2[1], buffer2[2],
 			buffer2[3], buffer2[4]);
 		return false;
 	}
