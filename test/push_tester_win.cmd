@@ -4,7 +4,7 @@ adb wait-for-device
 echo start QDSPs
 
 
-set adsp_lib_dir=/system/vendor/lib/rfsa/adsp
+set adsp_lib_dir=/usr/lib/rfsa/adsp
 
 adb push build\dspal_tester\libdspal_tester.so   %adsp_lib_dir%/
 adb push build\dspal_tester\libdspal_tester_skel.so  %adsp_lib_dir%/

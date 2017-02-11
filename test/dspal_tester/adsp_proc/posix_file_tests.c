@@ -87,7 +87,7 @@ int dspal_tester_test_posix_file_open_close(void)
 	LOG_DEBUG("close /dev/fs/test.txt");
 
 	// test open file path without dspal file path prefix
-	fd = open("test.txt", O_RDONLY);
+	fd = open("random_file.txt", O_RDONLY);
 
 	// open() is expected to fail
 	if (fd >= 0) {

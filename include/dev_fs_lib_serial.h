@@ -187,6 +187,13 @@ enum DSPAL_SERIAL_PORTS {
 	DSPAL_SIO_PORT_UART_THIRD,   /**< DSPAL ID for the UART_THIRD port */
 	DSPAL_SIO_PORT_UART_FOURTH,  /**< DspAL ID for the UART_FOURTH port */
 	DSPAL_SIO_PORT_UART_FIFTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_SIXTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_SEVENTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_EIGHTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_NINTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_TENTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_ELEVENTH,   /**< DspAL ID for the UART_FIFTH port */
+	DSPAL_SIO_PORT_UART_TWELFTH,   /**< DspAL ID for the UART_FIFTH port */
 	DSPAL_SIO_PORT_UART_CXM,     /**< DspAL ID for the UART_CXM port */
 };
 

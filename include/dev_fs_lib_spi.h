@@ -107,7 +107,8 @@ enum DSPAL_SPI_LOOPBACK_TEST_STATE {
 */
 enum SPI_CLOCK_POLARITY_TYPE {
    SPI_CLOCK_IDLE_LOW,	/**< CLK signal is low when idle.*/
-   SPI_CLOCK_IDLE_HIGH	/**< CLK signal is high when idle.*/
+   SPI_CLOCK_IDLE_HIGH,	/**< CLK signal is high when idle.*/
+   SPI_CLOCK_INVALID = 0x7FFFFFFF
 };
 
 
@@ -116,7 +117,8 @@ enum SPI_CLOCK_POLARITY_TYPE {
 */
 enum SPI_SHIFT_MODE_TYPE {
    SPI_INPUT_FIRST,		/**< In both Master and slave input Bit is shifted in first.*/
-   SPI_OUTPUT_FIRST		/**< In both Master and slave  output Bit is shifted in first*/
+   SPI_OUTPUT_FIRST,		/**< In both Master and slave  output Bit is shifted in first*/
+   SPI_SHIFT_PADDING = 0xFFFFFFFF,    
 };
 
 /**
