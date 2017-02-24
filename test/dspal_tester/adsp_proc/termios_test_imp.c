@@ -57,6 +57,8 @@
  * - make sure to define UART-BAM mappings in /usr/share/data/adsp/blsp.config
  *   See snapdragon flight user guide for details.
  */
+
+#if defined(DSP_TYPE_ADSP)
 #define MAX_UART_DEVICE_NUM      6
 #define NUM_UART_DEVICE_ENABLED  4
 
@@ -65,7 +67,16 @@ const char *serial_device_paths[MAX_UART_DEVICE_NUM] = {
 	"/dev/tty-4", "/dev/tty-5", "/dev/tty-6"
 };
 
+#elif defined(DSP_TYPE_SLPI)
 
+#define MAX_UART_DEVICE_NUM      4
+#define NUM_UART_DEVICE_ENABLED  4
+
+const char *serial_device_paths[MAX_UART_DEVICE_NUM] = {
+	"/dev/tty-5", "/dev/tty-7", "/dev/tty-9",
+	"/dev/tty-12" 
+};
+#endif
 /**
 * @brief Get which device paths have a loop-back connection (wire connecting RX and TX)
 *
