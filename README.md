@@ -11,7 +11,7 @@ The DSPAL change log is located [here](CHANGE_LOG.md).
 
 See [GettingStarted](https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md)
 
-After installing the development tools, make sure you have your [environment variables set up] https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md#setup-environment-variables-1).
+After installing the development tools, make sure you have your [environment variables set up] https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md#setup-environment-variables).
 
 ## Testing DSPAL
 
