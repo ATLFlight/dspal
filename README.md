@@ -11,13 +11,7 @@ The DSPAL change log is located [here](CHANGE_LOG.md).
 
 See [GettingStarted](https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md)
 
-After installing the development tools, make sure you have your environment variables set up:
-```
-export HEXAGON_SDK_ROOT=${HOME}/Qualcomm/Hexagon_SDK/2.0
-export HEXAGON_TOOLS_ROOT=${HOME}/Qualcomm/HEXAGON_Tools/7.2.10/Tools
-export HEXAGON_ARM_SYSROOT=${HOME}/Qualcomm/Hexagon_SDK/2.0/sysroot
-export PATH=${HEXAGON_SDK_ROOT}/gcc-linaro-arm-linux-gnueabihf-4.8-2013.08_linux/bin:$PATH
-```
+After installing the development tools, make sure you have your [environment variables set up] https://github.com/ATLFlight/ATLFlightDocs/blob/master/GettingStarted.md#setup-environment-variables-1).
 
 ## Testing DSPAL
 
