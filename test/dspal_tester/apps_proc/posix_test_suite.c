@@ -35,7 +35,6 @@
 
 #include "test_utils.h"
 #include "dspal_tester.h"
-
 #include <rpcmem.h>
 
 int run_rpcmem_test()
@@ -71,12 +70,28 @@ int run_rpcmem_test()
     return test_result;
 }
 
+
+int run_HAP_power_test()
+{
+    int test_result = TEST_PASS;
+    int len = 5 * 1024;
+    rpcmem_init();
+    unsigned char*  data = (unsigned char*)rpcmem_alloc(0, RPCMEM_HEAP_DEFAULT, sizeof(int) * len);
+    dspal_tester_test_hap_power(data, len);
+    rpcmem_free(data); 
+    rpcmem_deinit();
+
+    return test_result;
+}
 int run_pthreads_test_suite()
 {
 	int test_results = TEST_PASS;
 
 	LOG_INFO("testing malloc size");
     test_results |= display_test_results( dspal_tester_test_malloc(), "malloc size test");
+    
+    LOG_INFO("HAP power API test");
+    test_results |= display_test_results( run_HAP_power_test(), "HAP power API test"); 
 
 	LOG_INFO("testing pthread.h");
 
@@ -105,6 +120,7 @@ int run_pthreads_test_suite()
     LOG_INFO("testing rpcmem");
     test_results |= display_test_results( run_rpcmem_test(), "RPC memory test"); 
 
+    
 	LOG_INFO("pthread tests complete");
 
 	return test_results;

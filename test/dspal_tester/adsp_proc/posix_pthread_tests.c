@@ -37,6 +37,7 @@
 #include <unistd.h>
 
 #include <dspal_signal.h>
+#include <dspal_platform.h>
 #include <pthread.h>
 
 #include "test_utils.h"
@@ -920,5 +921,44 @@ int dspal_tester_test_rpcmem(unsigned char* data, int dataLen)
     }
 
     return TEST_PASS;
+}
+
+long long measure_time_helper(int * data, int dataLen)
+{
+   unsigned int sum = 0, run_times = 50000;
+   struct timespec now, finish;
+   int rv = clock_gettime(CLOCK_MONOTONIC, &now);
+   if (rv != 0) { LOG_ERR("clock_gettime returned error"); }
+
+   for (unsigned int j = 0; j < run_times; j++) {
+       data[0] = 0;
+       for (int i = 1; i < dataLen; i++)
+            data[i] = data[i-1] + 1;
+       sum = 0;
+       for (int i = 0; i < dataLen; i++)
+            sum = sum + data[i];
+   }
+   rv = clock_gettime(CLOCK_MONOTONIC, &finish);
+   if (rv != 0) { LOG_ERR("clock_gettime returned error"); }
+
+   long long length = (int) (((finish.tv_sec - now.tv_sec) * 1000000 + (finish.tv_nsec - now.tv_nsec) / 1000)/1000); // in milli-seconds
+   return length;   
+}
+int dspal_tester_test_hap_power(unsigned char* data, int dataLen)
+{
+    int test_value = TEST_PASS;
+
+    LOG_ERR("Got call: data %x data_len %d", data, dataLen);
+    long long t1, t2;
+    HAP_power_request(5, 5, 1000);
+    t1 = measure_time_helper((int *) data, dataLen/sizeof(int));    
+    LOG_ERR("HAP power low: %lld", t1);
+
+    HAP_power_request(100, 100, 1000);
+    t2 = measure_time_helper((int *)data, dataLen/sizeof(int));    
+    LOG_ERR("HAP power high: %lld", t2);
+    if (t2 > (t1 > t2)) test_value = TEST_FAIL;  // if the speed up is not significatnt, fail
+    LOG_ERR("HAP power performance speed up %lld (ms)", t1 - t2);
+    return test_value;
 }
 
