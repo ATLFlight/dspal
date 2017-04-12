@@ -957,7 +957,7 @@ int dspal_tester_test_hap_power(unsigned char* data, int dataLen)
     HAP_power_request(100, 100, 1000);
     t2 = measure_time_helper((int *)data, dataLen/sizeof(int));    
     LOG_ERR("HAP power high: %lld", t2);
-    if (t2 > (t1 > t2)) test_value = TEST_FAIL;  // if the speed up is not significatnt, fail
+    if (t2 > (t1 - t2)) test_value = TEST_FAIL;  // if the speed up is not significatnt, fail
     LOG_ERR("HAP power performance speed up %lld (ms)", t1 - t2);
     return test_value;
 }
