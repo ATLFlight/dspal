@@ -136,7 +136,7 @@ int dspal_tester_pwm_test(void)
 		for (test_count = 0; test_count < 30; test_count++)
 		{
 			pwm[0].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[0].pulse_width_in_usecs, signal_definition.period_in_usecs);
-			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);;
+			pwm[1].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[1].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[2].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[2].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			pwm[3].pulse_width_in_usecs = INCREMENT_PULSE_WIDTH(pwm[3].pulse_width_in_usecs, signal_definition.period_in_usecs);
 			usleep(1000 * 500);
