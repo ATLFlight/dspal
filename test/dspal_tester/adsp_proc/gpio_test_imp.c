@@ -44,6 +44,7 @@
 
 bool isr_called = false;
 
+#define DO_JIG_TEST
 
 /**
  * @brief Test Open and Close functionality of the GPIO Device (gpio-56)
@@ -320,7 +321,7 @@ void *gpio_int_isr(DSPAL_GPIO_INT_ISR_CTX context)
 {
 	bool *val = (bool *)context;
 
-	LOG_DEBUG("gpio_int_isr called");
+	LOG_ERR("gpio_int_isr called");
 
 	*val = true;
 
@@ -372,6 +373,7 @@ int dspal_tester_test_gpio_int(void)
 		result = TEST_FAIL;
 		goto exit;
 	}
+	LOG_ERR("opening gpio device for output: %s", GPIO_DEVICE_PATH);
 
 	struct dspal_gpio_ioctl_config_io config = {
 		.direction = DSPAL_GPIO_DIRECTION_OUTPUT,
@@ -403,6 +405,7 @@ int dspal_tester_test_gpio_int(void)
 		result = TEST_FAIL;
 		goto exit;
 	}
+  LOG_ERR("opening gpio device for interrupt input: %s", GPIO_INT_DEVICE_PATH);
 
 	// Configure this GPIO device as interrupt source
 	struct dspal_gpio_ioctl_reg_int int_config = {

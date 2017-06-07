@@ -49,9 +49,9 @@
 
 // GPIO port definition
 #if defined(DSP_TYPE_ADSP)
-#define GPIO_DEVICE_PATH  "/dev/gpio-10"
-#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-11"
-#define GPIO_INT_DEVICE_PATH  "/dev/gpio-11"
+#define GPIO_DEVICE_PATH  "/dev/gpio-6"
+#define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-7"
+#define GPIO_INT_DEVICE_PATH  "/dev/gpio-7"
 #elif defined(DSP_TYPE_SLPI)
 #define GPIO_DEVICE_PATH  "/dev/gpio-14"
 #define GPIO_DEVICE_PATH_LOOPBACK  "/dev/gpio-15"
