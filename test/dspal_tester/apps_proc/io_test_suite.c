@@ -57,9 +57,9 @@ int run_io_test_suite()
     test_results |= display_test_results( dspal_tester_test_farf_log_debug(), "farf log_debug test");
 
 	LOG_INFO("testing GPIO");
-	test_results |= display_test_results( dspal_tester_test_gpio_open_close(), "gpio open/close test");
-	test_results |= display_test_results( dspal_tester_test_gpio_ioctl_io(), "gpio ioctl I/O mode test");
-	test_results |= display_test_results( dspal_tester_test_gpio_read_write(), "gpio read/write test");
+//	test_results |= display_test_results( dspal_tester_test_gpio_open_close(), "gpio open/close test");
+//	test_results |= display_test_results( dspal_tester_test_gpio_ioctl_io(), "gpio ioctl I/O mode test");
+//	test_results |= display_test_results( dspal_tester_test_gpio_read_write(), "gpio read/write test");
 
 #if !defined(DSP_TYPE_SLPI)	
 	test_results |= display_test_results( dspal_tester_test_gpio_int(), "gpio INT test");

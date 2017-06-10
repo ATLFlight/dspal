@@ -365,6 +365,9 @@ int dspal_tester_test_gpio_int(void)
 	int int_fd = -1;
 	int bytes = 0;
 
+	//  TODO-JYW: TESTING-TESTING:
+	int i = 0;
+
 	// Open GPIO device at GPIO_DEVICE_PATH for general purpose I/O
 	fd = open(GPIO_DEVICE_PATH, 0);
 
@@ -379,6 +382,7 @@ int dspal_tester_test_gpio_int(void)
 		.direction = DSPAL_GPIO_DIRECTION_OUTPUT,
 		.pull = DSPAL_GPIO_NO_PULL,
 		.drive = DSPAL_GPIO_2MA,
+//		.drive = DSPAL_GPIO_16MA,
 	};
 
 	if (ioctl(fd, DSPAL_GPIO_IOCTL_CONFIG_IO, (void *)&config) != SUCCESS) {
@@ -410,6 +414,7 @@ int dspal_tester_test_gpio_int(void)
 	// Configure this GPIO device as interrupt source
 	struct dspal_gpio_ioctl_reg_int int_config = {
 		.trigger = DSPAL_GPIOINT_TRIGGER_RISING,
+//    .trigger = DSPAL_GPIOINT_TRIGGER_DUAL_EDGE,
 		.isr = (DSPAL_GPIO_INT_ISR) &gpio_int_isr,
 		.isr_ctx = (DSPAL_GPIO_INT_ISR_CTX) &isr_called,
 	};
@@ -424,6 +429,14 @@ int dspal_tester_test_gpio_int(void)
 	// the interrupt GPIO device
 	value_written = DSPAL_GPIO_HIGH_VALUE;
 	bytes = write(fd, &value_written, 1);
+
+	// TODO-JYW: TESTING-TESTING:
+	for (i = 0; i < 10; i++)
+	{
+	  value_written = value_written ^ 1;
+	  write(fd, &value_written, 1);
+	  usleep(500000);
+	}
 
 	if (bytes != 1) {
 		LOG_ERR("error: write failed");
