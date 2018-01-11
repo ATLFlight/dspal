@@ -46,6 +46,11 @@ To see the program output from the code running on the DSP, you will need to run
 ```
 ${HEXAGON_SDK_ROOT}/tools/mini-dm/Linux_Debug/mini-dm
 ```
+If not found in the above location try this:
+
+```
+${HEXAGON_SDK_ROOT}/tools/debug/mini-dm/Linux_Debug/mini-dm
+```
 
 ### Running dspal_tester
 To run the program:
