@@ -31,7 +31,7 @@
 #define	_SYS__UMTX_H_
 
 #include <sys/_types.h>
-#include <sys/_timespec.h>
+// #include <sys/_timespec.h>
 
 struct umutex {
 	volatile __lwpid_t	m_owner;	/* Owner of the mutex */

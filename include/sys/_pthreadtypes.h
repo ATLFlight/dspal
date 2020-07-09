@@ -66,7 +66,7 @@ struct pthread_cond_attr;
 struct pthread_once;
 struct pthread_barrierattr;
 
-typedef struct pthread_once        pthread_once_t;
+// typedef struct pthread_once        pthread_once_t;
 
 struct pthread_once {
 	int      state;
