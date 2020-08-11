@@ -41,7 +41,7 @@
  *==========================================================================*/
 
 #include "dspal_types.h"
-// #include <sys/timespec.h>
+#include <sys/timespec.h>
 
 typedef int              clockid_t; /* ignored */
 #define _CLOCKID_T
